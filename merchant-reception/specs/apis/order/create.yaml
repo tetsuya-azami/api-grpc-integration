@@ -1,0 +1,16 @@
+post:
+  tags: ["Order"]
+  operationId: "create"
+  responses:
+    "200":
+      description: "order creation success"
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/SuccessResponse.yaml"
+    default:
+      description: "unexpected order creation error"
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/ErrorResponse.yaml"

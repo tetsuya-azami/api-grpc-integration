@@ -1,0 +1,15 @@
+type: object
+required:
+  - code
+  - data
+properties:
+  code:
+    type: integer
+  data:
+    type: object
+    required:
+    - errorMessage
+    properties:
+      errorMessage:
+        type: string
+        description: "error detail message"

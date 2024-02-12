@@ -1,0 +1,12 @@
+openapi: "3.1.1"
+info:
+  title: "注文API"
+  version: "1.0.0"
+servers:
+  - url: "https://com.example.merchant-reception/{basePath}"
+    variables:
+      basePath:
+        default: "api/v1/"
+paths:
+  /orders/:
+    $ref: './apis/order/create.yaml'
