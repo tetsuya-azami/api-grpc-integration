@@ -1,5 +1,4 @@
 post:
-  tags: ["Order"]
   operationId: "create"
   responses:
     "200":
