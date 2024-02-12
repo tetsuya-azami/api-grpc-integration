@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 plugins {
 	id("org.springframework.boot") version "3.2.2"
@@ -48,6 +47,6 @@ openApiGenerate {
 	apiPackage = "${domainName}.api"
 	invokerPackage = "${domainName}.api.invoker"
 	modelPackage = "${domainName}.model"
-	configOptions = mapOf("useSpringBoot3" to "true")
+	configOptions = mapOf("useSpringBoot3" to "true", "interfaceOnly" to "true")
 	globalProperties = mapOf("modelDocs" to "false")
 }
