@@ -1,0 +1,18 @@
+title: Payment
+type: object
+properties:
+  paymentMethod:
+    type: string
+    enum:
+      - cash
+      - credit
+      - paypay
+      - amazonpay
+      - googlepay
+      - applepay
+  deliveryCharge:
+    type: integer
+    format: int64
+  totalPrice:
+    type: integer
+    format: int64

@@ -5,5 +5,17 @@ properties:
     type: array
     items:
       $ref: "./Item.yaml"
+  chain:
+    $ref: "./Chain.yaml"
+  shop:
+    $ref: "./Shop.yaml"
+  delivery:
+    $ref: "./Delivery.yaml"
+  user:
+    $ref: "./User.yaml"
+  payment:
+    $ref: "./Payment.yaml"
+  time:
+    type: string
 required:
   - items

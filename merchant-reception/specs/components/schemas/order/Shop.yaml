@@ -1,0 +1,6 @@
+title: Shop
+type: object
+properties:
+  id:
+    type: integer
+    format: int64
