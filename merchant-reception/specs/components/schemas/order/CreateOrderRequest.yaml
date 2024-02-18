@@ -1,0 +1,7 @@
+title: CreateOrderRequest
+type: object
+properties:
+  order:
+    $ref: "./Order.yaml"
+required:
+  - order

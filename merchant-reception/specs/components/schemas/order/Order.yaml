@@ -1,0 +1,9 @@
+title: Order
+type: object
+properties:
+  items:
+    type: array
+    items:
+      $ref: "./Item.yaml"
+required:
+  - items

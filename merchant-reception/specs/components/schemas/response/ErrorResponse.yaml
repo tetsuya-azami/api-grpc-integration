@@ -1,7 +1,5 @@
+title: ErrorResponse
 type: object
-required:
-  - code
-  - data
 properties:
   code:
     type: integer
@@ -13,3 +11,6 @@ properties:
       errorMessage:
         type: string
         description: "error detail message"
+required:
+  - code
+  - data
