@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class MerchantReceptionApplication
 
 fun main(args: Array<String>) {
-	runApplication<MerchantReceptionApplication>(*args)
+    runApplication<MerchantReceptionApplication>(*args)
 }
