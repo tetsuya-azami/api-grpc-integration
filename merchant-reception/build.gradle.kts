@@ -40,15 +40,15 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-val domainName = "com.example.merchant-reception"
+val basePackage = "com.example.merchantreception"
 
 openApiGenerate {
     generatorName = "kotlin-spring"
     inputSpec = "$rootDir/specs/openapi.yaml"
     outputDir = "$buildDir/generated"
-    apiPackage = "${domainName}.api"
-    invokerPackage = "${domainName}.api.invoker"
-    modelPackage = "${domainName}.model"
+    apiPackage = "${basePackage}.api"
+    invokerPackage = "${basePackage}.api.invoker"
+    modelPackage = "${basePackage}.model"
     configOptions = mapOf("useSpringBoot3" to "true", "interfaceOnly" to "true")
     globalProperties = mapOf("modelDocs" to "false")
 }
