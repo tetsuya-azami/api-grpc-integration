@@ -9,15 +9,27 @@ post:
         schema:
           $ref: "../../components/schemas/order/CreateOrderRequest.yaml"
   responses:
-    "200":
-      description: "order creation success"
+    200:
+      description: "order creation success response"
       content:
         application/json:
           schema:
             $ref: "../../components/schemas/response/SuccessResponse.yaml"
-    default:
-      description: "unexpected order creation error"
+    400:
+      description: "order creation bad request response"
       content:
         application/json:
           schema:
-            $ref: "../../components/schemas/response/ErrorResponse.yaml"
+            $ref: "../../components/schemas/response/ValidationErrorResponse.yaml"
+    401:
+      description: "order creation unauthorized response"
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/response/AuthenticationErrorResponse.yaml"
+    500:
+      description: "order creation unexpected error"
+      content:
+        application/json:
+          schema:
+            $ref: "../../components/schemas/response/ServerErrorResponse.yaml"

@@ -1,0 +1,9 @@
+title: ErrorData
+type: object
+properties:
+  errorMessage:
+    description: "error detail message"
+    type: string
+    maxLength: 500
+required:
+  - errorMessage

@@ -1,0 +1,11 @@
+title: ServerErrorResponse
+type: object
+properties:
+  code:
+    type: string
+    maxLength: 20
+  data:
+    $ref: "./ErrorData.yaml"
+required:
+  - code
+  - data

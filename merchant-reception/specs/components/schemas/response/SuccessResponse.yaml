@@ -2,6 +2,7 @@ title: SuccessResponse
 type: object
 properties:
   code:
-    type: integer
+    type: string
+    maxLength: 20
 required:
   - code
