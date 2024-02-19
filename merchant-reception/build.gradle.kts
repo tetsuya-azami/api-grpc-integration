@@ -49,7 +49,7 @@ openApiGenerate {
     apiPackage = "${basePackage}.api"
     invokerPackage = "${basePackage}.api.invoker"
     modelPackage = "${basePackage}.model"
-    configOptions = mapOf("useSpringBoot3" to "true", "interfaceOnly" to "true")
+    configOptions = mapOf("useSpringBoot3" to "true", "interfaceOnly" to "true", "skipDefaultInterface" to "true")
     globalProperties = mapOf("modelDocs" to "false")
 }
 
