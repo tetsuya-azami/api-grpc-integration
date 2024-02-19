@@ -21,6 +21,8 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web-services")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -49,4 +51,8 @@ openApiGenerate {
     modelPackage = "${domainName}.model"
     configOptions = mapOf("useSpringBoot3" to "true", "interfaceOnly" to "true")
     globalProperties = mapOf("modelDocs" to "false")
+}
+
+kotlin.sourceSets.main {
+    kotlin.srcDir(openApiGenerate.outputDir)
 }
