@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 @ControllerAdvice
 class GlobalErrorHandler {
     @ExceptionHandler
-    public fun testExceptionHandler(ex: HttpMessageNotReadableException): ResponseEntity<ValidationErrorResponse> {
+    fun testExceptionHandler(ex: HttpMessageNotReadableException): ResponseEntity<ValidationErrorResponse> {
         return ResponseEntity(
             ValidationErrorResponse(
                 ResponseCode.VALIDATION_ERROR.name,
