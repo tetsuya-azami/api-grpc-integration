@@ -20,11 +20,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web-services")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
+    implementation("io.swagger.core.v3:swagger-models:2.1.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0")
+    implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0") {
+        exclude(group = "org.slf4j", module = "slf4j-simple")
+    }
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
