@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
     id("org.openapi.generator") version "7.2.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.6.0"
 }
 
 group = "com.example"
@@ -25,7 +26,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
-    implementation("io.swagger.core.v3:swagger-models:2.1.1")
+    implementation("io.swagger.core.v3:swagger-models:2.2.19")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.openapitools:openapi-generator-gradle-plugin:7.1.0") {
         exclude(group = "org.slf4j", module = "slf4j-simple")
@@ -60,4 +62,9 @@ openApiGenerate {
 
 kotlin.sourceSets.main {
     kotlin.srcDir(openApiGenerate.outputDir)
+}
+
+openApi {
+    outputDir.set(layout.projectDirectory.dir("tools/redoc/api/"))
+    outputFileName.set("openapi.json")
 }

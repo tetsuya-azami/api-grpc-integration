@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  redoc:
+    image: redocly/redoc
+    volumes:
+      - ./api:/usr/share/nginx/html/api
+    environment:
+      SPEC_URL: "api/openapi.json"
+    ports:
+      - "8081:80"

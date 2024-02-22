@@ -38,3 +38,6 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### openapi.json ###
+tools/redoc/api/openapi.json
