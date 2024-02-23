@@ -2,6 +2,15 @@ title: Payment
 type: object
 properties:
   paymentMethod:
+    description: |
+      <br>
+      支払い方法。利用可能なオプションは以下の通りです：<br>
+      cash: 現金<br>
+      credit: クレジットカード<br>
+      paypay: PayPay<br>
+      amazonpay: Amazon Pay<br>
+      googlepay: Google Pay<br>
+      applepay: Apple Pay<br>
     type: string
     enum:
       - cash
@@ -12,18 +21,30 @@ properties:
       - applepay
     example: "cash"
   deliveryCharge:
+    description: 配送料金
     type: integer
     format: int64
     example: 350
+    minimum: 0
+    maximum: 9999999999
   nonTaxedTotalPrice:
+    description: 税抜き合計金額
     type: integer
     format: int64
     example: 2063
+    minimum: 0
+    maximum: 9999999999
   tax:
+    description: 消費税
     type: integer
     format: int64
     example: 206
+    minimum: 0
+    maximum: 9999999999
   taxedTotalPrice:
+    description: 税込み合計金額
     type: integer
     format: int64
     example: 2269
+    minimum: 0
+    maximum: 9999999999

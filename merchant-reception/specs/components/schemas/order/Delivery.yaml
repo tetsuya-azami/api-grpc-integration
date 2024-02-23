@@ -1,7 +1,14 @@
 title: Delivery
 type: object
+description: 配送情報
 properties:
   type:
+    description: |
+      <br>
+      配送の種類。利用可能なオプションは以下の通りです：<br>
+      immediate: 即時配送<br>
+      specified: 指定日配送<br>         
+      reserved: 予約配送<br>
     type: string
     enum:
       - immediate
@@ -9,6 +16,9 @@ properties:
       - reserved
     example: "immediate"
   addressId:
+    description: 配送先住所ID
     type: integer
     format: int32
     example: 1
+    minimum: 1
+    maximum: 9999999999

@@ -2,9 +2,12 @@ title: Order
 type: object
 properties:
   items:
+    description: 注文商品情報
     type: array
     items:
       $ref: "./Item.yaml"
+    minItems: 1
+    maxItems: 100
   chain:
     $ref: "./Chain.yaml"
   shop:
@@ -16,8 +19,11 @@ properties:
   payment:
     $ref: "./Payment.yaml"
   time:
+    description: "注文日時(ISO 8601形式: YYYY-MM-DDTHH:MM:SS+09:00)"
     type: string
     example: "2021-01-01T12:34:56+09:00"
+    minLength: 1
+    maxLength: 250
 required:
   - items
   - chain

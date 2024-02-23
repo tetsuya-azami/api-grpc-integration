@@ -2,6 +2,9 @@ title: User
 type: object
 properties:
   id:
+    description: ユーザーID
     type: integer
     format: int64
     example: 1
+    minimum: 1
+    maximum: 9999999999

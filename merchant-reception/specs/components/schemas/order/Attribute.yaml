@@ -1,13 +1,23 @@
 title: Attribute
 type: object
+description: 属性情報
 properties:
   id:
+    description: 属性ID
     type: integer
     format: int64
     example: 1
+    minimum: 1
+    maximum: 9999999999
   name:
+    description: 属性名
     type: string
     example: "サイズ"
+    minLength: 1
+    maxLength: 250
   value:
+    description: 属性値
     type: string
     example: "S"
+    minLength: 1
+    maxLength: 250

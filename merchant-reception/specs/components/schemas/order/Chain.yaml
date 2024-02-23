@@ -1,7 +1,11 @@
 title: Chain
 type: object
+description: チェーン情報
 properties:
   id:
+    description: チェーンID
     type: integer
     format: int64
     example: 1
+    minimum: 1
+    maximum: 9999999999
