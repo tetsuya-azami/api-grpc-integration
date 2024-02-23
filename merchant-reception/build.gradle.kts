@@ -69,6 +69,10 @@ kotlin.sourceSets.main {
     kotlin.srcDir(openApiGenerate.outputDir)
 }
 
+tasks.named("openApiGenerate").configure {
+    dependsOn("clean")
+}
+
 openApi {
     outputDir.set(layout.projectDirectory.dir("tools/redoc/api/"))
     outputFileName.set("openapi.json")
