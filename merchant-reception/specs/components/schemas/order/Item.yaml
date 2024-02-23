@@ -4,11 +4,14 @@ properties:
   id:
     type: integer
     format: int64
+    example: 1
   name:
     type: string
+    example: "消しゴム"
   price:
     type: integer
     format: int32
+    example: 150
   attributes:
     type: array
     items:
@@ -16,3 +19,4 @@ properties:
   quantity:
     type: integer
     format: int32
+    example: 1

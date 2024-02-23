@@ -10,9 +10,20 @@ properties:
       - amazonpay
       - googlepay
       - applepay
+    example: "cash"
   deliveryCharge:
     type: integer
     format: int64
-  totalPrice:
+    example: 350
+  nonTaxedTotalPrice:
     type: integer
     format: int64
+    example: 2063
+  tax:
+    type: integer
+    format: int64
+    example: 206
+  taxedTotalPrice:
+    type: integer
+    format: int64
+    example: 2269

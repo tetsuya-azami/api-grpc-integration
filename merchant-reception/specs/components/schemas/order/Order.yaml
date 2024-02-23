@@ -17,6 +17,7 @@ properties:
     $ref: "./Payment.yaml"
   time:
     type: string
+    example: "2021-01-01T12:34:56+09:00"
 required:
   - items
   - chain
