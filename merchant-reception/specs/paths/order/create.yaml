@@ -1,8 +1,9 @@
 post:
   tags:
     - order
-  summary: "create a new retail order"
+  summary: "注文作成API"
   operationId: "createOrder"
+  description: "create a new retail order"
   requestBody:
     description: "request body of a new order"
     required: true

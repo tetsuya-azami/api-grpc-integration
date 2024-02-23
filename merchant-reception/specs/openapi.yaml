@@ -9,4 +9,4 @@ servers:
         default: "api/v1/"
 paths:
   /orders/:
-    $ref: './apis/order/create.yaml'
+    $ref: './paths/order/create.yaml'
