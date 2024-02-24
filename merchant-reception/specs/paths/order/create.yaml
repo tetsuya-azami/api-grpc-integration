@@ -13,25 +13,25 @@ post:
           $ref: "../../components/schemas/order/CreateOrderRequest.yaml"
   responses:
     200:
-      description: "order creation success response"
+      description: "成功時のレスポンス"
       content:
         application/json:
           schema:
             $ref: "../../components/schemas/response/SuccessResponse.yaml"
     400:
-      description: "order creation bad request response"
+      description: "リクエストが不正だった場合のレスポンス"
       content:
         application/json:
           schema:
             $ref: "../../components/schemas/response/ValidationErrorResponse.yaml"
     401:
-      description: "order creation unauthorized response"
+      description: "認証エラーレスポンス"
       content:
         application/json:
           schema:
             $ref: "../../components/schemas/response/AuthenticationErrorResponse.yaml"
     500:
-      description: "order creation unexpected error"
+      description: "サーバーエラーレスポンス"
       content:
         application/json:
           schema:

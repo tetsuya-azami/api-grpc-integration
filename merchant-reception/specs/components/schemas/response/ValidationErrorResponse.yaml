@@ -2,8 +2,11 @@ title: ValidationErrorResponse
 type: object
 properties:
   code:
+    description: "エラーコード"
     type: string
+    minLength: 1
     maxLength: 20
+    example: "VALIDATION_ERROR"
   data:
     $ref: "./ErrorData.yaml"
 required:

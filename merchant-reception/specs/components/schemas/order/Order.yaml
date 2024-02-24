@@ -21,9 +21,9 @@ properties:
   time:
     description: "注文日時(ISO 8601形式: YYYY-MM-DDTHH:MM:SS+09:00)"
     type: string
-    example: "2021-01-01T12:34:56+09:00"
     minLength: 1
     maxLength: 250
+    example: "2021-01-01T12:34:56+09:00"
 required:
   - items
   - chain

@@ -2,8 +2,10 @@ title: ErrorData
 type: object
 properties:
   errorMessage:
-    description: "error detail message"
+    description: "エラー詳細メッセージ"
     type: string
+    minLength: 1
     maxLength: 500
+    example: "〇〇エラーが発生しました。"
 required:
   - errorMessage
