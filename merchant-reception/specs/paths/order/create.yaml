@@ -12,7 +12,7 @@ post:
         schema:
           $ref: "../../components/schemas/order/CreateOrderRequest.yaml"
   responses:
-    200:
+    204:
       description: "成功時のレスポンス"
       content:
         application/json:
