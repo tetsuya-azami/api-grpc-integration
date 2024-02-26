@@ -51,7 +51,7 @@ val basePackage = "com.example.merchantreception"
 openApiGenerate {
     generatorName = "kotlin-spring"
     inputSpec = "$rootDir/specs/openapi.yaml"
-    outputDir = "$buildDir/generated"
+    outputDir = layout.projectDirectory.dir("build/generated").toString()
     apiPackage = "${basePackage}.api"
     invokerPackage = "${basePackage}.api.invoker"
     modelPackage = "${basePackage}.model"
