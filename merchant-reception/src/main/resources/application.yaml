@@ -6,4 +6,5 @@ spring:
       enabled: true
 logging:
   level:
+    #    root: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: OFF
