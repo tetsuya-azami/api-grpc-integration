@@ -1,0 +1,25 @@
+title: OrderCreationSuccessResponse
+type: object
+properties:
+  code:
+    description: "成功コード"
+    type: string
+    minLength: 1
+    maxLength: 20
+    example: "SUCCESS"
+  data:
+    type: object
+    description: "注文作成成功時のレスポンスデータ"
+    properties:
+      orderId:
+        description: "作成された注文のID"
+        type: integer
+        format: int64
+        minimum: 1
+        maximum: 9999999999
+        example: 11111
+    required:
+      - orderId
+required:
+  - code
+  - data

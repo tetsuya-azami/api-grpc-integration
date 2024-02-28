@@ -12,12 +12,12 @@ post:
         schema:
           $ref: "../../components/schemas/order/CreateOrderRequest.yaml"
   responses:
-    204:
+    201:
       description: "成功時のレスポンス"
       content:
         application/json:
           schema:
-            $ref: "../../components/schemas/response/SuccessResponse.yaml"
+            $ref: "../../components/schemas/response/OrderCreationSuccessResponse.yaml"
     400:
       description: "リクエストが不正だった場合のレスポンス"
       content:
