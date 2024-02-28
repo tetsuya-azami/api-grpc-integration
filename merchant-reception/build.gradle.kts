@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.22"
     id("org.openapi.generator") version "7.2.0"
     id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
+    id("com.google.protobuf") version "0.9.4"
 }
 
 group = "com.example"
@@ -31,6 +32,7 @@ dependencies {
     implementation("org.openapitools:openapi-generator-gradle-plugin:7.3.0") {
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
+    implementation("net.devh:grpc-client-spring-boot-starter:3.0.0.RELEASE")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
