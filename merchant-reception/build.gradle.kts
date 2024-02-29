@@ -7,7 +7,6 @@ plugins {
     kotlin("plugin.spring") version "1.9.22"
     id("org.openapi.generator") version "7.2.0"
     id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
-    id("com.google.protobuf") version "0.9.4"
 }
 
 group = "com.example"
