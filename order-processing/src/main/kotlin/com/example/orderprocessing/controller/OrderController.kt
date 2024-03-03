@@ -5,6 +5,7 @@ import com.example.grpcinterface.proto.OrderServiceGrpcKt
 import net.devh.boot.grpc.server.service.GrpcService
 
 @GrpcService
+@Suppress("unused")
 class OrderController : OrderServiceGrpcKt.OrderServiceCoroutineImplBase() {
     override suspend fun createOrder(request: OrderOuterClass.OrderCreationRequest): OrderOuterClass.OrderCreationResponse {
         //　TODO: order作成処理(DB登録等)
