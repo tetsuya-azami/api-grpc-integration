@@ -1,3 +1,3 @@
-[submodule "merchant-reception/grpc-interface"]
-	path = merchant-reception/grpc-interface
+[submodule "order-reception/grpc-interface"]
+	path = order-reception/grpc-interface
 	url = git@github.com:tetsuya-azami/gprc-interface.git
