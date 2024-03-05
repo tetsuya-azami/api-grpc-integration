@@ -8,12 +8,10 @@ properties:
       配送の種類。利用可能なオプションは以下の通りです：<br>
       immediate: 即時配送<br>
       specified: 指定日配送<br>         
-      reserved: 予約配送<br>
     type: string
     enum:
       - immediate
       - specified
-      - reserved
     example: "immediate"
   addressId:
     description: 配送先住所ID
