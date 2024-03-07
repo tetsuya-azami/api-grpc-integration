@@ -18,14 +18,44 @@ repositories {
     mavenCentral()
 }
 
+
+configurations {
+    create("mybatisGenerator")
+}
+
 dependencies {
+    add("mybatisGenerator", "org.mybatis.generator:mybatis-generator-core:1.4.2")
+    add("mybatisGenerator", "com.mysql:mysql-connector-j:8.3.0")
+
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation("net.devh:grpc-server-spring-boot-starter:3.0.0.RELEASE")
     implementation("io.grpc:grpc-kotlin-stub:1.4.1")
     implementation(project(":grpc-interface"))
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
 }
+
+tasks.register("mybatisGenerator") {
+    ant.withGroovyBuilder {
+        "taskdef"(
+            "name" to "mbgenerator",
+            "classname" to "org.mybatis.generator.ant.GeneratorAntTask",
+            "classpath" to configurations.getByName("mybatisGenerator").asPath
+        )
+    }
+    ant.invokeMethod(
+        "mbgenerator",
+        mapOf(
+            "overwrite" to true,
+            "configfile" to "src/main/resources/generatorConfig.xml",
+            "verbose" to true
+        )
+    )
+}
+tasks.getByName("mybatisGenerator").group = "mybatis"
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
