@@ -50,7 +50,7 @@ tasks.register("mybatisGenerator") {
         "mbgenerator",
         mapOf(
             "overwrite" to true,
-            "configfile" to "src/main/resources/generatorConfig.xml",
+            "configfile" to "${project.rootDir}/src/main/resources/generatorConfig.xml",
             "verbose" to true
         )
     )
