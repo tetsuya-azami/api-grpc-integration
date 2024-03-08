@@ -1,0 +1,15 @@
+services:
+  order_processing_mysql:
+    build:
+      context: .
+    container_name: order_processing_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+    volumes:
+      - order_processing:/var/lib/mysql
+      - ./initdb.d:/docker-entrypoint-initdb.d
+volumes:
+  order_processing:
