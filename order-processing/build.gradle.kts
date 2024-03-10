@@ -34,6 +34,7 @@ dependencies {
     implementation("io.grpc:grpc-kotlin-stub:1.4.1")
     implementation(project(":grpc-interface"))
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
+    implementation("org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.5.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
 }
