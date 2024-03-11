@@ -1,9 +1,26 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:10:07.196083+09:00
+ * Generation date: 2024-03-11T09:23:44.881149+09:00
  */
-package repository.mapper.generated
+package com.example.orderprocessing.repository.mapper.generated
 
+import com.example.orderprocessing.repository.entity.generated.Orders
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.chainId
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryAddressId
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryCharge
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryMethodId
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryType
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.nonTaxedTotalPrice
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.orderId
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.orders
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.paymentMethod
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.shopId
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.tax
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.taxedTotalPrice
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.time
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.updatedAt
+import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.userId
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -29,23 +46,6 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
-import repository.entity.generated.Orders
-import repository.mapper.generated.OrdersDynamicSqlSupport.chainId
-import repository.mapper.generated.OrdersDynamicSqlSupport.createdAt
-import repository.mapper.generated.OrdersDynamicSqlSupport.deliveryAddressId
-import repository.mapper.generated.OrdersDynamicSqlSupport.deliveryCharge
-import repository.mapper.generated.OrdersDynamicSqlSupport.deliveryMethodId
-import repository.mapper.generated.OrdersDynamicSqlSupport.deliveryType
-import repository.mapper.generated.OrdersDynamicSqlSupport.nonTaxedTotalPrice
-import repository.mapper.generated.OrdersDynamicSqlSupport.orderId
-import repository.mapper.generated.OrdersDynamicSqlSupport.orders
-import repository.mapper.generated.OrdersDynamicSqlSupport.paymentMethod
-import repository.mapper.generated.OrdersDynamicSqlSupport.shopId
-import repository.mapper.generated.OrdersDynamicSqlSupport.tax
-import repository.mapper.generated.OrdersDynamicSqlSupport.taxedTotalPrice
-import repository.mapper.generated.OrdersDynamicSqlSupport.time
-import repository.mapper.generated.OrdersDynamicSqlSupport.updatedAt
-import repository.mapper.generated.OrdersDynamicSqlSupport.userId
 
 @Mapper
 interface OrdersMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<Orders>, CommonUpdateMapper {

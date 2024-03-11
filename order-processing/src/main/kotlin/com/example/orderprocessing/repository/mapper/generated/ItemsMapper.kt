@@ -1,9 +1,19 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:10:07.202748+09:00
+ * Generation date: 2024-03-11T09:23:44.886827+09:00
  */
-package repository.mapper.generated
+package com.example.orderprocessing.repository.mapper.generated
 
+import com.example.orderprocessing.repository.entity.generated.Items
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.chainId
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.description
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.itemId
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.items
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.name
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.price
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.shopId
+import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.updatedAt
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -29,16 +39,6 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
-import repository.entity.generated.Items
-import repository.mapper.generated.ItemsDynamicSqlSupport.chainId
-import repository.mapper.generated.ItemsDynamicSqlSupport.createdAt
-import repository.mapper.generated.ItemsDynamicSqlSupport.description
-import repository.mapper.generated.ItemsDynamicSqlSupport.itemId
-import repository.mapper.generated.ItemsDynamicSqlSupport.items
-import repository.mapper.generated.ItemsDynamicSqlSupport.name
-import repository.mapper.generated.ItemsDynamicSqlSupport.price
-import repository.mapper.generated.ItemsDynamicSqlSupport.shopId
-import repository.mapper.generated.ItemsDynamicSqlSupport.updatedAt
 
 @Mapper
 interface ItemsMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<Items>, CommonUpdateMapper {

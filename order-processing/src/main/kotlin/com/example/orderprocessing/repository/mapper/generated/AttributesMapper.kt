@@ -1,9 +1,16 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:10:07.205044+09:00
+ * Generation date: 2024-03-11T09:23:44.88749+09:00
  */
-package repository.mapper.generated
+package com.example.orderprocessing.repository.mapper.generated
 
+import com.example.orderprocessing.repository.entity.generated.Attributes
+import com.example.orderprocessing.repository.mapper.generated.AttributesDynamicSqlSupport.attributeId
+import com.example.orderprocessing.repository.mapper.generated.AttributesDynamicSqlSupport.attributes
+import com.example.orderprocessing.repository.mapper.generated.AttributesDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.AttributesDynamicSqlSupport.name
+import com.example.orderprocessing.repository.mapper.generated.AttributesDynamicSqlSupport.updatedAt
+import com.example.orderprocessing.repository.mapper.generated.AttributesDynamicSqlSupport.value
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -29,13 +36,6 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
-import repository.entity.generated.Attributes
-import repository.mapper.generated.AttributesDynamicSqlSupport.attributeId
-import repository.mapper.generated.AttributesDynamicSqlSupport.attributes
-import repository.mapper.generated.AttributesDynamicSqlSupport.createdAt
-import repository.mapper.generated.AttributesDynamicSqlSupport.name
-import repository.mapper.generated.AttributesDynamicSqlSupport.updatedAt
-import repository.mapper.generated.AttributesDynamicSqlSupport.value
 
 @Mapper
 interface AttributesMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<Attributes>, CommonUpdateMapper {

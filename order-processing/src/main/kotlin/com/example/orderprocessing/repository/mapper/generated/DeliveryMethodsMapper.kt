@@ -1,9 +1,14 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:10:07.208333+09:00
+ * Generation date: 2024-03-11T09:23:44.888558+09:00
  */
-package repository.mapper.generated
+package com.example.orderprocessing.repository.mapper.generated
 
+import com.example.orderprocessing.repository.entity.generated.DeliveryMethods
+import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.deliveryMethods
+import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.name
+import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.updatedAt
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -29,11 +34,6 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
-import repository.entity.generated.DeliveryMethods
-import repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.createdAt
-import repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.deliveryMethods
-import repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.name
-import repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.updatedAt
 
 @Mapper
 interface DeliveryMethodsMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<DeliveryMethods>, CommonUpdateMapper {

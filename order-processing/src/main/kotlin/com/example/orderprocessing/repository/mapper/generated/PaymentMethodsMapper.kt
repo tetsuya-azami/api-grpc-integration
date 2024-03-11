@@ -1,9 +1,14 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:10:07.209033+09:00
+ * Generation date: 2024-03-11T09:23:44.888791+09:00
  */
-package repository.mapper.generated
+package com.example.orderprocessing.repository.mapper.generated
 
+import com.example.orderprocessing.repository.entity.generated.PaymentMethods
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsDynamicSqlSupport.name
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsDynamicSqlSupport.paymentMethods
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsDynamicSqlSupport.updatedAt
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -29,11 +34,6 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
-import repository.entity.generated.PaymentMethods
-import repository.mapper.generated.PaymentMethodsDynamicSqlSupport.createdAt
-import repository.mapper.generated.PaymentMethodsDynamicSqlSupport.name
-import repository.mapper.generated.PaymentMethodsDynamicSqlSupport.paymentMethods
-import repository.mapper.generated.PaymentMethodsDynamicSqlSupport.updatedAt
 
 @Mapper
 interface PaymentMethodsMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PaymentMethods>, CommonUpdateMapper {

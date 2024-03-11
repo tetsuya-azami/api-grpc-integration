@@ -8,8 +8,10 @@
                         userId="root"
                         password="root"/>
 
-        <javaModelGenerator targetPackage="repository.entity.generated" targetProject="src/main/java"/>
-        <javaClientGenerator targetPackage="repository.mapper.generated" targetProject="src/main/java"/>
+        <javaModelGenerator targetPackage="com.example.orderprocessing.repository.entity.generated"
+                            targetProject="src/main/kotlin"/>
+        <javaClientGenerator targetPackage="com.example.orderprocessing.repository.mapper.generated"
+                             targetProject="src/main/kotlin"/>
 
         <table tableName="orders" schema="test"/>
         <table tableName="items" schema="test"/>

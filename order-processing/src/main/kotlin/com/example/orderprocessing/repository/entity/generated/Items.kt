@@ -1,8 +1,8 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:10:07.202175+09:00
+ * Generation date: 2024-03-11T09:23:44.886683+09:00
  */
-package repository.entity.generated
+package com.example.orderprocessing.repository.entity.generated
 
 import java.util.Date
 
