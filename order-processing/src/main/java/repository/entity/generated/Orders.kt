@@ -1,6 +1,6 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T07:57:38.056354+09:00
+ * Generation date: 2024-03-11T09:10:07.194142+09:00
  */
 package repository.entity.generated
 
