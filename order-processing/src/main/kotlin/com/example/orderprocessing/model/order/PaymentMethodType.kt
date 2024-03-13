@@ -6,5 +6,11 @@ enum class PaymentMethodType {
     PAYPAY,
     AMAZONPAY,
     GOOGLEPAY,
-    APPLEPAY
+    APPLEPAY;
+
+    companion object {
+        fun fromString(value: String): PaymentMethodType {
+            return entries.first { it.name == value.uppercase() }
+        }
+    }
 }
