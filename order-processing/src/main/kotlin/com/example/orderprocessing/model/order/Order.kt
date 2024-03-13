@@ -20,42 +20,22 @@ class Order private constructor(
 
     companion object {
         fun fromOrderCreationRequest(request: OrderOuterClass.OrderCreationRequest): Order {
-            val orderItems = request.order.itemsList.map { item ->
-                val attributes = item.attributesList.map { attribute -> OrderItemAttribute(attribute.id) }
-
-                OrderItem(
-                    itemId = item.id,
-                    price = item.price.toLong(),
-                    quantity = item.quantity,
-                    attributes = attributes
-                )
-            }
-            val delivery = Delivery(
-                type = DeliveryType.fromString(request.order.delivery.type.name),
-                addressId = request.order.delivery.addressId
-            )
-            val user = User(
-                userId = request.order.user.id,
-                blackLevel = BlackLevel.fromString(request.order.user.blackLevel.name)
-            )
-            val payment = Payment(
-                paymentMethodType = PaymentMethodType.fromString(request.order.payment.paymentMethod.name),
-                deliveryCharge = request.order.payment.deliveryCharge,
-                nonTaxedTotalPrice = request.order.payment.nonTaxedTotalPrice,
-                tax = request.order.payment.tax,
-                taxedTotalPrice = request.order.payment.taxedTotalPrice
-            )
+            val order = request.order
+            val orderItems = OrderItem.fromOrderCreationRequest(order)
+            val delivery = Delivery.fromOrderCreationRequest(order)
+            val user = User.fromOrderCreationRequest(order)
+            val payment = Payment.fromOrderCreationRequest(order)
 
             return Order(
                 orderItems = orderItems,
-                chainId = request.order.chain.id,
-                shopId = request.order.shop.id,
+                chainId = order.chain.id,
+                shopId = order.shop.id,
                 delivery = delivery,
                 user = user,
                 payment = payment,
                 time = LocalDateTime.ofEpochSecond(
-                    request.order.time.seconds,
-                    request.order.time.nanos,
+                    order.time.seconds,
+                    order.time.nanos,
                     ZoneOffset.of("+09:00")
                 )
             )
