@@ -11,9 +11,8 @@ import net.devh.boot.grpc.server.service.GrpcService
 class OrderController(private val createOrder: CreateOrder) : OrderServiceGrpcKt.OrderServiceCoroutineImplBase() {
     override suspend fun createOrder(request: OrderOuterClass.OrderCreationRequest): OrderOuterClass.OrderCreationResponse {
         val order = Order.fromOrderCreationRequest(request)
-        createOrder.execute(order)
+        val orderId = createOrder.execute(order)
 
-        // TODO: 作成したorderのIDを返す
-        return OrderOuterClass.OrderCreationResponse.newBuilder().setId(1).build()
+        return OrderOuterClass.OrderCreationResponse.newBuilder().setId(orderId.value).build()
     }
 }

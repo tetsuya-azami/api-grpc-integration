@@ -8,7 +8,7 @@ import java.time.ZoneOffset
  * 注文エンティティ
  */
 class Order private constructor(
-    private val orderId: Long = 0L,
+    private val orderId: OrderId = OrderId(0),
     private val orderItems: List<OrderItem>,
     private val chainId: Long,
     private val shopId: Long,
