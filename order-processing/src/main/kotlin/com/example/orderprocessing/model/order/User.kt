@@ -3,8 +3,8 @@ package com.example.orderprocessing.model.order
 import com.example.grpcinterface.proto.OrderOuterClass
 
 data class User(
-    private val userId: Long,
-    private val blackLevel: BlackLevel
+    val userId: Long,
+    val blackLevel: BlackLevel
 ) {
     companion object {
         fun fromOrderCreationRequest(order: OrderOuterClass.Order): User {

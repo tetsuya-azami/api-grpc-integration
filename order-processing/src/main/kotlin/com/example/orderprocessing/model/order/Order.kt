@@ -8,14 +8,14 @@ import java.time.ZoneOffset
  * 注文エンティティ
  */
 class Order private constructor(
-    private val orderId: OrderId = OrderId(0),
-    private val orderItems: List<OrderItem>,
-    private val chainId: Long,
-    private val shopId: Long,
-    private val delivery: Delivery,
-    private val user: User,
-    private val payment: Payment,
-    private val time: LocalDateTime
+    val orderId: OrderId = OrderId(0),
+    val orderItems: List<OrderItem>,
+    val chainId: Long,
+    val shopId: Long,
+    val delivery: Delivery,
+    val user: User,
+    val payment: Payment,
+    val time: LocalDateTime
 ) {
 
     companion object {
