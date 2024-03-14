@@ -1,6 +1,5 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:23:44.881149+09:00
  */
 package com.example.orderprocessing.repository.mapper.generated
 
@@ -9,7 +8,6 @@ import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlS
 import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.createdAt
 import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryAddressId
 import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryCharge
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryMethodId
 import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryType
 import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.nonTaxedTotalPrice
 import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.orderId
@@ -51,14 +49,13 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 interface OrdersMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<Orders>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @Results(id="OrdersResult", value = [
-        Result(column="order_id", property="orderId", jdbcType=JdbcType.INTEGER, id=true),
-        Result(column="chain_id", property="chainId", jdbcType=JdbcType.INTEGER),
-        Result(column="shop_id", property="shopId", jdbcType=JdbcType.INTEGER),
-        Result(column="user_id", property="userId", jdbcType=JdbcType.INTEGER),
+        Result(column="order_id", property="orderId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="chain_id", property="chainId", jdbcType=JdbcType.BIGINT),
+        Result(column="shop_id", property="shopId", jdbcType=JdbcType.BIGINT),
+        Result(column="user_id", property="userId", jdbcType=JdbcType.BIGINT),
         Result(column="payment_method", property="paymentMethod", jdbcType=JdbcType.VARCHAR),
-        Result(column="delivery_address_id", property="deliveryAddressId", jdbcType=JdbcType.INTEGER),
+        Result(column="delivery_address_id", property="deliveryAddressId", jdbcType=JdbcType.BIGINT),
         Result(column="delivery_type", property="deliveryType", jdbcType=JdbcType.VARCHAR),
-        Result(column="delivery_method_id", property="deliveryMethodId", jdbcType=JdbcType.INTEGER),
         Result(column="delivery_charge", property="deliveryCharge", jdbcType=JdbcType.DECIMAL),
         Result(column="non_taxed_total_price", property="nonTaxedTotalPrice", jdbcType=JdbcType.DECIMAL),
         Result(column="tax", property="tax", jdbcType=JdbcType.DECIMAL),
@@ -80,7 +77,7 @@ fun OrdersMapper.count(completer: CountCompleter) =
 fun OrdersMapper.delete(completer: DeleteCompleter) =
     deleteFrom(this::delete, orders, completer)
 
-fun OrdersMapper.deleteByPrimaryKey(orderId_: Int) =
+fun OrdersMapper.deleteByPrimaryKey(orderId_: Long) =
     delete {
         where { orderId isEqualTo orderId_ }
     }
@@ -94,7 +91,6 @@ fun OrdersMapper.insert(row: Orders) =
         map(paymentMethod) toProperty "paymentMethod"
         map(deliveryAddressId) toProperty "deliveryAddressId"
         map(deliveryType) toProperty "deliveryType"
-        map(deliveryMethodId) toProperty "deliveryMethodId"
         map(deliveryCharge) toProperty "deliveryCharge"
         map(nonTaxedTotalPrice) toProperty "nonTaxedTotalPrice"
         map(tax) toProperty "tax"
@@ -113,7 +109,6 @@ fun OrdersMapper.insertMultiple(records: Collection<Orders>) =
         map(paymentMethod) toProperty "paymentMethod"
         map(deliveryAddressId) toProperty "deliveryAddressId"
         map(deliveryType) toProperty "deliveryType"
-        map(deliveryMethodId) toProperty "deliveryMethodId"
         map(deliveryCharge) toProperty "deliveryCharge"
         map(nonTaxedTotalPrice) toProperty "nonTaxedTotalPrice"
         map(tax) toProperty "tax"
@@ -135,7 +130,6 @@ fun OrdersMapper.insertSelective(row: Orders) =
         map(paymentMethod).toPropertyWhenPresent("paymentMethod", row::paymentMethod)
         map(deliveryAddressId).toPropertyWhenPresent("deliveryAddressId", row::deliveryAddressId)
         map(deliveryType).toPropertyWhenPresent("deliveryType", row::deliveryType)
-        map(deliveryMethodId).toPropertyWhenPresent("deliveryMethodId", row::deliveryMethodId)
         map(deliveryCharge).toPropertyWhenPresent("deliveryCharge", row::deliveryCharge)
         map(nonTaxedTotalPrice).toPropertyWhenPresent("nonTaxedTotalPrice", row::nonTaxedTotalPrice)
         map(tax).toPropertyWhenPresent("tax", row::tax)
@@ -145,7 +139,7 @@ fun OrdersMapper.insertSelective(row: Orders) =
         map(updatedAt).toPropertyWhenPresent("updatedAt", row::updatedAt)
     }
 
-private val columnList = listOf(orderId, chainId, shopId, userId, paymentMethod, deliveryAddressId, deliveryType, deliveryMethodId, deliveryCharge, nonTaxedTotalPrice, tax, taxedTotalPrice, time, createdAt, updatedAt)
+private val columnList = listOf(orderId, chainId, shopId, userId, paymentMethod, deliveryAddressId, deliveryType, deliveryCharge, nonTaxedTotalPrice, tax, taxedTotalPrice, time, createdAt, updatedAt)
 
 fun OrdersMapper.selectOne(completer: SelectCompleter) =
     selectOne(this::selectOne, columnList, orders, completer)
@@ -156,7 +150,7 @@ fun OrdersMapper.select(completer: SelectCompleter) =
 fun OrdersMapper.selectDistinct(completer: SelectCompleter) =
     selectDistinct(this::selectMany, columnList, orders, completer)
 
-fun OrdersMapper.selectByPrimaryKey(orderId_: Int) =
+fun OrdersMapper.selectByPrimaryKey(orderId_: Long) =
     selectOne {
         where { orderId isEqualTo orderId_ }
     }
@@ -173,7 +167,6 @@ fun KotlinUpdateBuilder.updateAllColumns(row: Orders) =
         set(paymentMethod) equalToOrNull row::paymentMethod
         set(deliveryAddressId) equalToOrNull row::deliveryAddressId
         set(deliveryType) equalToOrNull row::deliveryType
-        set(deliveryMethodId) equalToOrNull row::deliveryMethodId
         set(deliveryCharge) equalToOrNull row::deliveryCharge
         set(nonTaxedTotalPrice) equalToOrNull row::nonTaxedTotalPrice
         set(tax) equalToOrNull row::tax
@@ -192,7 +185,6 @@ fun KotlinUpdateBuilder.updateSelectiveColumns(row: Orders) =
         set(paymentMethod) equalToWhenPresent row::paymentMethod
         set(deliveryAddressId) equalToWhenPresent row::deliveryAddressId
         set(deliveryType) equalToWhenPresent row::deliveryType
-        set(deliveryMethodId) equalToWhenPresent row::deliveryMethodId
         set(deliveryCharge) equalToWhenPresent row::deliveryCharge
         set(nonTaxedTotalPrice) equalToWhenPresent row::nonTaxedTotalPrice
         set(tax) equalToWhenPresent row::tax
@@ -210,7 +202,6 @@ fun OrdersMapper.updateByPrimaryKey(row: Orders) =
         set(paymentMethod) equalToOrNull row::paymentMethod
         set(deliveryAddressId) equalToOrNull row::deliveryAddressId
         set(deliveryType) equalToOrNull row::deliveryType
-        set(deliveryMethodId) equalToOrNull row::deliveryMethodId
         set(deliveryCharge) equalToOrNull row::deliveryCharge
         set(nonTaxedTotalPrice) equalToOrNull row::nonTaxedTotalPrice
         set(tax) equalToOrNull row::tax
@@ -229,7 +220,6 @@ fun OrdersMapper.updateByPrimaryKeySelective(row: Orders) =
         set(paymentMethod) equalToWhenPresent row::paymentMethod
         set(deliveryAddressId) equalToWhenPresent row::deliveryAddressId
         set(deliveryType) equalToWhenPresent row::deliveryType
-        set(deliveryMethodId) equalToWhenPresent row::deliveryMethodId
         set(deliveryCharge) equalToWhenPresent row::deliveryCharge
         set(nonTaxedTotalPrice) equalToWhenPresent row::nonTaxedTotalPrice
         set(tax) equalToWhenPresent row::tax

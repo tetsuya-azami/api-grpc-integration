@@ -1,6 +1,5 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:23:44.886827+09:00
  */
 package com.example.orderprocessing.repository.mapper.generated
 
@@ -44,9 +43,9 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 interface ItemsMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<Items>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @Results(id="ItemsResult", value = [
-        Result(column="item_id", property="itemId", jdbcType=JdbcType.INTEGER, id=true),
-        Result(column="chain_id", property="chainId", jdbcType=JdbcType.INTEGER),
-        Result(column="shop_id", property="shopId", jdbcType=JdbcType.INTEGER),
+        Result(column="item_id", property="itemId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="chain_id", property="chainId", jdbcType=JdbcType.BIGINT),
+        Result(column="shop_id", property="shopId", jdbcType=JdbcType.BIGINT),
         Result(column="name", property="name", jdbcType=JdbcType.VARCHAR),
         Result(column="price", property="price", jdbcType=JdbcType.DECIMAL),
         Result(column="description", property="description", jdbcType=JdbcType.VARCHAR),
@@ -66,7 +65,7 @@ fun ItemsMapper.count(completer: CountCompleter) =
 fun ItemsMapper.delete(completer: DeleteCompleter) =
     deleteFrom(this::delete, items, completer)
 
-fun ItemsMapper.deleteByPrimaryKey(itemId_: Int) =
+fun ItemsMapper.deleteByPrimaryKey(itemId_: Long) =
     delete {
         where { itemId isEqualTo itemId_ }
     }
@@ -121,7 +120,7 @@ fun ItemsMapper.select(completer: SelectCompleter) =
 fun ItemsMapper.selectDistinct(completer: SelectCompleter) =
     selectDistinct(this::selectMany, columnList, items, completer)
 
-fun ItemsMapper.selectByPrimaryKey(itemId_: Int) =
+fun ItemsMapper.selectByPrimaryKey(itemId_: Long) =
     selectOne {
         where { itemId isEqualTo itemId_ }
     }

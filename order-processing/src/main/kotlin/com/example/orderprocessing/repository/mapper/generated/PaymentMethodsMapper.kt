@@ -1,6 +1,5 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:23:44.888791+09:00
  */
 package com.example.orderprocessing.repository.mapper.generated
 

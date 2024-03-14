@@ -1,6 +1,5 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:23:44.888034+09:00
  */
 package com.example.orderprocessing.repository.mapper.generated
 
@@ -41,9 +40,9 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 interface OrderItemAttributesMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<OrderItemAttributes>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @Results(id="OrderItemAttributesResult", value = [
-        Result(column="order_id", property="orderId", jdbcType=JdbcType.INTEGER, id=true),
-        Result(column="item_id", property="itemId", jdbcType=JdbcType.INTEGER, id=true),
-        Result(column="attribute_id", property="attributeId", jdbcType=JdbcType.INTEGER, id=true),
+        Result(column="order_id", property="orderId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="item_id", property="itemId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="attribute_id", property="attributeId", jdbcType=JdbcType.BIGINT, id=true),
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
@@ -60,7 +59,7 @@ fun OrderItemAttributesMapper.count(completer: CountCompleter) =
 fun OrderItemAttributesMapper.delete(completer: DeleteCompleter) =
     deleteFrom(this::delete, orderItemAttributes, completer)
 
-fun OrderItemAttributesMapper.deleteByPrimaryKey(orderId_: Int, itemId_: Int, attributeId_: Int) =
+fun OrderItemAttributesMapper.deleteByPrimaryKey(orderId_: Long, itemId_: Long, attributeId_: Long) =
     delete {
         where {
             orderId isEqualTo orderId_
@@ -110,7 +109,7 @@ fun OrderItemAttributesMapper.select(completer: SelectCompleter) =
 fun OrderItemAttributesMapper.selectDistinct(completer: SelectCompleter) =
     selectDistinct(this::selectMany, columnList, orderItemAttributes, completer)
 
-fun OrderItemAttributesMapper.selectByPrimaryKey(orderId_: Int, itemId_: Int, attributeId_: Int) =
+fun OrderItemAttributesMapper.selectByPrimaryKey(orderId_: Long, itemId_: Long, attributeId_: Long) =
     selectOne {
         where {
             orderId isEqualTo orderId_

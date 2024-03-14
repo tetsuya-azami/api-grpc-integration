@@ -1,11 +1,10 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-11T09:23:44.880393+09:00
  */
 package com.example.orderprocessing.repository.mapper.generated
 
 import java.sql.JDBCType
-import java.util.Date
+import java.time.LocalDateTime
 import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
@@ -26,8 +25,6 @@ object OrdersDynamicSqlSupport {
 
     val deliveryType = orders.deliveryType
 
-    val deliveryMethodId = orders.deliveryMethodId
-
     val deliveryCharge = orders.deliveryCharge
 
     val nonTaxedTotalPrice = orders.nonTaxedTotalPrice
@@ -43,21 +40,19 @@ object OrdersDynamicSqlSupport {
     val updatedAt = orders.updatedAt
 
     class Orders : AliasableSqlTable<Orders>("orders", ::Orders) {
-        val orderId = column<Int>(name = "order_id", jdbcType = JDBCType.INTEGER)
+        val orderId = column<Long>(name = "order_id", jdbcType = JDBCType.BIGINT)
 
-        val chainId = column<Int>(name = "chain_id", jdbcType = JDBCType.INTEGER)
+        val chainId = column<Long>(name = "chain_id", jdbcType = JDBCType.BIGINT)
 
-        val shopId = column<Int>(name = "shop_id", jdbcType = JDBCType.INTEGER)
+        val shopId = column<Long>(name = "shop_id", jdbcType = JDBCType.BIGINT)
 
-        val userId = column<Int>(name = "user_id", jdbcType = JDBCType.INTEGER)
+        val userId = column<Long>(name = "user_id", jdbcType = JDBCType.BIGINT)
 
         val paymentMethod = column<String>(name = "payment_method", jdbcType = JDBCType.VARCHAR)
 
-        val deliveryAddressId = column<Int>(name = "delivery_address_id", jdbcType = JDBCType.INTEGER)
+        val deliveryAddressId = column<Long>(name = "delivery_address_id", jdbcType = JDBCType.BIGINT)
 
         val deliveryType = column<String>(name = "delivery_type", jdbcType = JDBCType.VARCHAR)
-
-        val deliveryMethodId = column<Int>(name = "delivery_method_id", jdbcType = JDBCType.INTEGER)
 
         val deliveryCharge = column<Long>(name = "delivery_charge", jdbcType = JDBCType.DECIMAL)
 
@@ -67,10 +62,10 @@ object OrdersDynamicSqlSupport {
 
         val taxedTotalPrice = column<Long>(name = "taxed_total_price", jdbcType = JDBCType.DECIMAL)
 
-        val time = column<Date>(name = "time", jdbcType = JDBCType.TIMESTAMP)
+        val time = column<LocalDateTime>(name = "time", jdbcType = JDBCType.TIMESTAMP)
 
-        val createdAt = column<Date>(name = "created_at", jdbcType = JDBCType.TIMESTAMP)
+        val createdAt = column<LocalDateTime>(name = "created_at", jdbcType = JDBCType.TIMESTAMP)
 
-        val updatedAt = column<Date>(name = "updated_at", jdbcType = JDBCType.TIMESTAMP)
+        val updatedAt = column<LocalDateTime>(name = "updated_at", jdbcType = JDBCType.TIMESTAMP)
     }
 }
