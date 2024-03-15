@@ -19,12 +19,26 @@
         <javaClientGenerator targetPackage="com.example.orderprocessing.repository.mapper.generated"
                              targetProject="src/main/kotlin"/>
 
-        <table tableName="orders" schema="test"/>
-        <table tableName="items" schema="test"/>
-        <table tableName="order_items" schema="test"/>
-        <table tableName="attributes" schema="test"/>
-        <table tableName="item_attributes" schema="test"/>
-        <table tableName="order_item_attributes" schema="test"/>
-        <table tableName="payment_methods" schema="test"/>
+        <table tableName="orders" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
+        <table tableName="items" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
+        <table tableName="order_items" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
+        <table tableName="attributes" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
+        <table tableName="item_attributes" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
+        <table tableName="order_item_attributes" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
+        <table tableName="payment_methods" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
     </context>
 </generatorConfiguration>
