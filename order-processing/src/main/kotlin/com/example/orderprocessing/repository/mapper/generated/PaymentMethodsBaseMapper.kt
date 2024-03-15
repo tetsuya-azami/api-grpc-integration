@@ -1,14 +1,13 @@
 /*
  * Auto-generated file. Created by MyBatis Generator
- * Generation date: 2024-03-14T08:47:24.857819+09:00
  */
 package com.example.orderprocessing.repository.mapper.generated
 
-import com.example.orderprocessing.repository.entity.generated.DeliveryMethods
-import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.createdAt
-import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.deliveryMethods
-import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.name
-import com.example.orderprocessing.repository.mapper.generated.DeliveryMethodsDynamicSqlSupport.updatedAt
+import com.example.orderprocessing.repository.entity.generated.PaymentMethodsBase
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsBaseDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsBaseDynamicSqlSupport.name
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsBaseDynamicSqlSupport.paymentMethodsBase
+import com.example.orderprocessing.repository.mapper.generated.PaymentMethodsBaseDynamicSqlSupport.updatedAt
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -36,50 +35,50 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
-interface DeliveryMethodsMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<DeliveryMethods>, CommonUpdateMapper {
+interface PaymentMethodsBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PaymentMethodsBase>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @Results(id="DeliveryMethodsResult", value = [
+    @Results(id="PaymentMethodsBaseResult", value = [
         Result(column="name", property="name", jdbcType=JdbcType.VARCHAR, id=true),
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
-    fun selectMany(selectStatement: SelectStatementProvider): List<DeliveryMethods>
+    fun selectMany(selectStatement: SelectStatementProvider): List<PaymentMethodsBase>
 
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @ResultMap("DeliveryMethodsResult")
-    fun selectOne(selectStatement: SelectStatementProvider): DeliveryMethods?
+    @ResultMap("PaymentMethodsBaseResult")
+    fun selectOne(selectStatement: SelectStatementProvider): PaymentMethodsBase?
 }
 
-fun DeliveryMethodsMapper.count(completer: CountCompleter) =
-    countFrom(this::count, deliveryMethods, completer)
+fun PaymentMethodsBaseMapper.count(completer: CountCompleter) =
+    countFrom(this::count, paymentMethodsBase, completer)
 
-fun DeliveryMethodsMapper.delete(completer: DeleteCompleter) =
-    deleteFrom(this::delete, deliveryMethods, completer)
+fun PaymentMethodsBaseMapper.delete(completer: DeleteCompleter) =
+    deleteFrom(this::delete, paymentMethodsBase, completer)
 
-fun DeliveryMethodsMapper.deleteByPrimaryKey(name_: String) =
+fun PaymentMethodsBaseMapper.deleteByPrimaryKey(name_: String) =
     delete {
         where { name isEqualTo name_ }
     }
 
-fun DeliveryMethodsMapper.insert(row: DeliveryMethods) =
-    insert(this::insert, row, deliveryMethods) {
+fun PaymentMethodsBaseMapper.insert(row: PaymentMethodsBase) =
+    insert(this::insert, row, paymentMethodsBase) {
         map(name) toProperty "name"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun DeliveryMethodsMapper.insertMultiple(records: Collection<DeliveryMethods>) =
-    insertMultiple(this::insertMultiple, records, deliveryMethods) {
+fun PaymentMethodsBaseMapper.insertMultiple(records: Collection<PaymentMethodsBase>) =
+    insertMultiple(this::insertMultiple, records, paymentMethodsBase) {
         map(name) toProperty "name"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun DeliveryMethodsMapper.insertMultiple(vararg records: DeliveryMethods) =
+fun PaymentMethodsBaseMapper.insertMultiple(vararg records: PaymentMethodsBase) =
     insertMultiple(records.toList())
 
-fun DeliveryMethodsMapper.insertSelective(row: DeliveryMethods) =
-    insert(this::insert, row, deliveryMethods) {
+fun PaymentMethodsBaseMapper.insertSelective(row: PaymentMethodsBase) =
+    insert(this::insert, row, paymentMethodsBase) {
         map(name).toPropertyWhenPresent("name", row::name)
         map(createdAt).toPropertyWhenPresent("createdAt", row::createdAt)
         map(updatedAt).toPropertyWhenPresent("updatedAt", row::updatedAt)
@@ -87,45 +86,45 @@ fun DeliveryMethodsMapper.insertSelective(row: DeliveryMethods) =
 
 private val columnList = listOf(name, createdAt, updatedAt)
 
-fun DeliveryMethodsMapper.selectOne(completer: SelectCompleter) =
-    selectOne(this::selectOne, columnList, deliveryMethods, completer)
+fun PaymentMethodsBaseMapper.selectOne(completer: SelectCompleter) =
+    selectOne(this::selectOne, columnList, paymentMethodsBase, completer)
 
-fun DeliveryMethodsMapper.select(completer: SelectCompleter) =
-    selectList(this::selectMany, columnList, deliveryMethods, completer)
+fun PaymentMethodsBaseMapper.select(completer: SelectCompleter) =
+    selectList(this::selectMany, columnList, paymentMethodsBase, completer)
 
-fun DeliveryMethodsMapper.selectDistinct(completer: SelectCompleter) =
-    selectDistinct(this::selectMany, columnList, deliveryMethods, completer)
+fun PaymentMethodsBaseMapper.selectDistinct(completer: SelectCompleter) =
+    selectDistinct(this::selectMany, columnList, paymentMethodsBase, completer)
 
-fun DeliveryMethodsMapper.selectByPrimaryKey(name_: String) =
+fun PaymentMethodsBaseMapper.selectByPrimaryKey(name_: String) =
     selectOne {
         where { name isEqualTo name_ }
     }
 
-fun DeliveryMethodsMapper.update(completer: UpdateCompleter) =
-    update(this::update, deliveryMethods, completer)
+fun PaymentMethodsBaseMapper.update(completer: UpdateCompleter) =
+    update(this::update, paymentMethodsBase, completer)
 
-fun KotlinUpdateBuilder.updateAllColumns(row: DeliveryMethods) =
+fun KotlinUpdateBuilder.updateAllColumns(row: PaymentMethodsBase) =
     apply {
         set(name) equalToOrNull row::name
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
     }
 
-fun KotlinUpdateBuilder.updateSelectiveColumns(row: DeliveryMethods) =
+fun KotlinUpdateBuilder.updateSelectiveColumns(row: PaymentMethodsBase) =
     apply {
         set(name) equalToWhenPresent row::name
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt
     }
 
-fun DeliveryMethodsMapper.updateByPrimaryKey(row: DeliveryMethods) =
+fun PaymentMethodsBaseMapper.updateByPrimaryKey(row: PaymentMethodsBase) =
     update {
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
         where { name isEqualTo row.name!! }
     }
 
-fun DeliveryMethodsMapper.updateByPrimaryKeySelective(row: DeliveryMethods) =
+fun PaymentMethodsBaseMapper.updateByPrimaryKeySelective(row: PaymentMethodsBase) =
     update {
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt

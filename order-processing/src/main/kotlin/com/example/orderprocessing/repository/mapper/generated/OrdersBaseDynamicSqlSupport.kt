@@ -8,38 +8,38 @@ import java.time.LocalDateTime
 import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
-object OrdersDynamicSqlSupport {
-    val orders = Orders()
+object OrdersBaseDynamicSqlSupport {
+    val ordersBase = OrdersBase()
 
-    val orderId = orders.orderId
+    val orderId = ordersBase.orderId
 
-    val chainId = orders.chainId
+    val chainId = ordersBase.chainId
 
-    val shopId = orders.shopId
+    val shopId = ordersBase.shopId
 
-    val userId = orders.userId
+    val userId = ordersBase.userId
 
-    val paymentMethod = orders.paymentMethod
+    val paymentMethod = ordersBase.paymentMethod
 
-    val deliveryAddressId = orders.deliveryAddressId
+    val deliveryAddressId = ordersBase.deliveryAddressId
 
-    val deliveryType = orders.deliveryType
+    val deliveryType = ordersBase.deliveryType
 
-    val deliveryCharge = orders.deliveryCharge
+    val deliveryCharge = ordersBase.deliveryCharge
 
-    val nonTaxedTotalPrice = orders.nonTaxedTotalPrice
+    val nonTaxedTotalPrice = ordersBase.nonTaxedTotalPrice
 
-    val tax = orders.tax
+    val tax = ordersBase.tax
 
-    val taxedTotalPrice = orders.taxedTotalPrice
+    val taxedTotalPrice = ordersBase.taxedTotalPrice
 
-    val time = orders.time
+    val time = ordersBase.time
 
-    val createdAt = orders.createdAt
+    val createdAt = ordersBase.createdAt
 
-    val updatedAt = orders.updatedAt
+    val updatedAt = ordersBase.updatedAt
 
-    class Orders : AliasableSqlTable<Orders>("orders", ::Orders) {
+    class OrdersBase : AliasableSqlTable<OrdersBase>("orders", ::OrdersBase) {
         val orderId = column<Long>(name = "order_id", jdbcType = JDBCType.BIGINT)
 
         val chainId = column<Long>(name = "chain_id", jdbcType = JDBCType.BIGINT)

@@ -8,16 +8,16 @@ import java.time.LocalDateTime
 import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
-object PaymentMethodsDynamicSqlSupport {
-    val paymentMethods = PaymentMethods()
+object PaymentMethodsBaseDynamicSqlSupport {
+    val paymentMethodsBase = PaymentMethodsBase()
 
-    val name = paymentMethods.name
+    val name = paymentMethodsBase.name
 
-    val createdAt = paymentMethods.createdAt
+    val createdAt = paymentMethodsBase.createdAt
 
-    val updatedAt = paymentMethods.updatedAt
+    val updatedAt = paymentMethodsBase.updatedAt
 
-    class PaymentMethods : AliasableSqlTable<PaymentMethods>("payment_methods", ::PaymentMethods) {
+    class PaymentMethodsBase : AliasableSqlTable<PaymentMethodsBase>("payment_methods", ::PaymentMethodsBase) {
         val name = column<String>(name = "name", jdbcType = JDBCType.VARCHAR)
 
         val createdAt = column<LocalDateTime>(name = "created_at", jdbcType = JDBCType.TIMESTAMP)

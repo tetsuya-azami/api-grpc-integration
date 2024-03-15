@@ -3,22 +3,22 @@
  */
 package com.example.orderprocessing.repository.mapper.generated
 
-import com.example.orderprocessing.repository.entity.generated.Orders
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.chainId
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.createdAt
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryAddressId
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryCharge
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.deliveryType
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.nonTaxedTotalPrice
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.orderId
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.orders
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.paymentMethod
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.shopId
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.tax
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.taxedTotalPrice
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.time
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.updatedAt
-import com.example.orderprocessing.repository.mapper.generated.OrdersDynamicSqlSupport.userId
+import com.example.orderprocessing.repository.entity.generated.OrdersBase
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.chainId
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.deliveryAddressId
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.deliveryCharge
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.deliveryType
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.nonTaxedTotalPrice
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.orderId
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.ordersBase
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.paymentMethod
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.shopId
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.tax
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.taxedTotalPrice
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.time
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.updatedAt
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseDynamicSqlSupport.userId
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -46,9 +46,9 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
-interface OrdersMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<Orders>, CommonUpdateMapper {
+interface OrdersBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<OrdersBase>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @Results(id="OrdersResult", value = [
+    @Results(id="OrdersBaseResult", value = [
         Result(column="order_id", property="orderId", jdbcType=JdbcType.BIGINT, id=true),
         Result(column="chain_id", property="chainId", jdbcType=JdbcType.BIGINT),
         Result(column="shop_id", property="shopId", jdbcType=JdbcType.BIGINT),
@@ -64,26 +64,26 @@ interface OrdersMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapp
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
-    fun selectMany(selectStatement: SelectStatementProvider): List<Orders>
+    fun selectMany(selectStatement: SelectStatementProvider): List<OrdersBase>
 
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @ResultMap("OrdersResult")
-    fun selectOne(selectStatement: SelectStatementProvider): Orders?
+    @ResultMap("OrdersBaseResult")
+    fun selectOne(selectStatement: SelectStatementProvider): OrdersBase?
 }
 
-fun OrdersMapper.count(completer: CountCompleter) =
-    countFrom(this::count, orders, completer)
+fun OrdersBaseMapper.count(completer: CountCompleter) =
+    countFrom(this::count, ordersBase, completer)
 
-fun OrdersMapper.delete(completer: DeleteCompleter) =
-    deleteFrom(this::delete, orders, completer)
+fun OrdersBaseMapper.delete(completer: DeleteCompleter) =
+    deleteFrom(this::delete, ordersBase, completer)
 
-fun OrdersMapper.deleteByPrimaryKey(orderId_: Long) =
+fun OrdersBaseMapper.deleteByPrimaryKey(orderId_: Long) =
     delete {
         where { orderId isEqualTo orderId_ }
     }
 
-fun OrdersMapper.insert(row: Orders) =
-    insert(this::insert, row, orders) {
+fun OrdersBaseMapper.insert(row: OrdersBase) =
+    insert(this::insert, row, ordersBase) {
         map(orderId) toProperty "orderId"
         map(chainId) toProperty "chainId"
         map(shopId) toProperty "shopId"
@@ -100,8 +100,8 @@ fun OrdersMapper.insert(row: Orders) =
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun OrdersMapper.insertMultiple(records: Collection<Orders>) =
-    insertMultiple(this::insertMultiple, records, orders) {
+fun OrdersBaseMapper.insertMultiple(records: Collection<OrdersBase>) =
+    insertMultiple(this::insertMultiple, records, ordersBase) {
         map(orderId) toProperty "orderId"
         map(chainId) toProperty "chainId"
         map(shopId) toProperty "shopId"
@@ -118,11 +118,11 @@ fun OrdersMapper.insertMultiple(records: Collection<Orders>) =
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun OrdersMapper.insertMultiple(vararg records: Orders) =
+fun OrdersBaseMapper.insertMultiple(vararg records: OrdersBase) =
     insertMultiple(records.toList())
 
-fun OrdersMapper.insertSelective(row: Orders) =
-    insert(this::insert, row, orders) {
+fun OrdersBaseMapper.insertSelective(row: OrdersBase) =
+    insert(this::insert, row, ordersBase) {
         map(orderId).toPropertyWhenPresent("orderId", row::orderId)
         map(chainId).toPropertyWhenPresent("chainId", row::chainId)
         map(shopId).toPropertyWhenPresent("shopId", row::shopId)
@@ -141,24 +141,24 @@ fun OrdersMapper.insertSelective(row: Orders) =
 
 private val columnList = listOf(orderId, chainId, shopId, userId, paymentMethod, deliveryAddressId, deliveryType, deliveryCharge, nonTaxedTotalPrice, tax, taxedTotalPrice, time, createdAt, updatedAt)
 
-fun OrdersMapper.selectOne(completer: SelectCompleter) =
-    selectOne(this::selectOne, columnList, orders, completer)
+fun OrdersBaseMapper.selectOne(completer: SelectCompleter) =
+    selectOne(this::selectOne, columnList, ordersBase, completer)
 
-fun OrdersMapper.select(completer: SelectCompleter) =
-    selectList(this::selectMany, columnList, orders, completer)
+fun OrdersBaseMapper.select(completer: SelectCompleter) =
+    selectList(this::selectMany, columnList, ordersBase, completer)
 
-fun OrdersMapper.selectDistinct(completer: SelectCompleter) =
-    selectDistinct(this::selectMany, columnList, orders, completer)
+fun OrdersBaseMapper.selectDistinct(completer: SelectCompleter) =
+    selectDistinct(this::selectMany, columnList, ordersBase, completer)
 
-fun OrdersMapper.selectByPrimaryKey(orderId_: Long) =
+fun OrdersBaseMapper.selectByPrimaryKey(orderId_: Long) =
     selectOne {
         where { orderId isEqualTo orderId_ }
     }
 
-fun OrdersMapper.update(completer: UpdateCompleter) =
-    update(this::update, orders, completer)
+fun OrdersBaseMapper.update(completer: UpdateCompleter) =
+    update(this::update, ordersBase, completer)
 
-fun KotlinUpdateBuilder.updateAllColumns(row: Orders) =
+fun KotlinUpdateBuilder.updateAllColumns(row: OrdersBase) =
     apply {
         set(orderId) equalToOrNull row::orderId
         set(chainId) equalToOrNull row::chainId
@@ -176,7 +176,7 @@ fun KotlinUpdateBuilder.updateAllColumns(row: Orders) =
         set(updatedAt) equalToOrNull row::updatedAt
     }
 
-fun KotlinUpdateBuilder.updateSelectiveColumns(row: Orders) =
+fun KotlinUpdateBuilder.updateSelectiveColumns(row: OrdersBase) =
     apply {
         set(orderId) equalToWhenPresent row::orderId
         set(chainId) equalToWhenPresent row::chainId
@@ -194,7 +194,7 @@ fun KotlinUpdateBuilder.updateSelectiveColumns(row: Orders) =
         set(updatedAt) equalToWhenPresent row::updatedAt
     }
 
-fun OrdersMapper.updateByPrimaryKey(row: Orders) =
+fun OrdersBaseMapper.updateByPrimaryKey(row: OrdersBase) =
     update {
         set(chainId) equalToOrNull row::chainId
         set(shopId) equalToOrNull row::shopId
@@ -212,7 +212,7 @@ fun OrdersMapper.updateByPrimaryKey(row: Orders) =
         where { orderId isEqualTo row.orderId!! }
     }
 
-fun OrdersMapper.updateByPrimaryKeySelective(row: Orders) =
+fun OrdersBaseMapper.updateByPrimaryKeySelective(row: OrdersBase) =
     update {
         set(chainId) equalToWhenPresent row::chainId
         set(shopId) equalToWhenPresent row::shopId

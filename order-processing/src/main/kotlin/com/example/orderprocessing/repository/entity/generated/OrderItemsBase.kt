@@ -5,8 +5,10 @@ package com.example.orderprocessing.repository.entity.generated
 
 import java.time.LocalDateTime
 
-data class PaymentMethods(
-    var name: String? = null,
+data class OrderItemsBase(
+    var orderId: Long? = null,
+    var itemId: Long? = null,
+    var quantity: Int? = null,
     var createdAt: LocalDateTime? = null,
     var updatedAt: LocalDateTime? = null
 )

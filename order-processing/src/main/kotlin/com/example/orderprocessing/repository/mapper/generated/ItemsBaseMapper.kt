@@ -3,16 +3,16 @@
  */
 package com.example.orderprocessing.repository.mapper.generated
 
-import com.example.orderprocessing.repository.entity.generated.Items
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.chainId
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.createdAt
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.description
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.itemId
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.items
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.name
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.price
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.shopId
-import com.example.orderprocessing.repository.mapper.generated.ItemsDynamicSqlSupport.updatedAt
+import com.example.orderprocessing.repository.entity.generated.ItemsBase
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.chainId
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.description
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.itemId
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.itemsBase
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.name
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.price
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.shopId
+import com.example.orderprocessing.repository.mapper.generated.ItemsBaseDynamicSqlSupport.updatedAt
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -40,9 +40,9 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
-interface ItemsMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<Items>, CommonUpdateMapper {
+interface ItemsBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<ItemsBase>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @Results(id="ItemsResult", value = [
+    @Results(id="ItemsBaseResult", value = [
         Result(column="item_id", property="itemId", jdbcType=JdbcType.BIGINT, id=true),
         Result(column="chain_id", property="chainId", jdbcType=JdbcType.BIGINT),
         Result(column="shop_id", property="shopId", jdbcType=JdbcType.BIGINT),
@@ -52,26 +52,26 @@ interface ItemsMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMappe
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
-    fun selectMany(selectStatement: SelectStatementProvider): List<Items>
+    fun selectMany(selectStatement: SelectStatementProvider): List<ItemsBase>
 
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @ResultMap("ItemsResult")
-    fun selectOne(selectStatement: SelectStatementProvider): Items?
+    @ResultMap("ItemsBaseResult")
+    fun selectOne(selectStatement: SelectStatementProvider): ItemsBase?
 }
 
-fun ItemsMapper.count(completer: CountCompleter) =
-    countFrom(this::count, items, completer)
+fun ItemsBaseMapper.count(completer: CountCompleter) =
+    countFrom(this::count, itemsBase, completer)
 
-fun ItemsMapper.delete(completer: DeleteCompleter) =
-    deleteFrom(this::delete, items, completer)
+fun ItemsBaseMapper.delete(completer: DeleteCompleter) =
+    deleteFrom(this::delete, itemsBase, completer)
 
-fun ItemsMapper.deleteByPrimaryKey(itemId_: Long) =
+fun ItemsBaseMapper.deleteByPrimaryKey(itemId_: Long) =
     delete {
         where { itemId isEqualTo itemId_ }
     }
 
-fun ItemsMapper.insert(row: Items) =
-    insert(this::insert, row, items) {
+fun ItemsBaseMapper.insert(row: ItemsBase) =
+    insert(this::insert, row, itemsBase) {
         map(itemId) toProperty "itemId"
         map(chainId) toProperty "chainId"
         map(shopId) toProperty "shopId"
@@ -82,8 +82,8 @@ fun ItemsMapper.insert(row: Items) =
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun ItemsMapper.insertMultiple(records: Collection<Items>) =
-    insertMultiple(this::insertMultiple, records, items) {
+fun ItemsBaseMapper.insertMultiple(records: Collection<ItemsBase>) =
+    insertMultiple(this::insertMultiple, records, itemsBase) {
         map(itemId) toProperty "itemId"
         map(chainId) toProperty "chainId"
         map(shopId) toProperty "shopId"
@@ -94,11 +94,11 @@ fun ItemsMapper.insertMultiple(records: Collection<Items>) =
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun ItemsMapper.insertMultiple(vararg records: Items) =
+fun ItemsBaseMapper.insertMultiple(vararg records: ItemsBase) =
     insertMultiple(records.toList())
 
-fun ItemsMapper.insertSelective(row: Items) =
-    insert(this::insert, row, items) {
+fun ItemsBaseMapper.insertSelective(row: ItemsBase) =
+    insert(this::insert, row, itemsBase) {
         map(itemId).toPropertyWhenPresent("itemId", row::itemId)
         map(chainId).toPropertyWhenPresent("chainId", row::chainId)
         map(shopId).toPropertyWhenPresent("shopId", row::shopId)
@@ -111,24 +111,24 @@ fun ItemsMapper.insertSelective(row: Items) =
 
 private val columnList = listOf(itemId, chainId, shopId, name, price, description, createdAt, updatedAt)
 
-fun ItemsMapper.selectOne(completer: SelectCompleter) =
-    selectOne(this::selectOne, columnList, items, completer)
+fun ItemsBaseMapper.selectOne(completer: SelectCompleter) =
+    selectOne(this::selectOne, columnList, itemsBase, completer)
 
-fun ItemsMapper.select(completer: SelectCompleter) =
-    selectList(this::selectMany, columnList, items, completer)
+fun ItemsBaseMapper.select(completer: SelectCompleter) =
+    selectList(this::selectMany, columnList, itemsBase, completer)
 
-fun ItemsMapper.selectDistinct(completer: SelectCompleter) =
-    selectDistinct(this::selectMany, columnList, items, completer)
+fun ItemsBaseMapper.selectDistinct(completer: SelectCompleter) =
+    selectDistinct(this::selectMany, columnList, itemsBase, completer)
 
-fun ItemsMapper.selectByPrimaryKey(itemId_: Long) =
+fun ItemsBaseMapper.selectByPrimaryKey(itemId_: Long) =
     selectOne {
         where { itemId isEqualTo itemId_ }
     }
 
-fun ItemsMapper.update(completer: UpdateCompleter) =
-    update(this::update, items, completer)
+fun ItemsBaseMapper.update(completer: UpdateCompleter) =
+    update(this::update, itemsBase, completer)
 
-fun KotlinUpdateBuilder.updateAllColumns(row: Items) =
+fun KotlinUpdateBuilder.updateAllColumns(row: ItemsBase) =
     apply {
         set(itemId) equalToOrNull row::itemId
         set(chainId) equalToOrNull row::chainId
@@ -140,7 +140,7 @@ fun KotlinUpdateBuilder.updateAllColumns(row: Items) =
         set(updatedAt) equalToOrNull row::updatedAt
     }
 
-fun KotlinUpdateBuilder.updateSelectiveColumns(row: Items) =
+fun KotlinUpdateBuilder.updateSelectiveColumns(row: ItemsBase) =
     apply {
         set(itemId) equalToWhenPresent row::itemId
         set(chainId) equalToWhenPresent row::chainId
@@ -152,7 +152,7 @@ fun KotlinUpdateBuilder.updateSelectiveColumns(row: Items) =
         set(updatedAt) equalToWhenPresent row::updatedAt
     }
 
-fun ItemsMapper.updateByPrimaryKey(row: Items) =
+fun ItemsBaseMapper.updateByPrimaryKey(row: ItemsBase) =
     update {
         set(chainId) equalToOrNull row::chainId
         set(shopId) equalToOrNull row::shopId
@@ -164,7 +164,7 @@ fun ItemsMapper.updateByPrimaryKey(row: Items) =
         where { itemId isEqualTo row.itemId!! }
     }
 
-fun ItemsMapper.updateByPrimaryKeySelective(row: Items) =
+fun ItemsBaseMapper.updateByPrimaryKeySelective(row: ItemsBase) =
     update {
         set(chainId) equalToWhenPresent row::chainId
         set(shopId) equalToWhenPresent row::shopId

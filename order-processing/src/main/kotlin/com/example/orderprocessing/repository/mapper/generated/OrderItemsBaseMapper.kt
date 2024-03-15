@@ -3,13 +3,13 @@
  */
 package com.example.orderprocessing.repository.mapper.generated
 
-import com.example.orderprocessing.repository.entity.generated.OrderItemAttributes
-import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesDynamicSqlSupport.attributeId
-import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesDynamicSqlSupport.createdAt
-import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesDynamicSqlSupport.itemId
-import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesDynamicSqlSupport.orderId
-import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesDynamicSqlSupport.orderItemAttributes
-import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesDynamicSqlSupport.updatedAt
+import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
+import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseDynamicSqlSupport.createdAt
+import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseDynamicSqlSupport.itemId
+import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseDynamicSqlSupport.orderId
+import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseDynamicSqlSupport.orderItemsBase
+import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseDynamicSqlSupport.quantity
+import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseDynamicSqlSupport.updatedAt
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
 import org.apache.ibatis.annotations.ResultMap
@@ -37,126 +37,124 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
-interface OrderItemAttributesMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<OrderItemAttributes>, CommonUpdateMapper {
+interface OrderItemsBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<OrderItemsBase>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @Results(id="OrderItemAttributesResult", value = [
+    @Results(id="OrderItemsBaseResult", value = [
         Result(column="order_id", property="orderId", jdbcType=JdbcType.BIGINT, id=true),
         Result(column="item_id", property="itemId", jdbcType=JdbcType.BIGINT, id=true),
-        Result(column="attribute_id", property="attributeId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="quantity", property="quantity", jdbcType=JdbcType.INTEGER),
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
-    fun selectMany(selectStatement: SelectStatementProvider): List<OrderItemAttributes>
+    fun selectMany(selectStatement: SelectStatementProvider): List<OrderItemsBase>
 
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
-    @ResultMap("OrderItemAttributesResult")
-    fun selectOne(selectStatement: SelectStatementProvider): OrderItemAttributes?
+    @ResultMap("OrderItemsBaseResult")
+    fun selectOne(selectStatement: SelectStatementProvider): OrderItemsBase?
 }
 
-fun OrderItemAttributesMapper.count(completer: CountCompleter) =
-    countFrom(this::count, orderItemAttributes, completer)
+fun OrderItemsBaseMapper.count(completer: CountCompleter) =
+    countFrom(this::count, orderItemsBase, completer)
 
-fun OrderItemAttributesMapper.delete(completer: DeleteCompleter) =
-    deleteFrom(this::delete, orderItemAttributes, completer)
+fun OrderItemsBaseMapper.delete(completer: DeleteCompleter) =
+    deleteFrom(this::delete, orderItemsBase, completer)
 
-fun OrderItemAttributesMapper.deleteByPrimaryKey(orderId_: Long, itemId_: Long, attributeId_: Long) =
+fun OrderItemsBaseMapper.deleteByPrimaryKey(orderId_: Long, itemId_: Long) =
     delete {
         where {
             orderId isEqualTo orderId_
             and { itemId isEqualTo itemId_ }
-            and { attributeId isEqualTo attributeId_ }
         }
     }
 
-fun OrderItemAttributesMapper.insert(row: OrderItemAttributes) =
-    insert(this::insert, row, orderItemAttributes) {
+fun OrderItemsBaseMapper.insert(row: OrderItemsBase) =
+    insert(this::insert, row, orderItemsBase) {
         map(orderId) toProperty "orderId"
         map(itemId) toProperty "itemId"
-        map(attributeId) toProperty "attributeId"
+        map(quantity) toProperty "quantity"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun OrderItemAttributesMapper.insertMultiple(records: Collection<OrderItemAttributes>) =
-    insertMultiple(this::insertMultiple, records, orderItemAttributes) {
+fun OrderItemsBaseMapper.insertMultiple(records: Collection<OrderItemsBase>) =
+    insertMultiple(this::insertMultiple, records, orderItemsBase) {
         map(orderId) toProperty "orderId"
         map(itemId) toProperty "itemId"
-        map(attributeId) toProperty "attributeId"
+        map(quantity) toProperty "quantity"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
 
-fun OrderItemAttributesMapper.insertMultiple(vararg records: OrderItemAttributes) =
+fun OrderItemsBaseMapper.insertMultiple(vararg records: OrderItemsBase) =
     insertMultiple(records.toList())
 
-fun OrderItemAttributesMapper.insertSelective(row: OrderItemAttributes) =
-    insert(this::insert, row, orderItemAttributes) {
+fun OrderItemsBaseMapper.insertSelective(row: OrderItemsBase) =
+    insert(this::insert, row, orderItemsBase) {
         map(orderId).toPropertyWhenPresent("orderId", row::orderId)
         map(itemId).toPropertyWhenPresent("itemId", row::itemId)
-        map(attributeId).toPropertyWhenPresent("attributeId", row::attributeId)
+        map(quantity).toPropertyWhenPresent("quantity", row::quantity)
         map(createdAt).toPropertyWhenPresent("createdAt", row::createdAt)
         map(updatedAt).toPropertyWhenPresent("updatedAt", row::updatedAt)
     }
 
-private val columnList = listOf(orderId, itemId, attributeId, createdAt, updatedAt)
+private val columnList = listOf(orderId, itemId, quantity, createdAt, updatedAt)
 
-fun OrderItemAttributesMapper.selectOne(completer: SelectCompleter) =
-    selectOne(this::selectOne, columnList, orderItemAttributes, completer)
+fun OrderItemsBaseMapper.selectOne(completer: SelectCompleter) =
+    selectOne(this::selectOne, columnList, orderItemsBase, completer)
 
-fun OrderItemAttributesMapper.select(completer: SelectCompleter) =
-    selectList(this::selectMany, columnList, orderItemAttributes, completer)
+fun OrderItemsBaseMapper.select(completer: SelectCompleter) =
+    selectList(this::selectMany, columnList, orderItemsBase, completer)
 
-fun OrderItemAttributesMapper.selectDistinct(completer: SelectCompleter) =
-    selectDistinct(this::selectMany, columnList, orderItemAttributes, completer)
+fun OrderItemsBaseMapper.selectDistinct(completer: SelectCompleter) =
+    selectDistinct(this::selectMany, columnList, orderItemsBase, completer)
 
-fun OrderItemAttributesMapper.selectByPrimaryKey(orderId_: Long, itemId_: Long, attributeId_: Long) =
+fun OrderItemsBaseMapper.selectByPrimaryKey(orderId_: Long, itemId_: Long) =
     selectOne {
         where {
             orderId isEqualTo orderId_
             and { itemId isEqualTo itemId_ }
-            and { attributeId isEqualTo attributeId_ }
         }
     }
 
-fun OrderItemAttributesMapper.update(completer: UpdateCompleter) =
-    update(this::update, orderItemAttributes, completer)
+fun OrderItemsBaseMapper.update(completer: UpdateCompleter) =
+    update(this::update, orderItemsBase, completer)
 
-fun KotlinUpdateBuilder.updateAllColumns(row: OrderItemAttributes) =
+fun KotlinUpdateBuilder.updateAllColumns(row: OrderItemsBase) =
     apply {
         set(orderId) equalToOrNull row::orderId
         set(itemId) equalToOrNull row::itemId
-        set(attributeId) equalToOrNull row::attributeId
+        set(quantity) equalToOrNull row::quantity
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
     }
 
-fun KotlinUpdateBuilder.updateSelectiveColumns(row: OrderItemAttributes) =
+fun KotlinUpdateBuilder.updateSelectiveColumns(row: OrderItemsBase) =
     apply {
         set(orderId) equalToWhenPresent row::orderId
         set(itemId) equalToWhenPresent row::itemId
-        set(attributeId) equalToWhenPresent row::attributeId
+        set(quantity) equalToWhenPresent row::quantity
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt
     }
 
-fun OrderItemAttributesMapper.updateByPrimaryKey(row: OrderItemAttributes) =
+fun OrderItemsBaseMapper.updateByPrimaryKey(row: OrderItemsBase) =
     update {
+        set(quantity) equalToOrNull row::quantity
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
         where {
             orderId isEqualTo row.orderId!!
             and { itemId isEqualTo row.itemId!! }
-            and { attributeId isEqualTo row.attributeId!! }
         }
     }
 
-fun OrderItemAttributesMapper.updateByPrimaryKeySelective(row: OrderItemAttributes) =
+fun OrderItemsBaseMapper.updateByPrimaryKeySelective(row: OrderItemsBase) =
     update {
+        set(quantity) equalToWhenPresent row::quantity
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt
         where {
             orderId isEqualTo row.orderId!!
             and { itemId isEqualTo row.itemId!! }
-            and { attributeId isEqualTo row.attributeId!! }
         }
     }

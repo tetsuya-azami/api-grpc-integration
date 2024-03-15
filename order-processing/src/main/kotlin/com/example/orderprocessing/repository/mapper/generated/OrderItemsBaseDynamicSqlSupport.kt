@@ -8,20 +8,20 @@ import java.time.LocalDateTime
 import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
-object OrderItemsDynamicSqlSupport {
-    val orderItems = OrderItems()
+object OrderItemsBaseDynamicSqlSupport {
+    val orderItemsBase = OrderItemsBase()
 
-    val orderId = orderItems.orderId
+    val orderId = orderItemsBase.orderId
 
-    val itemId = orderItems.itemId
+    val itemId = orderItemsBase.itemId
 
-    val quantity = orderItems.quantity
+    val quantity = orderItemsBase.quantity
 
-    val createdAt = orderItems.createdAt
+    val createdAt = orderItemsBase.createdAt
 
-    val updatedAt = orderItems.updatedAt
+    val updatedAt = orderItemsBase.updatedAt
 
-    class OrderItems : AliasableSqlTable<OrderItems>("order_items", ::OrderItems) {
+    class OrderItemsBase : AliasableSqlTable<OrderItemsBase>("order_items", ::OrderItemsBase) {
         val orderId = column<Long>(name = "order_id", jdbcType = JDBCType.BIGINT)
 
         val itemId = column<Long>(name = "item_id", jdbcType = JDBCType.BIGINT)

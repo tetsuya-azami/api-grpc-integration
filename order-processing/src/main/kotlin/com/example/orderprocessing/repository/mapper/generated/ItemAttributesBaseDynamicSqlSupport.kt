@@ -8,25 +8,21 @@ import java.time.LocalDateTime
 import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
-object AttributesDynamicSqlSupport {
-    val attributes = Attributes()
+object ItemAttributesBaseDynamicSqlSupport {
+    val itemAttributesBase = ItemAttributesBase()
 
-    val attributeId = attributes.attributeId
+    val itemId = itemAttributesBase.itemId
 
-    val name = attributes.name
+    val attributeId = itemAttributesBase.attributeId
 
-    val value = attributes.value
+    val createdAt = itemAttributesBase.createdAt
 
-    val createdAt = attributes.createdAt
+    val updatedAt = itemAttributesBase.updatedAt
 
-    val updatedAt = attributes.updatedAt
+    class ItemAttributesBase : AliasableSqlTable<ItemAttributesBase>("item_attributes", ::ItemAttributesBase) {
+        val itemId = column<Long>(name = "item_id", jdbcType = JDBCType.BIGINT)
 
-    class Attributes : AliasableSqlTable<Attributes>("attributes", ::Attributes) {
         val attributeId = column<Long>(name = "attribute_id", jdbcType = JDBCType.BIGINT)
-
-        val name = column<String>(name = "name", jdbcType = JDBCType.VARCHAR)
-
-        val value = column<String>(name = "value", jdbcType = JDBCType.VARCHAR)
 
         val createdAt = column<LocalDateTime>(name = "created_at", jdbcType = JDBCType.TIMESTAMP)
 
