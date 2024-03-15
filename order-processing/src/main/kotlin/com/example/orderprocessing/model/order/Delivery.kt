@@ -14,5 +14,9 @@ data class Delivery(
                 addressId = delivery.addressId
             )
         }
+
+        fun createTestDelivery(type: DeliveryType, addressId: Long): Delivery {
+            return Delivery(type, addressId)
+        }
     }
 }

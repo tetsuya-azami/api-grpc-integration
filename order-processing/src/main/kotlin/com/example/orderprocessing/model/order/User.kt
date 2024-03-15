@@ -14,5 +14,9 @@ data class User(
                 blackLevel = BlackLevel.fromString(user.blackLevel.name)
             )
         }
+
+        fun createTestUser(userId: Long, blackLevel: BlackLevel): User {
+            return User(userId, blackLevel)
+        }
     }
 }

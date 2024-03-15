@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class CreateOrder(private val orderRepository: OrderRepository) {
     fun execute(order: Order): OrderId {
-        orderRepository.createOrder()
+        orderRepository.createOrder(order)
 
         // TODO: 作成したorderのIDを返す
         return OrderId(1)

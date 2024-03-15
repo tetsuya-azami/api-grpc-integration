@@ -40,5 +40,27 @@ class Order private constructor(
                 )
             )
         }
+
+        fun createTestOrder(
+            orderId: OrderId,
+            orderItems: List<OrderItem>,
+            chainId: Long,
+            shopId: Long,
+            delivery: Delivery,
+            user: User,
+            payment: Payment,
+            time: LocalDateTime
+        ): Order {
+            return Order(
+                orderId = orderId,
+                orderItems = orderItems,
+                chainId = chainId,
+                shopId = shopId,
+                delivery = delivery,
+                user = user,
+                payment = payment,
+                time = time
+            )
+        }
     }
 }
