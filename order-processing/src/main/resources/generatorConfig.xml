@@ -25,7 +25,6 @@
         <table tableName="attributes" schema="test"/>
         <table tableName="item_attributes" schema="test"/>
         <table tableName="order_item_attributes" schema="test"/>
-        <table tableName="delivery_methods" schema="test"/>
         <table tableName="payment_methods" schema="test"/>
     </context>
 </generatorConfiguration>
