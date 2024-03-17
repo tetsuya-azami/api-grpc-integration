@@ -1,4 +1,4 @@
-package com.example.orderprocessing.repository
+package com.example.orderprocessing.repository.order
 
 import com.example.orderprocessing.model.order.Order
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
@@ -9,8 +9,7 @@ import java.time.LocalDateTime
 
 @Repository
 class OrderRepository(private val ordersMapper: OrdersBaseMapper) {
-    fun createOrder(order: Order) {
-        val now = LocalDateTime.now()
+    fun createOrder(order: Order, now: LocalDateTime) {
         val row = OrdersBase()
         row.chainId = order.chainId
         row.shopId = order.shopId

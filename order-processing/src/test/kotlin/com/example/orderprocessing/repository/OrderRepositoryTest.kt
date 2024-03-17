@@ -4,6 +4,7 @@ import com.example.orderprocessing.model.order.*
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
 import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.select
+import com.example.orderprocessing.repository.order.OrderRepository
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
@@ -45,7 +46,7 @@ class OrderRepositoryTest @Autowired constructor(
         val order = createTestOrder()
 
         // When
-        orderRepository.createOrder(order)
+        orderRepository.createOrder(order, now)
 
         // Then
         val insertedOrderList = ordersBaseMapper.select {}
