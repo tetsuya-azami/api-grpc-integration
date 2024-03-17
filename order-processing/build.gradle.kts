@@ -37,6 +37,8 @@ dependencies {
     implementation("org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.5.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
+    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("io.mockk:mockk:1.13.10")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
 }
 
