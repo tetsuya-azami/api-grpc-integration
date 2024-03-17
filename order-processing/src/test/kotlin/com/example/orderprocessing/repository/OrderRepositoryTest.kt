@@ -1,6 +1,15 @@
 package com.example.orderprocessing.repository
 
 import com.example.orderprocessing.model.order.*
+import com.example.orderprocessing.repository.entity.generated.OrdersBase
+import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
+import com.example.orderprocessing.repository.mapper.generated.select
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.unmockkAll
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -8,18 +17,42 @@ import org.springframework.test.context.jdbc.Sql
 import java.time.LocalDateTime
 
 @SpringBootTest
-class OrderRepositoryTest @Autowired constructor(private val orderRepository: OrderRepository) {
+class OrderRepositoryTest @Autowired constructor(
+    private val orderRepository: OrderRepository,
+    private val ordersBaseMapper: OrdersBaseMapper
+) {
 
     private val now = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
+
+    @BeforeEach
+    fun setUp() {
+        mockkStatic(LocalDateTime::class)
+        every { LocalDateTime.now() } returns now
+    }
+
+    @AfterEach
+    fun tearDown() {
+        unmockkAll()
+    }
 
     @Test
     @Sql(
         scripts = ["sql/orders/clear.sql"],
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
-    fun test() {
+    fun insertTest() {
+        // Given
         val order = createTestOrder()
+
+        // When
         orderRepository.createOrder(order)
+
+        // Then
+        val insertedOrderList = ordersBaseMapper.select {}
+        assertThat(insertedOrderList.size).isEqualTo(1)
+        val insertedOrder = insertedOrderList.first()
+
+        assert_登録された注文情報が正しいこと(insertedOrder, order)
     }
 
     private fun createTestOrder(): Order {
@@ -53,6 +86,26 @@ class OrderRepositoryTest @Autowired constructor(private val orderRepository: Or
         val orderItem2 = OrderItem(2, 200, 1, item2Attributes)
 
         return listOf(orderItem1, orderItem2)
+    }
+
+    private fun assert_登録された注文情報が正しいこと(
+        actual: OrdersBase,
+        expected: Order
+    ) {
+        assertThat(actual.orderId).isNotNull()
+        assertThat(actual.chainId).isEqualTo(expected.chainId)
+        assertThat(actual.shopId).isEqualTo(expected.shopId)
+        assertThat(actual.userId).isEqualTo(expected.user.userId)
+        assertThat(actual.paymentMethod).isEqualTo(expected.payment.paymentMethodType.name)
+        assertThat(actual.deliveryAddressId).isEqualTo(expected.delivery.addressId)
+        assertThat(actual.deliveryType).isEqualTo(expected.delivery.type.name)
+        assertThat(actual.deliveryCharge).isEqualTo(expected.payment.deliveryCharge)
+        assertThat(actual.nonTaxedTotalPrice).isEqualTo(expected.payment.nonTaxedTotalPrice)
+        assertThat(actual.tax).isEqualTo(expected.payment.tax)
+        assertThat(actual.taxedTotalPrice).isEqualTo(expected.payment.taxedTotalPrice)
+        assertThat(actual.time).isEqualTo(expected.time)
+        assertThat(actual.createdAt).isEqualTo(now)
+        assertThat(actual.updatedAt).isEqualTo(now)
     }
 }
 
