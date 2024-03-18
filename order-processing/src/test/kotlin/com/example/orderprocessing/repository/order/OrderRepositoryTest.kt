@@ -1,10 +1,9 @@
-package com.example.orderprocessing.repository
+package com.example.orderprocessing.repository.order
 
 import com.example.orderprocessing.model.order.*
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
 import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.select
-import com.example.orderprocessing.repository.order.OrderRepository
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
@@ -38,7 +37,7 @@ class OrderRepositoryTest @Autowired constructor(
 
     @Test
     @Sql(
-        scripts = ["sql/orders/clear.sql"],
+        scripts = ["sql/clear.sql"],
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     fun insertTest() {
@@ -46,7 +45,8 @@ class OrderRepositoryTest @Autowired constructor(
         val order = createTestOrder()
 
         // When
-        orderRepository.createOrder(order, now)
+        val insertedOrderId = orderRepository.createOrder(order, now)
+        assertThat(insertedOrderId).isEqualTo(OrderId(1))
 
         // Then
         val insertedOrderList = ordersBaseMapper.select {}

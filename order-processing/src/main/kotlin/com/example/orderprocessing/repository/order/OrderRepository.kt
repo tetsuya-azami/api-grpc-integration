@@ -1,6 +1,7 @@
 package com.example.orderprocessing.repository.order
 
 import com.example.orderprocessing.model.order.Order
+import com.example.orderprocessing.model.order.OrderId
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
 import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.insert
@@ -9,7 +10,7 @@ import java.time.LocalDateTime
 
 @Repository
 class OrderRepository(private val ordersMapper: OrdersBaseMapper) {
-    fun createOrder(order: Order, now: LocalDateTime) {
+    fun createOrder(order: Order, now: LocalDateTime): OrderId {
         val row = OrdersBase()
         row.chainId = order.chainId
         row.shopId = order.shopId
@@ -25,6 +26,7 @@ class OrderRepository(private val ordersMapper: OrdersBaseMapper) {
         row.createdAt = now
         row.updatedAt = now
 
-        ordersMapper.insert(row)
+        val insertedOrderId = ordersMapper.insert(row)
+        return OrderId(insertedOrderId.toLong())
     }
 }
