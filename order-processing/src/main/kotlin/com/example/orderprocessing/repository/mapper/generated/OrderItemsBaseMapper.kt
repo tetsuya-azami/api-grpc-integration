@@ -40,7 +40,7 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 interface OrderItemsBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<OrderItemsBase>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @Results(id="OrderItemsBaseResult", value = [
-        Result(column="order_id", property="orderId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="order_id", property="orderId", jdbcType=JdbcType.VARCHAR, id=true),
         Result(column="item_id", property="itemId", jdbcType=JdbcType.BIGINT, id=true),
         Result(column="quantity", property="quantity", jdbcType=JdbcType.INTEGER),
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
@@ -59,7 +59,7 @@ fun OrderItemsBaseMapper.count(completer: CountCompleter) =
 fun OrderItemsBaseMapper.delete(completer: DeleteCompleter) =
     deleteFrom(this::delete, orderItemsBase, completer)
 
-fun OrderItemsBaseMapper.deleteByPrimaryKey(orderId_: Long, itemId_: Long) =
+fun OrderItemsBaseMapper.deleteByPrimaryKey(orderId_: String, itemId_: Long) =
     delete {
         where {
             orderId isEqualTo orderId_
@@ -108,7 +108,7 @@ fun OrderItemsBaseMapper.select(completer: SelectCompleter) =
 fun OrderItemsBaseMapper.selectDistinct(completer: SelectCompleter) =
     selectDistinct(this::selectMany, columnList, orderItemsBase, completer)
 
-fun OrderItemsBaseMapper.selectByPrimaryKey(orderId_: Long, itemId_: Long) =
+fun OrderItemsBaseMapper.selectByPrimaryKey(orderId_: String, itemId_: Long) =
     selectOne {
         where {
             orderId isEqualTo orderId_

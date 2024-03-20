@@ -6,7 +6,7 @@ package com.example.orderprocessing.repository.entity.generated
 import java.time.LocalDateTime
 
 data class OrderItemAttributesBase(
-    var orderId: Long? = null,
+    var orderId: String? = null,
     var itemId: Long? = null,
     var attributeId: Long? = null,
     var createdAt: LocalDateTime? = null,
