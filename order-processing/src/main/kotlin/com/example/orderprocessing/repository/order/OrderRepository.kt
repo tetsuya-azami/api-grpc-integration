@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 class OrderRepository(private val ordersMapper: OrdersBaseMapper) {
     fun createOrder(order: Order, now: LocalDateTime): OrderId {
         val row = OrdersBase()
+        row.orderId = order.orderId.value
         row.chainId = order.chainId
         row.shopId = order.shopId
         row.userId = order.user.userId
@@ -26,7 +27,7 @@ class OrderRepository(private val ordersMapper: OrdersBaseMapper) {
         row.createdAt = now
         row.updatedAt = now
 
-        val insertedOrderId = ordersMapper.insert(row)
-        return OrderId(insertedOrderId.toLong())
+        ordersMapper.insert(row)
+        return order.orderId
     }
 }

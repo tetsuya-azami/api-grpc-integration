@@ -1,10 +1,12 @@
 package com.example.orderprocessing.repository.order
 
+import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.model.order.OrderId
 import com.example.orderprocessing.model.order.OrderItem
 import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
 import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.select
+import com.google.type.Money
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.jdbc.Sql
 import java.time.LocalDateTime
+import java.util.*
 
 @SpringBootTest
 class OrderItemRepositoryTest @Autowired constructor(
@@ -23,11 +26,14 @@ class OrderItemRepositoryTest @Autowired constructor(
     private val orderItemsBaseMapper: OrderItemsBaseMapper
 ) {
     private val now = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
+    private val testOrderId = "1"
 
     @BeforeEach
     fun setUp() {
         mockkStatic(LocalDateTime::class)
+        mockkStatic(UUID::class)
         every { LocalDateTime.now() } returns now
+        every { UUID.randomUUID().toString() } returns testOrderId
     }
 
     @AfterEach
@@ -46,13 +52,27 @@ class OrderItemRepositoryTest @Autowired constructor(
     )
     fun insertTest() {
         // Given
-        val testOrderId = 1L
-        val orderItem1 = OrderItem.createTestOrderItem(itemId = 1, price = 100, quantity = 1, attributes = emptyList())
-        val orderItem2 = OrderItem.createTestOrderItem(itemId = 2, price = 200, quantity = 2, attributes = emptyList())
-        val orderItemList = listOf(orderItem1, orderItem2)
+        val protoPrice1 = Money.newBuilder().setCurrencyCode("JPY").setUnits(100).build()
+        val protoPrice2 = Money.newBuilder().setCurrencyCode("JPY").setUnits(200).build()
+        val orderItem1 =
+            OrderOuterClass.Items.newBuilder()
+                .setId(1)
+                .setName("テスト商品1")
+                .setPrice(protoPrice1)
+                .setQuantity(1)
+                .build()
+        val orderItem2 =
+            OrderOuterClass.Items.newBuilder()
+                .setId(2)
+                .setName("テスト商品2")
+                .setPrice(protoPrice2)
+                .setQuantity(2)
+                .build()
+        val protoOrderItemList = listOf(orderItem1, orderItem2)
+        val orderItemList = OrderItem.fromOrderCreationRequest(protoOrderItemList)
 
         // When
-        orderItemRepository.createOrderItem(OrderId(testOrderId), orderItemList, now)
+        orderItemRepository.registerOrderItems(OrderId.new(), orderItemList, now)
 
         // Then
         val insertedOrderItemList = orderItemsBaseMapper.select {}
@@ -64,7 +84,7 @@ class OrderItemRepositoryTest @Autowired constructor(
 
     private fun assert_登録された注文商品が正しいこと(
         it: OrderItemsBase,
-        expectedOrderId: Long,
+        expectedOrderId: String,
         expectedOrderItemList: List<OrderItem>,
         index: Int
     ) {

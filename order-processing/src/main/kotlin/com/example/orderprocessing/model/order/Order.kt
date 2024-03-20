@@ -21,7 +21,7 @@ class Order private constructor(
     companion object {
         fun fromOrderCreationRequest(request: OrderOuterClass.OrderCreationRequest): Order {
             val order = request.order
-            val orderItems = OrderItem.fromOrderCreationRequest(order)
+            val orderItems = OrderItem.fromOrderCreationRequest(order.itemsList)
             val delivery = Delivery.fromOrderCreationRequest(order)
             val user = User.fromOrderCreationRequest(order)
             val payment = Payment.fromOrderCreationRequest(order)

@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @Repository
 class OrderItemRepository(private val orderItemsMapper: OrderItemsBaseMapper) {
-    fun createOrderItem(orderId: OrderId, orderItemList: List<OrderItem>, now: LocalDateTime) {
+    fun registerOrderItems(orderId: OrderId, orderItemList: List<OrderItem>, now: LocalDateTime) {
         val orderItemBaseList = orderItemList.map { createOrderItem(orderId, it, now) }
 
         orderItemsMapper.insertMultiple(orderItemBaseList)

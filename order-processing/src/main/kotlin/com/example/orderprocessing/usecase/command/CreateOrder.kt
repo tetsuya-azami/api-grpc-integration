@@ -18,7 +18,7 @@ class CreateOrder(
         val now = LocalDateTime.now()
 
         val orderId = orderRepository.createOrder(order, now)
-        orderItemRepository.createOrderItem(orderId, order.orderItems, now)
+        orderItemRepository.registerOrderItems(orderId, order.orderItems, now)
 
         return orderId
     }
