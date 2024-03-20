@@ -2,7 +2,7 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 
-data class Payment(
+data class Payment private constructor(
     val paymentMethodType: PaymentMethodType,
     val deliveryCharge: Long,
     val nonTaxedTotalPrice: Long,

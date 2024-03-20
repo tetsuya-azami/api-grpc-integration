@@ -2,7 +2,7 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 
-data class Delivery(
+data class Delivery private constructor(
     var type: DeliveryType,
     var addressId: Long
 ) {

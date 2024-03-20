@@ -2,7 +2,7 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 
-data class OrderItem(
+class OrderItem private constructor(
     val itemId: Long,
     val price: Long,
     val quantity: Int,

@@ -2,7 +2,7 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 
-data class OrderItemAttribute(
+data class OrderItemAttribute private constructor(
     val attributeId: Long,
 ) {
     companion object {

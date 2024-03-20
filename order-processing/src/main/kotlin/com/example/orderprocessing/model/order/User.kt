@@ -2,7 +2,7 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 
-data class User(
+data class User private constructor(
     val userId: Long,
     val blackLevel: BlackLevel
 ) {
