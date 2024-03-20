@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 /**
- * 注文エンティティ
+ * 注文ルートエンティティ
  */
 class Order private constructor(
     val orderId: OrderId = OrderId(0),
