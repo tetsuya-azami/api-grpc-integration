@@ -52,24 +52,10 @@ class OrderItemRepositoryTest @Autowired constructor(
     )
     fun insertTest() {
         // Given
-        val protoPrice1 = Money.newBuilder().setCurrencyCode("JPY").setUnits(100).build()
-        val protoPrice2 = Money.newBuilder().setCurrencyCode("JPY").setUnits(200).build()
-        val orderItem1 =
-            OrderOuterClass.Items.newBuilder()
-                .setId(1)
-                .setName("テスト商品1")
-                .setPrice(protoPrice1)
-                .setQuantity(1)
-                .build()
-        val orderItem2 =
-            OrderOuterClass.Items.newBuilder()
-                .setId(2)
-                .setName("テスト商品2")
-                .setPrice(protoPrice2)
-                .setQuantity(2)
-                .build()
-        val protoOrderItemList = listOf(orderItem1, orderItem2)
-        val orderItemList = OrderItem.fromOrderCreationRequest(protoOrderItemList)
+        val orderItemList = createTestOrderItemList(
+            TestOrderItem(1, "商品1", 100, 1),
+            TestOrderItem(2, "商品2", 200, 2)
+        )
 
         // When
         orderItemRepository.registerOrderItems(OrderId.new(), orderItemList, now)
@@ -80,6 +66,21 @@ class OrderItemRepositoryTest @Autowired constructor(
         insertedOrderItemList.forEachIndexed { index, it ->
             assert_登録された注文商品が正しいこと(it, testOrderId, orderItemList, index)
         }
+    }
+
+    private fun createTestOrderItemList(vararg testOrderItems: TestOrderItem): List<OrderItem> {
+        val protoOrderItemList = testOrderItems.map {
+            val price = Money.newBuilder().setCurrencyCode("JPY").setUnits(it.price).build()
+            OrderOuterClass.Items.newBuilder()
+                .setId(it.itemId)
+                .setName(it.name)
+                .setPrice(price)
+                .setQuantity(it.quantity)
+                .build()
+        }
+        val orderItemList = OrderItem.fromOrderCreationRequest(protoOrderItemList)
+
+        return orderItemList
     }
 
     private fun assert_登録された注文商品が正しいこと(
@@ -94,4 +95,11 @@ class OrderItemRepositoryTest @Autowired constructor(
         assertThat(it.createdAt).isEqualTo(now)
         assertThat(it.updatedAt).isEqualTo(now)
     }
+
+    private class TestOrderItem(
+        val itemId: Long,
+        val name: String,
+        val price: Long,
+        val quantity: Int,
+    )
 }
