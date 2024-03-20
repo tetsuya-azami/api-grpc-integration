@@ -30,7 +30,7 @@ class OrderController(
         logger.info("Order created successfully: $createOrderRequest")
         return ResponseEntity(
             // TODO: Replace with actual order ID
-            OrderCreationSuccessResponse("SUCCESS", OrderCreationSuccessResponseData(11111)),
+            OrderCreationSuccessResponse("SUCCESS", OrderCreationSuccessResponseData("11111")),
             HttpStatus.CREATED
         )
     }

@@ -1,5 +1,4 @@
 import com.google.protobuf.gradle.id
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.9.22"
@@ -16,26 +15,16 @@ repositories {
 
 val grpcVersion = "1.60.1"
 val protobufVersion = "3.25.3"
+val grpcKotlinVersion = "1.3.0"
+
 
 dependencies {
+    // protoファイル内でgoogle/protobuf/配下のパッケージを使用するために必要(etc google.protobuf.Timestamp)
+    implementation("com.google.protobuf:protobuf-java:${protobufVersion}")
+    implementation("com.google.protobuf:protobuf-kotlin:${protobufVersion}")
     implementation("io.grpc:grpc-protobuf:${grpcVersion}")
     implementation("io.grpc:grpc-stub:${grpcVersion}")
-    implementation("jakarta.annotation:jakarta.annotation-api:1.3.5") // Java 9+ compatibility - Do NOT update to 2.0.0
-}
-
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "17"
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
+    implementation("io.grpc:grpc-kotlin-stub:${grpcKotlinVersion}")
 }
 
 protobuf {
@@ -44,7 +33,25 @@ protobuf {
     }
     plugins {
         id("grpc") {
+            // こちらを追加しないとgrpc(java)のコードが生成されない
             artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+        }
+        id("grpckt") {
+            // こちらを追加しないとgrpc-kotlinのコードが生成されない
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:${grpcKotlinVersion}:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                // こちらを追加しないとgrpcのコードが生成されない
+                id("grpc")
+                id("grpckt")
+            }
+            it.builtins {
+                // protoファイルからkotlinのコードを生成する
+                create("kotlin")
+            }
         }
     }
 }

@@ -13,11 +13,11 @@ properties:
     properties:
       orderId:
         description: "作成された注文のID"
-        type: integer
+        type: string
         format: int64
-        minimum: 1
-        maximum: 9999999999
-        example: 11111
+        minLength: 1
+        maxLength: 100
+        example: "123456"
     required:
       - orderId
 required:
