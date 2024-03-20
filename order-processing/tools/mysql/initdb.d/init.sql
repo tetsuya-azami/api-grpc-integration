@@ -1,5 +1,5 @@
 CREATE TABLE orders(
-        order_id bigint PRIMARY KEY AUTO_INCREMENT,
+        order_id varchar(250) PRIMARY KEY,
         chain_id bigint NOT NULL,
         shop_id bigint NOT NULL,
         user_id bigint NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE items(
 );
 
 CREATE TABLE order_items(
-        order_id bigint NOT NULL,
+        order_id varchar(250) NOT NULL,
         item_id bigint NOT NULL,
         quantity integer NOT NULL,
         created_at datetime NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE item_attributes(
 );
 
 CREATE TABLE order_item_attributes(
-        order_id bigint NOT NULL,
+        order_id varchar(250) NOT NULL,
         item_id bigint NOT NULL,
         attribute_id bigint NOT NULL,
         created_at datetime NOT NULL,

@@ -8,7 +8,7 @@ import java.time.ZoneOffset
  * 注文ルートエンティティ
  */
 class Order private constructor(
-    val orderId: OrderId = OrderId(0),
+    val orderId: OrderId,
     val orderItems: List<OrderItem>,
     val chainId: Long,
     val shopId: Long,
@@ -27,6 +27,7 @@ class Order private constructor(
             val payment = Payment.fromOrderCreationRequest(order)
 
             return Order(
+                orderId = OrderId.new(),
                 orderItems = orderItems,
                 chainId = order.chain.id,
                 shopId = order.shop.id,
@@ -38,28 +39,6 @@ class Order private constructor(
                     order.time.nanos,
                     ZoneOffset.of("+09:00")
                 )
-            )
-        }
-
-        fun createTestOrder(
-            orderId: OrderId,
-            orderItems: List<OrderItem>,
-            chainId: Long,
-            shopId: Long,
-            delivery: Delivery,
-            user: User,
-            payment: Payment,
-            time: LocalDateTime
-        ): Order {
-            return Order(
-                orderId = orderId,
-                orderItems = orderItems,
-                chainId = chainId,
-                shopId = shopId,
-                delivery = delivery,
-                user = user,
-                payment = payment,
-                time = time
             )
         }
     }

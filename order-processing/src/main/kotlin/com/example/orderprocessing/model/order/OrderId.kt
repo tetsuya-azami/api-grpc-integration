@@ -1,3 +1,11 @@
 package com.example.orderprocessing.model.order
 
-data class OrderId(val value: Long)
+import java.util.*
+
+data class OrderId private constructor(val value: String) {
+    companion object {
+        fun new(): OrderId {
+            return OrderId(UUID.randomUUID().toString())
+        }
+    }
+}
