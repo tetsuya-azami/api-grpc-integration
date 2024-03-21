@@ -6,7 +6,7 @@ data class OrderItemAttribute private constructor(
     val attributeId: Long,
 ) {
     companion object {
-        fun fromOrderCreationRequest(orderItem: OrderOuterClass.Items): List<OrderItemAttribute> {
+        fun fromOrderCreationRequest(orderItem: OrderOuterClass.Item): List<OrderItemAttribute> {
             return orderItem.attributesList.map { attribute -> OrderItemAttribute(attribute.id) }
         }
     }

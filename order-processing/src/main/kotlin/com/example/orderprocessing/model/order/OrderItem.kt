@@ -9,7 +9,7 @@ class OrderItem private constructor(
     val attributes: List<OrderItemAttribute>
 ) {
     companion object {
-        fun fromOrderCreationRequest(itemList: List<OrderOuterClass.Items>): List<OrderItem> {
+        fun fromOrderCreationRequest(itemList: List<OrderOuterClass.Item>): List<OrderItem> {
             return itemList.map { item ->
                 val attributes = OrderItemAttribute.fromOrderCreationRequest(item)
 

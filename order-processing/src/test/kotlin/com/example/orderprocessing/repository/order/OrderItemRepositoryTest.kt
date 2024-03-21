@@ -71,7 +71,7 @@ class OrderItemRepositoryTest @Autowired constructor(
     private fun createTestOrderItemList(vararg testOrderItems: TestOrderItem): List<OrderItem> {
         val protoOrderItemList = testOrderItems.map {
             val price = Money.newBuilder().setCurrencyCode("JPY").setUnits(it.price).build()
-            OrderOuterClass.Items.newBuilder()
+            OrderOuterClass.Item.newBuilder()
                 .setId(it.itemId)
                 .setName(it.name)
                 .setPrice(price)
