@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service
-class CreateOrder(
+class RegisterOrder(
     private val orderRepository: OrderRepository,
     private val orderItemRepository: OrderItemRepository
 ) {
@@ -17,7 +17,7 @@ class CreateOrder(
     fun execute(order: Order): OrderId {
         val now = LocalDateTime.now()
 
-        val orderId = orderRepository.createOrder(order, now)
+        val orderId = orderRepository.registerOrder(order, now)
         orderItemRepository.registerOrderItems(orderId, order.orderItems, now)
 
         return orderId

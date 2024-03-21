@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @Repository
 class OrderRepository(private val ordersMapper: OrdersBaseMapper) {
-    fun createOrder(order: Order, now: LocalDateTime): OrderId {
+    fun registerOrder(order: Order, now: LocalDateTime): OrderId {
         val row = OrdersBase()
         row.orderId = order.orderId.value
         row.chainId = order.chainId
