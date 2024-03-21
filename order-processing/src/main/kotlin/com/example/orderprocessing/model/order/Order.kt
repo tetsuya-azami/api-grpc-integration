@@ -9,7 +9,7 @@ import java.time.ZoneOffset
  */
 class Order private constructor(
     val orderId: OrderId,
-    val orderItems: List<OrderItem>,
+    val orderItems: OrderItems,
     val chainId: Long,
     val shopId: Long,
     val delivery: Delivery,
@@ -21,7 +21,7 @@ class Order private constructor(
     companion object {
         fun fromOrderCreationRequest(request: OrderOuterClass.OrderCreationRequest): Order {
             val order = request.order
-            val orderItems = OrderItem.fromOrderCreationRequest(order.itemsList)
+            val orderItems = OrderItems.fromOrderCreationRequest(order.itemsList)
             val delivery = Delivery.fromOrderCreationRequest(order)
             val user = User.fromOrderCreationRequest(order)
             val payment = Payment.fromOrderCreationRequest(order)

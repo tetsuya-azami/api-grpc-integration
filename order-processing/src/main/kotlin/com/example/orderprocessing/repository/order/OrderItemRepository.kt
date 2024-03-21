@@ -2,6 +2,7 @@ package com.example.orderprocessing.repository.order
 
 import com.example.orderprocessing.model.order.OrderId
 import com.example.orderprocessing.model.order.OrderItem
+import com.example.orderprocessing.model.order.OrderItems
 import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
 import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.insertMultiple
@@ -10,8 +11,8 @@ import java.time.LocalDateTime
 
 @Repository
 class OrderItemRepository(private val orderItemsMapper: OrderItemsBaseMapper) {
-    fun registerOrderItems(orderId: OrderId, orderItemList: List<OrderItem>, now: LocalDateTime) {
-        val orderItemBaseList = orderItemList.map { createOrderItem(orderId, it, now) }
+    fun registerOrderItems(orderId: OrderId, orderItems: OrderItems, now: LocalDateTime) {
+        val orderItemBaseList = orderItems.value.map { createOrderItem(orderId, it, now) }
 
         orderItemsMapper.insertMultiple(orderItemBaseList)
     }

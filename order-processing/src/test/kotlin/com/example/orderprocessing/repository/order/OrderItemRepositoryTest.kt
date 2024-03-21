@@ -2,7 +2,7 @@ package com.example.orderprocessing.repository.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.model.order.OrderId
-import com.example.orderprocessing.model.order.OrderItem
+import com.example.orderprocessing.model.order.OrderItems
 import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
 import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.select
@@ -52,7 +52,7 @@ class OrderItemRepositoryTest @Autowired constructor(
     )
     fun insertTest() {
         // Given
-        val orderItemList = createTestOrderItemList(
+        val orderItemList = createTestOrderItems(
             TestOrderItem(1, "商品1", 100, 1),
             TestOrderItem(2, "商品2", 200, 2)
         )
@@ -68,8 +68,8 @@ class OrderItemRepositoryTest @Autowired constructor(
         }
     }
 
-    private fun createTestOrderItemList(vararg testOrderItems: TestOrderItem): List<OrderItem> {
-        val protoOrderItemList = testOrderItems.map {
+    private fun createTestOrderItems(vararg testOrderItems: TestOrderItem): OrderItems {
+        val protoOrderItems = testOrderItems.map {
             val price = Money.newBuilder().setCurrencyCode("JPY").setUnits(it.price).build()
             OrderOuterClass.Item.newBuilder()
                 .setId(it.itemId)
@@ -78,20 +78,19 @@ class OrderItemRepositoryTest @Autowired constructor(
                 .setQuantity(it.quantity)
                 .build()
         }
-        val orderItemList = OrderItem.fromOrderCreationRequest(protoOrderItemList)
-
-        return orderItemList
+        
+        return OrderItems.fromOrderCreationRequest(protoOrderItems)
     }
 
     private fun assert_登録された注文商品が正しいこと(
         it: OrderItemsBase,
         expectedOrderId: String,
-        expectedOrderItemList: List<OrderItem>,
+        expectedOrderItems: OrderItems,
         index: Int
     ) {
         assertThat(it.orderId).isEqualTo(expectedOrderId)
-        assertThat(it.itemId).isEqualTo(expectedOrderItemList[index].itemId)
-        assertThat(it.quantity).isEqualTo(expectedOrderItemList[index].quantity)
+        assertThat(it.itemId).isEqualTo(expectedOrderItems.value[index].itemId)
+        assertThat(it.quantity).isEqualTo(expectedOrderItems.value[index].quantity)
         assertThat(it.createdAt).isEqualTo(now)
         assertThat(it.updatedAt).isEqualTo(now)
     }
