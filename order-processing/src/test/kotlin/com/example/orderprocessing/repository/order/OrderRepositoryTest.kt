@@ -1,7 +1,6 @@
 package com.example.orderprocessing.repository.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
-import com.example.grpcinterface.proto.OrderOuterClass.OrderCreationRequest
 import com.example.orderprocessing.model.order.Order
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
 import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
@@ -46,9 +45,32 @@ class OrderRepositoryTest @Autowired constructor(
     )
     fun insertTest() {
         // Given
-        val order = OrderOuterClass.Order.newBuilder()
-            .setChain(OrderOuterClass.Chain.newBuilder().setId(1).build())
-            .setShop(OrderOuterClass.Shop.newBuilder().setId(1).build())
+        val order = createTestOrder()
+
+        // When
+        val insertedOrderId = orderRepository.registerOrder(order, now)
+        assertThat(insertedOrderId).isEqualTo(order.orderId)
+
+        // Then
+        val insertedOrderList = ordersBaseMapper.select {}
+        assertThat(insertedOrderList.size).isEqualTo(1)
+        val insertedOrder = insertedOrderList.first()
+
+        assert_登録された注文情報が正しいこと(insertedOrder, order)
+    }
+
+    private fun createTestOrder(): Order {
+        val orderProto = OrderOuterClass.Order.newBuilder()
+            .setChain(
+                OrderOuterClass.Chain.newBuilder()
+                    .setId(1)
+                    .build()
+            )
+            .setShop(
+                OrderOuterClass.Shop.newBuilder()
+                    .setId(1)
+                    .build()
+            )
             .setDelivery(
                 OrderOuterClass.Delivery.newBuilder()
                     .setType(OrderOuterClass.Delivery.Type.IMMEDIATE)
@@ -70,27 +92,24 @@ class OrderRepositoryTest @Autowired constructor(
                     .setTaxedTotalPrice(1485)
                     .build()
             )
-            .setTime(Timestamp.newBuilder().setSeconds(now.toEpochSecond(ZoneOffset.of("+09:00"))).build())
-        val orderCreationRequest = OrderCreationRequest.newBuilder().setOrder(order).build()
-        val orderModel = Order.fromOrderCreationRequest(orderCreationRequest)
+            .setTime(
+                Timestamp.newBuilder()
+                    .setSeconds(now.toEpochSecond(ZoneOffset.of("+09:00")))
+                    .build()
+            )
 
-        // When
-        val insertedOrderId = orderRepository.registerOrder(orderModel, now)
-        assertThat(insertedOrderId).isEqualTo(orderModel.orderId)
-
-        // Then
-        val insertedOrderList = ordersBaseMapper.select {}
-        assertThat(insertedOrderList.size).isEqualTo(1)
-        val insertedOrder = insertedOrderList.first()
-
-        assert_登録された注文情報が正しいこと(insertedOrder, orderModel)
+        return Order.fromOrderCreationRequest(
+            OrderOuterClass.OrderCreationRequest.newBuilder()
+                .setOrder(orderProto)
+                .build()
+        )
     }
 
     private fun assert_登録された注文情報が正しいこと(
         actual: OrdersBase,
         expected: Order
     ) {
-        assertThat(actual.orderId).isNotNull()
+        assertThat(actual.orderId).isEqualTo(expected.orderId.value)
         assertThat(actual.chainId).isEqualTo(expected.chainId)
         assertThat(actual.shopId).isEqualTo(expected.shopId)
         assertThat(actual.userId).isEqualTo(expected.user.userId)
