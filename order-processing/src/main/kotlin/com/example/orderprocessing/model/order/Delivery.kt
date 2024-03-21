@@ -14,9 +14,5 @@ data class Delivery private constructor(
                 addressId = delivery.addressId
             )
         }
-
-        fun createTestDelivery(type: DeliveryType, addressId: Long): Delivery {
-            return Delivery(type, addressId)
-        }
     }
 }

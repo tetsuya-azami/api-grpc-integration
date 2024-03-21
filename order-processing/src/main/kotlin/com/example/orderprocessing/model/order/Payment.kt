@@ -21,21 +21,5 @@ data class Payment private constructor(
                 taxedTotalPrice = payment.taxedTotalPrice
             )
         }
-
-        fun createTestPayment(
-            paymentMethodType: PaymentMethodType,
-            deliveryCharge: Long,
-            nonTaxedTotalPrice: Long,
-            tax: Long,
-            taxedTotalPrice: Long
-        ): Payment {
-            return Payment(
-                paymentMethodType = paymentMethodType,
-                deliveryCharge = deliveryCharge,
-                nonTaxedTotalPrice = nonTaxedTotalPrice,
-                tax = tax,
-                taxedTotalPrice = taxedTotalPrice
-            )
-        }
     }
 }

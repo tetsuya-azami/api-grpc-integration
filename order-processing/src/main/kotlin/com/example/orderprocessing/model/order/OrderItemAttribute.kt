@@ -9,11 +9,5 @@ data class OrderItemAttribute private constructor(
         fun fromOrderCreationRequest(orderItem: OrderOuterClass.Items): List<OrderItemAttribute> {
             return orderItem.attributesList.map { attribute -> OrderItemAttribute(attribute.id) }
         }
-
-        fun createTestOrderItemAttribute(
-            attributeId: Long
-        ): OrderItemAttribute {
-            return OrderItemAttribute(attributeId)
-        }
     }
 }
