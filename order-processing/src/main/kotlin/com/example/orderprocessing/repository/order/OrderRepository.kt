@@ -2,7 +2,6 @@ package com.example.orderprocessing.repository.order
 
 import com.example.orderprocessing.model.order.Order
 import com.example.orderprocessing.model.order.OrderId
-import com.example.orderprocessing.model.order.OrderItem
 import com.example.orderprocessing.model.order.OrderItems
 import com.example.orderprocessing.repository.entity.generated.OrderItemAttributesBase
 import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
@@ -26,27 +25,36 @@ class OrderRepository(
     }
 
     private fun register(order: Order, now: LocalDateTime) {
-        val row = OrdersBase()
-        row.orderId = order.orderId.value
-        row.chainId = order.chainId
-        row.shopId = order.shopId
-        row.userId = order.user.userId
-        row.paymentMethod = order.payment.paymentMethodType.name
-        row.deliveryAddressId = order.delivery.addressId
-        row.deliveryType = order.delivery.type.name
-        row.deliveryCharge = order.payment.deliveryCharge
-        row.nonTaxedTotalPrice = order.payment.nonTaxedTotalPrice
-        row.tax = order.payment.tax
-        row.taxedTotalPrice = order.payment.taxedTotalPrice
-        row.time = order.time
-        row.createdAt = now
-        row.updatedAt = now
+        val row = OrdersBase(
+            orderId = order.orderId.value,
+            chainId = order.chainId,
+            shopId = order.shopId,
+            userId = order.user.userId,
+            paymentMethod = order.payment.paymentMethodType.name,
+            deliveryAddressId = order.delivery.addressId,
+            deliveryType = order.delivery.type.name,
+            deliveryCharge = order.payment.deliveryCharge,
+            nonTaxedTotalPrice = order.payment.nonTaxedTotalPrice,
+            tax = order.payment.tax,
+            taxedTotalPrice = order.payment.taxedTotalPrice,
+            time = order.time,
+            createdAt = now,
+            updatedAt = now
+        )
 
         ordersMapper.insert(row)
     }
 
     fun registerOrderItems(orderId: OrderId, orderItems: OrderItems, now: LocalDateTime) {
-        val orderItemBaseList = orderItems.value.map { createOrderItemsBases(orderId, it, now) }
+        val orderItemBaseList = orderItems.value.map {
+            OrderItemsBase(
+                orderId = orderId.value,
+                itemId = it.itemId,
+                quantity = it.quantity,
+                createdAt = now,
+                updatedAt = now
+            )
+        }
 
         orderItemsMapper.insertMultiple(orderItemBaseList)
     }
@@ -66,16 +74,5 @@ class OrderRepository(
         }
 
         orderItemAttributesMapper.insertMultiple(orderItemAttributeBases)
-    }
-
-    private fun createOrderItemsBases(orderId: OrderId, orderItem: OrderItem, now: LocalDateTime): OrderItemsBase {
-        val row = OrderItemsBase()
-        row.orderId = orderId.value
-        row.itemId = orderItem.itemId
-        row.quantity = orderItem.quantity
-        row.createdAt = now
-        row.updatedAt = now
-
-        return row
     }
 }
