@@ -6,6 +6,7 @@ import com.example.orderprocessing.model.order.Order
 import com.example.orderprocessing.model.order.OrderId
 import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
+import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.select
@@ -28,7 +29,8 @@ import java.time.ZoneOffset
 class OrderRepositoryTest @Autowired constructor(
     private val orderRepository: OrderRepository,
     private val ordersMapper: OrdersBaseMapper,
-    private val orderItemsMapper: OrderItemsBaseMapper
+    private val orderItemsMapper: OrderItemsBaseMapper,
+    private val orderItemAttributeMapper: OrderItemAttributesBaseMapper
 ) {
 
     private val now = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
@@ -56,8 +58,26 @@ class OrderRepositoryTest @Autowired constructor(
     fun insertTest() {
         // Given
         val orderItemList = createTestOrderItems(
-            TestOrderItem(1, "商品1", 100, 1),
-            TestOrderItem(2, "商品2", 200, 2)
+            TestOrderItem(
+                itemId = 1,
+                name = "商品1",
+                price = 100,
+                quantity = 1,
+                attributes = listOf(
+                    createTestOrderItemAttribute(1),
+                    createTestOrderItemAttribute(4)
+                )
+            ),
+            TestOrderItem(
+                itemId = 2,
+                name = "商品2",
+                price = 200,
+                quantity = 2,
+                attributes = listOf(
+                    createTestOrderItemAttribute(2),
+                    createTestOrderItemAttribute(5)
+                )
+            )
         )
         val order = createTestOrder(orderItemList)
 
@@ -82,7 +102,31 @@ class OrderRepositoryTest @Autowired constructor(
                 expectedOrderItem = orderItemList[index]
             )
         }
+
+        // Then OrderItemAttributes
+        val insertedOrderItemAttributes = orderItemAttributeMapper.select { }
+        assertThat(insertedOrderItemAttributes.size).isEqualTo(4)
+
+        val expectedItemIdAndAttributeIdPairs = listOf(
+            Pair(1L, 1L),
+            Pair(1L, 4L),
+            Pair(2L, 2L),
+            Pair(2L, 5L)
+        )
+
+        expectedItemIdAndAttributeIdPairs.forEachIndexed { index, (expectedItemId, expectedAttributeId) ->
+            assertThat(insertedOrderItemAttributes[index].orderId).isEqualTo(insertedOrderId.value)
+            assertThat(insertedOrderItemAttributes[index].itemId).isEqualTo(expectedItemId)
+            assertThat(insertedOrderItemAttributes[index].attributeId).isEqualTo(expectedAttributeId)
+            assertThat(insertedOrderItemAttributes[index].createdAt).isEqualTo(now)
+            assertThat(insertedOrderItemAttributes[index].updatedAt).isEqualTo(now)
+        }
     }
+
+    private fun createTestOrderItemAttribute(attributeId: Long): Item.Attribute =
+        Item.Attribute.newBuilder()
+            .setId(attributeId)
+            .build()
 
     private fun createTestOrder(items: List<Item>): Order {
         val orderProto = OrderOuterClass.Order.newBuilder()
@@ -139,6 +183,7 @@ class OrderRepositoryTest @Autowired constructor(
                 .setName(it.name)
                 .setPrice(price)
                 .setQuantity(it.quantity)
+                .addAllAttributes(it.attributes)
                 .build()
         }
     }
@@ -148,6 +193,7 @@ class OrderRepositoryTest @Autowired constructor(
         val name: String,
         val price: Long,
         val quantity: Int,
+        val attributes: List<OrderOuterClass.Item.Attribute>
     )
 
     private fun assert_登録された注文情報が正しいこと(

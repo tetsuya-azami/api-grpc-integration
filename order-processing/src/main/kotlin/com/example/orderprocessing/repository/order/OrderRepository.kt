@@ -4,21 +4,24 @@ import com.example.orderprocessing.model.order.Order
 import com.example.orderprocessing.model.order.OrderId
 import com.example.orderprocessing.model.order.OrderItem
 import com.example.orderprocessing.model.order.OrderItems
+import com.example.orderprocessing.repository.entity.generated.OrderItemAttributesBase
 import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
-import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseMapper
-import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
-import com.example.orderprocessing.repository.mapper.generated.insert
-import com.example.orderprocessing.repository.mapper.generated.insertMultiple
+import com.example.orderprocessing.repository.mapper.generated.*
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
 @Repository
-class OrderRepository(private val ordersMapper: OrdersBaseMapper, private val orderItemsMapper: OrderItemsBaseMapper) {
+class OrderRepository(
+    private val ordersMapper: OrdersBaseMapper,
+    private val orderItemsMapper: OrderItemsBaseMapper,
+    private val orderItemAttributesMapper: OrderItemAttributesBaseMapper
+) {
     fun registerOrder(order: Order, now: LocalDateTime): OrderId {
         register(order, now)
         registerOrderItems(order.orderId, order.orderItems, now)
-        
+        registerOrderItemAttributes(order, now)
+
         return order.orderId
     }
 
@@ -46,6 +49,23 @@ class OrderRepository(private val ordersMapper: OrdersBaseMapper, private val or
         val orderItemBaseList = orderItems.value.map { createOrderItemsBases(orderId, it, now) }
 
         orderItemsMapper.insertMultiple(orderItemBaseList)
+    }
+
+    private fun registerOrderItemAttributes(order: Order, now: LocalDateTime) {
+        val orderItemAttributeBases = order.orderItems.value.flatMap { item ->
+            val attributes = item.attributes
+            attributes.map { attribute ->
+                OrderItemAttributesBase(
+                    orderId = order.orderId.value,
+                    itemId = item.itemId,
+                    attributeId = attribute.attributeId,
+                    createdAt = now,
+                    updatedAt = now
+                )
+            }
+        }
+
+        orderItemAttributesMapper.insertMultiple(orderItemAttributeBases)
     }
 
     private fun createOrderItemsBases(orderId: OrderId, orderItem: OrderItem, now: LocalDateTime): OrderItemsBase {
