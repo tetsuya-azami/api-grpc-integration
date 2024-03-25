@@ -1,11 +1,8 @@
 package com.example.orderprocessing.repository.order
 
-import com.example.orderprocessing.helper.OrderTestHelper
 import com.example.orderprocessing.helper.OrderTestHelper.Companion.assert_登録された注文商品が正しいこと
 import com.example.orderprocessing.helper.OrderTestHelper.Companion.assert_登録された注文情報が正しいこと
 import com.example.orderprocessing.helper.OrderTestHelper.Companion.createTestOrder
-import com.example.orderprocessing.helper.OrderTestHelper.Companion.createTestOrderItemAttribute
-import com.example.orderprocessing.helper.OrderTestHelper.Companion.createTestOrderItems
 import com.example.orderprocessing.repository.mapper.generated.OrderItemAttributesBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.OrderItemsBaseMapper
 import com.example.orderprocessing.repository.mapper.generated.OrdersBaseMapper
@@ -54,29 +51,7 @@ class OrderRepositoryTest @Autowired constructor(
     )
     fun insertTest() {
         // Given
-        val orderItemList = createTestOrderItems(
-            OrderTestHelper.Companion.TestOrderItem(
-                itemId = 1,
-                name = "商品1",
-                price = 100,
-                quantity = 1,
-                attributes = listOf(
-                    createTestOrderItemAttribute(1),
-                    createTestOrderItemAttribute(4)
-                )
-            ),
-            OrderTestHelper.Companion.TestOrderItem(
-                itemId = 2,
-                name = "商品2",
-                price = 200,
-                quantity = 2,
-                attributes = listOf(
-                    createTestOrderItemAttribute(2),
-                    createTestOrderItemAttribute(5)
-                )
-            )
-        )
-        val order = createTestOrder(orderItemList)
+        val order = createTestOrder()
 
         // When
         val insertedOrderId = orderRepository.registerOrder(order, now)
@@ -92,11 +67,12 @@ class OrderRepositoryTest @Autowired constructor(
         // Then OrderItems
         val insertedOrderItemBases = orderItemsMapper.select { }
         assertThat(insertedOrderItemBases.size).isEqualTo(2)
+        val expectedOrderItems = order.orderItems.value
         insertedOrderItemBases.forEachIndexed { index, orderItemsBase ->
             assert_登録された注文商品が正しいこと(
                 actual = orderItemsBase,
                 expectedOrderId = insertedOrderId,
-                expectedOrderItem = orderItemList[index]
+                expectedOrderItem = expectedOrderItems[index]
             )
         }
 

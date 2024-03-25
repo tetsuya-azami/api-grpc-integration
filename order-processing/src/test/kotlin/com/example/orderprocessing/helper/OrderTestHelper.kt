@@ -1,8 +1,10 @@
 package com.example.orderprocessing.helper
 
 import com.example.grpcinterface.proto.OrderOuterClass
+import com.example.grpcinterface.proto.OrderOuterClass.Payment.PaymentMethod
 import com.example.orderprocessing.model.order.Order
 import com.example.orderprocessing.model.order.OrderId
+import com.example.orderprocessing.model.order.OrderItem
 import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
 import com.example.orderprocessing.repository.entity.generated.OrdersBase
 import com.google.protobuf.Timestamp
@@ -13,45 +15,53 @@ import java.time.ZoneOffset
 
 class OrderTestHelper {
     companion object {
-        val now = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
+        private val now: LocalDateTime = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
 
-        fun createTestOrderItemAttribute(attributeId: Long): OrderOuterClass.Item.Attribute =
-            OrderOuterClass.Item.Attribute.newBuilder()
-                .setId(attributeId)
-                .build()
-
-        fun createTestOrder(items: List<OrderOuterClass.Item>): Order {
+        fun createTestOrder(
+            items: List<OrderOuterClass.Item> = createDefaultTestOrderItems(),
+            chainId: Long = 1,
+            shopId: Long = 1,
+            deliveryType: OrderOuterClass.Delivery.Type = OrderOuterClass.Delivery.Type.IMMEDIATE,
+            addressId: Long = 1,
+            userId: Long = 1,
+            blackLevel: OrderOuterClass.User.BlackLevel = OrderOuterClass.User.BlackLevel.LOW,
+            paymentMethod: PaymentMethod = OrderOuterClass.Payment.PaymentMethod.CASH,
+            deliveryCharge: Long = 350,
+            nonTaxedTotalPrice: Long = 1000,
+            tax: Long = 135,
+            taxedTotalPrice: Long = 1485
+        ): Order {
             val orderProto = OrderOuterClass.Order.newBuilder()
                 .addAllItems(items)
                 .setChain(
                     OrderOuterClass.Chain.newBuilder()
-                        .setId(1)
+                        .setId(chainId)
                         .build()
                 )
                 .setShop(
                     OrderOuterClass.Shop.newBuilder()
-                        .setId(1)
+                        .setId(shopId)
                         .build()
                 )
                 .setDelivery(
                     OrderOuterClass.Delivery.newBuilder()
-                        .setType(OrderOuterClass.Delivery.Type.IMMEDIATE)
-                        .setAddressId(1)
+                        .setType(deliveryType)
+                        .setAddressId(addressId)
                         .build()
                 )
                 .setUser(
                     OrderOuterClass.User.newBuilder()
-                        .setId(1)
-                        .setBlackLevel(OrderOuterClass.User.BlackLevel.LOW)
+                        .setId(userId)
+                        .setBlackLevel(blackLevel)
                         .build()
                 )
                 .setPayment(
                     OrderOuterClass.Payment.newBuilder()
-                        .setPaymentMethod(OrderOuterClass.Payment.PaymentMethod.CASH)
-                        .setDeliveryCharge(350)
-                        .setNonTaxedTotalPrice(1000)
-                        .setTax(135)
-                        .setTaxedTotalPrice(1485)
+                        .setPaymentMethod(paymentMethod)
+                        .setDeliveryCharge(deliveryCharge)
+                        .setNonTaxedTotalPrice(nonTaxedTotalPrice)
+                        .setTax(tax)
+                        .setTaxedTotalPrice(taxedTotalPrice)
                         .build()
                 )
                 .setTime(
@@ -67,7 +77,7 @@ class OrderTestHelper {
             )
         }
 
-        fun createTestOrderItems(vararg testOrderItems: TestOrderItem): List<OrderOuterClass.Item> {
+        private fun createDefaultTestOrderItems(vararg testOrderItems: TestOrderItem): List<OrderOuterClass.Item> {
             return testOrderItems.map {
                 val price = Money.newBuilder().setCurrencyCode("JPY").setUnits(it.price).build()
                 OrderOuterClass.Item.newBuilder()
@@ -79,6 +89,34 @@ class OrderTestHelper {
                     .build()
             }
         }
+
+        private fun createTestOrderItemAttribute(attributeId: Long): OrderOuterClass.Item.Attribute =
+            OrderOuterClass.Item.Attribute.newBuilder()
+                .setId(attributeId)
+                .build()
+
+        private fun createDefaultTestOrderItems() = createDefaultTestOrderItems(
+            TestOrderItem(
+                itemId = 1,
+                name = "商品1",
+                price = 100,
+                quantity = 1,
+                attributes = listOf(
+                    createTestOrderItemAttribute(1),
+                    createTestOrderItemAttribute(4)
+                )
+            ),
+            TestOrderItem(
+                itemId = 2,
+                name = "商品2",
+                price = 200,
+                quantity = 2,
+                attributes = listOf(
+                    createTestOrderItemAttribute(2),
+                    createTestOrderItemAttribute(5)
+                )
+            )
+        )
 
         class TestOrderItem(
             val itemId: Long,
@@ -111,10 +149,10 @@ class OrderTestHelper {
         fun assert_登録された注文商品が正しいこと(
             actual: OrderItemsBase,
             expectedOrderId: OrderId,
-            expectedOrderItem: OrderOuterClass.Item
+            expectedOrderItem: OrderItem
         ) {
             Assertions.assertThat(actual.orderId).isEqualTo(expectedOrderId.value)
-            Assertions.assertThat(actual.itemId).isEqualTo(expectedOrderItem.id)
+            Assertions.assertThat(actual.itemId).isEqualTo(expectedOrderItem.itemId)
             Assertions.assertThat(actual.quantity).isEqualTo(expectedOrderItem.quantity)
             Assertions.assertThat(actual.createdAt).isEqualTo(now)
             Assertions.assertThat(actual.updatedAt).isEqualTo(now)
