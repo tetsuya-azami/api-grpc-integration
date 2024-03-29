@@ -62,7 +62,7 @@ class OrderRepositoryTest @Autowired constructor(
         assertThat(insertedOrderList.size).isEqualTo(1)
         val insertedOrder = insertedOrderList.first()
 
-        assert_登録された注文情報が正しいこと(insertedOrder, order)
+        assert_登録された注文情報が正しいこと(order, insertedOrder)
 
         // Then OrderItems
         val insertedOrderItemBases = orderItemsMapper.select { }
@@ -70,9 +70,9 @@ class OrderRepositoryTest @Autowired constructor(
         val expectedOrderItems = order.orderItems.value
         insertedOrderItemBases.forEachIndexed { index, orderItemsBase ->
             assert_登録された注文商品が正しいこと(
-                actual = orderItemsBase,
                 expectedOrderId = insertedOrderId,
-                expectedOrderItem = expectedOrderItems[index]
+                expectedOrderItem = expectedOrderItems[index],
+                actual = orderItemsBase
             )
         }
 

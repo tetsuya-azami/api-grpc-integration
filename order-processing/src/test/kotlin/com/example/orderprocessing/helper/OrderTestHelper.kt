@@ -17,7 +17,7 @@ class OrderTestHelper {
     companion object {
         private val now: LocalDateTime = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
 
-        fun createTestOrder(
+        fun createTestOrderProto(
             items: List<OrderOuterClass.Item> = createDefaultTestOrderItems(),
             chainId: Long = 1,
             shopId: Long = 1,
@@ -30,8 +30,8 @@ class OrderTestHelper {
             nonTaxedTotalPrice: Long = 1000,
             tax: Long = 135,
             taxedTotalPrice: Long = 1485
-        ): Order {
-            val orderProto = OrderOuterClass.Order.newBuilder()
+        ): OrderOuterClass.Order {
+            return OrderOuterClass.Order.newBuilder()
                 .addAllItems(items)
                 .setChain(
                     OrderOuterClass.Chain.newBuilder()
@@ -69,10 +69,41 @@ class OrderTestHelper {
                         .setSeconds(now.toEpochSecond(ZoneOffset.of("+09:00")))
                         .build()
                 )
+                .build()
+        }
 
+        fun createTestOrder(
+            items: List<OrderOuterClass.Item> = createDefaultTestOrderItems(),
+            chainId: Long = 1,
+            shopId: Long = 1,
+            deliveryType: OrderOuterClass.Delivery.Type = OrderOuterClass.Delivery.Type.IMMEDIATE,
+            addressId: Long = 1,
+            userId: Long = 1,
+            blackLevel: OrderOuterClass.User.BlackLevel = OrderOuterClass.User.BlackLevel.LOW,
+            paymentMethod: PaymentMethod = OrderOuterClass.Payment.PaymentMethod.CASH,
+            deliveryCharge: Long = 350,
+            nonTaxedTotalPrice: Long = 1000,
+            tax: Long = 135,
+            taxedTotalPrice: Long = 1485
+        ): Order {
             return Order.fromOrderCreationRequest(
                 OrderOuterClass.OrderCreationRequest.newBuilder()
-                    .setOrder(orderProto)
+                    .setOrder(
+                        createTestOrderProto(
+                            items = items,
+                            chainId = chainId,
+                            shopId = shopId,
+                            deliveryType = deliveryType,
+                            addressId = addressId,
+                            userId = userId,
+                            blackLevel = blackLevel,
+                            paymentMethod = paymentMethod,
+                            deliveryCharge = deliveryCharge,
+                            nonTaxedTotalPrice = nonTaxedTotalPrice,
+                            tax = tax,
+                            taxedTotalPrice = taxedTotalPrice
+                        )
+                    )
                     .build()
             )
         }
@@ -126,9 +157,28 @@ class OrderTestHelper {
             val attributes: List<OrderOuterClass.Item.Attribute>
         )
 
+        fun assert_作成された注文モデルが正しいこと(
+            expected: OrderOuterClass.Order,
+            actual: Order
+        ) {
+            Assertions.assertThat(actual.orderId).isNotNull
+            Assertions.assertThat(actual.chainId).isEqualTo(expected.chain.id)
+            Assertions.assertThat(actual.shopId).isEqualTo(expected.shop.id)
+            Assertions.assertThat(actual.user.userId).isEqualTo(expected.user.id)
+            Assertions.assertThat(actual.payment.paymentMethodType.name).isEqualTo(expected.payment.paymentMethod.name)
+            Assertions.assertThat(actual.delivery.addressId).isEqualTo(expected.delivery.addressId)
+            Assertions.assertThat(actual.delivery.type.name).isEqualTo(expected.delivery.type.name)
+            Assertions.assertThat(actual.payment.deliveryCharge).isEqualTo(expected.payment.deliveryCharge)
+            Assertions.assertThat(actual.payment.nonTaxedTotalPrice).isEqualTo(expected.payment.nonTaxedTotalPrice)
+            Assertions.assertThat(actual.payment.tax).isEqualTo(expected.payment.tax)
+            Assertions.assertThat(actual.payment.taxedTotalPrice).isEqualTo(expected.payment.taxedTotalPrice)
+            // TODO: 時刻の検証
+//            Assertions.assertThat(actual.time).isEqualTo(expected.time)
+        }
+
         fun assert_登録された注文情報が正しいこと(
-            actual: OrdersBase,
-            expected: Order
+            expected: Order,
+            actual: OrdersBase
         ) {
             Assertions.assertThat(actual.orderId).isEqualTo(expected.orderId.value)
             Assertions.assertThat(actual.chainId).isEqualTo(expected.chainId)
@@ -147,9 +197,9 @@ class OrderTestHelper {
         }
 
         fun assert_登録された注文商品が正しいこと(
-            actual: OrderItemsBase,
             expectedOrderId: OrderId,
-            expectedOrderItem: OrderItem
+            expectedOrderItem: OrderItem,
+            actual: OrderItemsBase
         ) {
             Assertions.assertThat(actual.orderId).isEqualTo(expectedOrderId.value)
             Assertions.assertThat(actual.itemId).isEqualTo(expectedOrderItem.itemId)
