@@ -172,8 +172,9 @@ class OrderTestHelper {
             Assertions.assertThat(actual.payment.nonTaxedTotalPrice).isEqualTo(expected.payment.nonTaxedTotalPrice)
             Assertions.assertThat(actual.payment.tax).isEqualTo(expected.payment.tax)
             Assertions.assertThat(actual.payment.taxedTotalPrice).isEqualTo(expected.payment.taxedTotalPrice)
-            // TODO: 時刻の検証
-//            Assertions.assertThat(actual.time).isEqualTo(expected.time)
+            val expectedTime =
+                LocalDateTime.ofEpochSecond(expected.time.seconds, 0, ZoneOffset.of("+09:00"))
+            Assertions.assertThat(actual.time).isEqualTo(expectedTime)
         }
 
         fun assert_登録された注文情報が正しいこと(
