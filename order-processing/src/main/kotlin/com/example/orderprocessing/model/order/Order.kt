@@ -36,6 +36,11 @@ class Order private constructor(
             }
             val delivery = Delivery.fromOrderCreationRequest(order)
             val user = User.fromOrderCreationRequest(order)
+            val blackLevel = BlackLevel.fromString(order.user.blackLevel.name)
+            if (!isBlackLevelCanBeOrdered(blackLevel)) {
+                validationErrors.add(OrderValidationErrors.IllegalOrderByBlackUser(blackLevel))
+            }
+
             var payment: Payment? = null
             when (val paymentValidationResult = Payment.fromOrderCreationRequest(order)) {
                 is Payment.PaymentValidationResult.Success -> {
@@ -45,6 +50,16 @@ class Order private constructor(
                 is Payment.PaymentValidationResult.Failure -> {
                     validationErrors.addAll(paymentValidationResult.validationErrors)
                 }
+            }
+
+            // 金額整合性チェック
+            if (orderItems?.nonTaxedTotalPrice() != order.payment.nonTaxedTotalPrice) {
+                validationErrors.add(
+                    OrderValidationErrors.IllegalNonTaxedTotalPrice(
+                        orderItems,
+                        payment
+                    )
+                )
             }
 
             if (validationErrors.isNotEmpty() || orderItems == null || payment == null) {
@@ -60,7 +75,7 @@ class Order private constructor(
                     delivery = delivery,
                     user = user,
                     payment = payment,
-                    blackLevel = BlackLevel.fromString(order.user.blackLevel.name),
+                    blackLevel = blackLevel,
                     time = LocalDateTime.ofEpochSecond(
                         order.time.seconds,
                         order.time.nanos,
@@ -68,6 +83,13 @@ class Order private constructor(
                     )
                 )
             )
+        }
+
+        private fun isBlackLevelCanBeOrdered(blackLevel: BlackLevel): Boolean {
+            return when (blackLevel) {
+                BlackLevel.LOW, BlackLevel.MIDDLE -> true
+                BlackLevel.HIGH -> false
+            }
         }
     }
 
@@ -77,10 +99,16 @@ class Order private constructor(
     }
 
     sealed interface OrderValidationErrors : ValidationError {
-        data object IllegalTime : OrderValidationErrors {
+        data class IllegalOrderByBlackUser(val blackLevel: BlackLevel) : OrderValidationErrors {
             override val message: String
-                get() = ""
+                get() = "不正な注文です。BlackLevel: ${blackLevel.name}"
+        }
 
+        // TODO: 引数のNull許容型をやめる
+        data class IllegalNonTaxedTotalPrice(val orderItems: OrderItems?, val payment: Payment?) :
+            OrderValidationErrors {
+            override val message: String
+                get() = "商品の税抜き合計金額が不整合です。購入商品一覧: ${orderItems?.value}, 税抜き合計金額: ${payment?.nonTaxedTotalPrice}"
         }
     }
 }

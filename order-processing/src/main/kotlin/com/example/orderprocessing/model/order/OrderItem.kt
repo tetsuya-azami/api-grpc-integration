@@ -41,6 +41,10 @@ class OrderItem private constructor(
         }
     }
 
+    fun nonTaxedTotalPrice(): Long {
+        return this.price * this.quantity
+    }
+
     sealed interface OrderItemValidationResult {
         data class Success(val orderItem: OrderItem) : OrderItemValidationResult
         data class Failure(val validationErrors: List<ValidationError>) : OrderItemValidationResult

@@ -35,6 +35,10 @@ data class OrderItems private constructor(val value: List<OrderItem>) {
         return value.size
     }
 
+    fun nonTaxedTotalPrice(): Long {
+        return this.value.sumOf(OrderItem::nonTaxedTotalPrice)
+    }
+
     sealed interface OrderItemsValidationResult {
         data class Success(val orderItems: OrderItems) : OrderItemsValidationResult
         data class Failure(val validationErrors: List<ValidationError>) : OrderItemsValidationResult
