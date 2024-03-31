@@ -86,7 +86,7 @@ class OrderTestHelper {
             tax: Long = 135,
             taxedTotalPrice: Long = 1485
         ): Order {
-            return Order.fromOrderCreationRequest(
+            val orderValidationResult = Order.fromOrderCreationRequest(
                 OrderOuterClass.OrderCreationRequest.newBuilder()
                     .setOrder(
                         createTestOrderProto(
@@ -106,6 +106,15 @@ class OrderTestHelper {
                     )
                     .build()
             )
+            when (orderValidationResult) {
+                is Order.OrderValidationResult.Success -> {
+                    return orderValidationResult.order
+                }
+
+                is Order.OrderValidationResult.Failure -> {
+                    throw IllegalArgumentException("バリデーションエラーが発生しました。${orderValidationResult.validationErrors}")
+                }
+            }
         }
 
         private fun createDefaultTestOrderItems(vararg testOrderItems: TestOrderItem): List<OrderOuterClass.Item> {
