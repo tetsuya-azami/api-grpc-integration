@@ -16,6 +16,7 @@ class Order private constructor(
     val delivery: Delivery,
     val user: User,
     val payment: Payment,
+    val blackLevel: BlackLevel,
     val time: LocalDateTime
 ) {
 
@@ -59,6 +60,7 @@ class Order private constructor(
                     delivery = delivery,
                     user = user,
                     payment = payment,
+                    blackLevel = BlackLevel.fromString(order.user.blackLevel.name),
                     time = LocalDateTime.ofEpochSecond(
                         order.time.seconds,
                         order.time.nanos,
