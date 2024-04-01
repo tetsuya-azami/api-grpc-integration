@@ -18,7 +18,7 @@ class OrderTestHelper {
         private val now: LocalDateTime = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
 
         fun createTestOrderProto(
-            items: List<OrderOuterClass.Item> = createDefaultTestOrderItems(),
+            items: List<OrderOuterClass.Item> = ceateDefaultTestOrderItems(),
             chainId: Long = 1,
             shopId: Long = 1,
             deliveryType: OrderOuterClass.Delivery.Type = OrderOuterClass.Delivery.Type.IMMEDIATE,
@@ -73,7 +73,7 @@ class OrderTestHelper {
         }
 
         fun createTestOrder(
-            items: List<OrderOuterClass.Item> = createDefaultTestOrderItems(),
+            items: List<OrderOuterClass.Item> = ceateDefaultTestOrderItems(),
             chainId: Long = 1,
             shopId: Long = 1,
             deliveryType: OrderOuterClass.Delivery.Type = OrderOuterClass.Delivery.Type.IMMEDIATE,
@@ -117,17 +117,34 @@ class OrderTestHelper {
             }
         }
 
-        private fun createDefaultTestOrderItems(vararg testOrderItems: TestOrderItem): List<OrderOuterClass.Item> {
+        fun createTestOrderItems(vararg testOrderItems: TestOrderItem): List<OrderOuterClass.Item> {
             return testOrderItems.map {
-                val price = Money.newBuilder().setCurrencyCode("JPY").setUnits(it.price).build()
-                OrderOuterClass.Item.newBuilder()
-                    .setId(it.itemId)
-                    .setName(it.name)
-                    .setPrice(price)
-                    .setQuantity(it.quantity)
-                    .addAllAttributes(it.attributes)
-                    .build()
+                createTestOrderItem(
+                    price = it.price,
+                    itemId = it.itemId,
+                    name = it.name,
+                    quantity = it.quantity,
+                    attributes = it.attributes
+                )
             }
+        }
+
+        fun createTestOrderItem(
+            price: Long,
+            itemId: Long,
+            name: String,
+            quantity: Int,
+            attributes: List<Long>
+        ): OrderOuterClass.Item {
+            val priceProto = Money.newBuilder().setCurrencyCode("JPY").setUnits(price).build()
+            val attributesProto = attributes.map { createTestOrderItemAttribute(it) }
+            return OrderOuterClass.Item.newBuilder()
+                .setId(itemId)
+                .setName(name)
+                .setPrice(priceProto)
+                .setQuantity(quantity)
+                .addAllAttributes(attributesProto)
+                .build()
         }
 
         private fun createTestOrderItemAttribute(attributeId: Long): OrderOuterClass.Item.Attribute =
@@ -135,26 +152,20 @@ class OrderTestHelper {
                 .setId(attributeId)
                 .build()
 
-        private fun createDefaultTestOrderItems() = createDefaultTestOrderItems(
+        fun ceateDefaultTestOrderItems() = createTestOrderItems(
             TestOrderItem(
                 itemId = 1,
                 name = "商品1",
                 price = 100,
                 quantity = 1,
-                attributes = listOf(
-                    createTestOrderItemAttribute(1),
-                    createTestOrderItemAttribute(4)
-                )
+                attributes = listOf(1, 4)
             ),
             TestOrderItem(
                 itemId = 2,
                 name = "商品2",
                 price = 200,
                 quantity = 2,
-                attributes = listOf(
-                    createTestOrderItemAttribute(2),
-                    createTestOrderItemAttribute(5)
-                )
+                attributes = listOf(2, 5)
             )
         )
 
@@ -163,7 +174,7 @@ class OrderTestHelper {
             val name: String,
             val price: Long,
             val quantity: Int,
-            val attributes: List<OrderOuterClass.Item.Attribute>
+            val attributes: List<Long>
         )
 
         fun assert_作成された注文モデルが正しいこと(
