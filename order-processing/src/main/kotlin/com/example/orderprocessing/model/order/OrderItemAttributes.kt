@@ -3,8 +3,10 @@ package com.example.orderprocessing.model.order
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
 import com.example.orderprocessing.model.order.OrderItemAttributes.OrderItemAttributesValidationError.IllegalOrderItemAttributeSize
-import com.github.michaelbull.result.*
-import kotlin.collections.fold
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.getOrElse
 
 class OrderItemAttributes private constructor(val value: List<OrderItemAttribute>) {
     companion object {
@@ -12,30 +14,22 @@ class OrderItemAttributes private constructor(val value: List<OrderItemAttribute
         const val MAXIMUM_ATTRIBUTE_SIZE = 100
 
         fun fromOrderCreationRequest(
-            orderItem: OrderOuterClass.Item
+            orderItemProto: OrderOuterClass.Item
         ): Result<OrderItemAttributes, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
-            val itemAttributesProto = orderItem.attributesList
+            val itemAttributesProto = orderItemProto.attributesList
 
             if (MAXIMUM_ATTRIBUTE_SIZE < itemAttributesProto.size) {
-                validationErrors.add(IllegalOrderItemAttributeSize(orderItem))
+                validationErrors.add(IllegalOrderItemAttributeSize(orderItemProto))
             }
 
-            // 全てOk → Ok(OrderItemAttributes(value = attributes))
-            // 一部でもErr → validationErrorsにエラー情報をadd. return Err(validationErrors)
-            val (itemAttributes, itemAttributeValidationErrors) = itemAttributesProto.map {
-                OrderItemAttribute.fromOrderCreationRequest(it)
-            }.fold(Pair(mutableListOf<OrderItemAttribute>(), mutableListOf<ValidationError>())) { acc, result ->
-                if (result.isOk) {
-                    acc.first.add(result.get()!!)
-                } else {
-                    acc.second.addAll(result.getError()!!)
-                }
-                acc
-            }
-
-            if (itemAttributeValidationErrors.isNotEmpty()) {
-                validationErrors.addAll(itemAttributeValidationErrors)
+            val itemAttributes = itemAttributesProto.mapNotNull {
+                OrderItemAttribute
+                    .fromOrderCreationRequest(it)
+                    .getOrElse { errors ->
+                        validationErrors.addAll(errors)
+                        null
+                    }
             }
 
             return if (validationErrors.isNotEmpty()) Err(validationErrors) else Ok(OrderItemAttributes(value = itemAttributes))
