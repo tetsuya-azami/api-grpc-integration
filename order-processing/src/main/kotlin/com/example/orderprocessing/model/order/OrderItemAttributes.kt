@@ -19,7 +19,7 @@ class OrderItemAttributes private constructor(val value: List<OrderItemAttribute
             val validationErrors = mutableListOf<ValidationError>()
             val itemAttributesProto = orderItemProto.attributesList
 
-            if (MAXIMUM_ATTRIBUTE_SIZE < itemAttributesProto.size) {
+            if (itemAttributesProto.size !in MINIMUM_ATTRIBUTE_SIZE..MAXIMUM_ATTRIBUTE_SIZE) {
                 validationErrors.add(IllegalOrderItemAttributeSize(orderItemProto))
             }
 
