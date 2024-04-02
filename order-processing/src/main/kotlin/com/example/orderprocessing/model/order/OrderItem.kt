@@ -2,6 +2,10 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.getOrElse
 
 
 class OrderItem private constructor(
@@ -13,41 +17,37 @@ class OrderItem private constructor(
     companion object {
         const val MINIMUM_QUANTITY = 1
         const val MAXIMUM_QUANTITY = 100
-        fun fromOrderCreationRequest(orderItem: OrderOuterClass.Item): OrderItemValidationResult {
+        fun fromOrderCreationRequest(orderItemProto: OrderOuterClass.Item): Result<OrderItem, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
-            if (orderItem.quantity < MINIMUM_QUANTITY || MAXIMUM_QUANTITY < orderItem.quantity) {
-                validationErrors.add(OrderItemValidationErrors.IllegalItemQuantity(orderItem))
+            if (orderItemProto.quantity !in MINIMUM_QUANTITY..MAXIMUM_QUANTITY) {
+                validationErrors.add(OrderItemValidationErrors.IllegalItemQuantity(orderItemProto))
             }
 
-            when (val orderItemAttributesValidationResult = OrderItemAttributes.fromOrderCreationRequest(orderItem)) {
-                is OrderItemAttributes.OrderItemAttributesValidationResult.Success -> {
-                    if (validationErrors.isNotEmpty()) return OrderItemValidationResult.Failure(validationErrors)
-                    return OrderItemValidationResult.Success(
-                        OrderItem(
-                            itemId = orderItem.id,
-                            price = orderItem.price.units,
-                            quantity = orderItem.quantity,
-                            attributes = orderItemAttributesValidationResult.orderItemAttributes
-                        )
-                    )
+            val orderItemAttributes = OrderItemAttributes
+                .fromOrderCreationRequest(orderItemProto)
+                .getOrElse {
+                    validationErrors.addAll(it)
+                    null
                 }
 
-                is OrderItemAttributes.OrderItemAttributesValidationResult.Failure -> {
-                    validationErrors.addAll(orderItemAttributesValidationResult.validationErrors)
-                    return OrderItemValidationResult.Failure(validationErrors)
-                }
+            if (validationErrors.isNotEmpty() || orderItemAttributes == null) {
+                return Err(validationErrors)
             }
+
+            return Ok(
+                OrderItem(
+                    itemId = orderItemProto.id,
+                    price = orderItemProto.price.units,
+                    orderItemProto.quantity,
+                    attributes = orderItemAttributes
+                )
+            )
         }
     }
 
     fun nonTaxedTotalPrice(): Long {
         return this.price * this.quantity
-    }
-
-    sealed interface OrderItemValidationResult {
-        data class Success(val orderItem: OrderItem) : OrderItemValidationResult
-        data class Failure(val validationErrors: List<ValidationError>) : OrderItemValidationResult
     }
 
     sealed interface OrderItemValidationErrors : ValidationError {
