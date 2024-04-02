@@ -3,38 +3,47 @@ package com.example.orderprocessing.model.order
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
 import com.example.orderprocessing.model.order.OrderItemAttributes.OrderItemAttributesValidationError.IllegalOrderItemAttributeSize
-import com.example.orderprocessing.model.order.OrderItemAttributes.OrderItemAttributesValidationResult.Failure
-import com.example.orderprocessing.model.order.OrderItemAttributes.OrderItemAttributesValidationResult.Success
+import com.github.michaelbull.result.*
+import kotlin.collections.fold
 
-class OrderItemAttributes(val value: List<OrderItemAttribute>) {
+class OrderItemAttributes private constructor(val value: List<OrderItemAttribute>) {
     companion object {
         const val MINIMUM_ATTRIBUTE_SIZE = 0
         const val MAXIMUM_ATTRIBUTE_SIZE = 100
 
         fun fromOrderCreationRequest(
             orderItem: OrderOuterClass.Item
-        ): OrderItemAttributesValidationResult {
+        ): Result<OrderItemAttributes, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
-            val itemAttributes = orderItem.attributesList
+            val itemAttributesProto = orderItem.attributesList
 
-            if (MAXIMUM_ATTRIBUTE_SIZE < itemAttributes.size) {
+            if (MAXIMUM_ATTRIBUTE_SIZE < itemAttributesProto.size) {
                 validationErrors.add(IllegalOrderItemAttributeSize(orderItem))
-                return Failure(validationErrors)
             }
 
-            val attributes = itemAttributes.map { OrderItemAttribute.fromOrderCreationRequest(it) }
+            // 全てOk → Ok(OrderItemAttributes(value = attributes))
+            // 一部でもErr → validationErrorsにエラー情報をadd. return Err(validationErrors)
+            val (itemAttributes, itemAttributeValidationErrors) = itemAttributesProto.map {
+                OrderItemAttribute.fromOrderCreationRequest(it)
+            }.fold(Pair(mutableListOf<OrderItemAttribute>(), mutableListOf<ValidationError>())) { acc, result ->
+                if (result.isOk) {
+                    acc.first.add(result.get()!!)
+                } else {
+                    acc.second.addAll(result.getError()!!)
+                }
+                acc
+            }
 
-            return Success(OrderItemAttributes(value = attributes))
+            if (itemAttributeValidationErrors.isNotEmpty()) {
+                validationErrors.addAll(itemAttributeValidationErrors)
+            }
+
+            return if (validationErrors.isNotEmpty()) Err(validationErrors) else Ok(OrderItemAttributes(value = itemAttributes))
         }
     }
 
     fun size(): Int {
         return value.size
-    }
-
-    sealed interface OrderItemAttributesValidationResult {
-        data class Success(val orderItemAttributes: OrderItemAttributes) : OrderItemAttributesValidationResult
-        data class Failure(val validationErrors: List<ValidationError>) : OrderItemAttributesValidationResult
     }
 
     sealed interface OrderItemAttributesValidationError : ValidationError {
