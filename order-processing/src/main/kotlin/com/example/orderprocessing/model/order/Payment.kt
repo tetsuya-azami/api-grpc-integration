@@ -2,6 +2,9 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
 import java.math.BigDecimal
 
 data class Payment private constructor(
@@ -16,8 +19,7 @@ data class Payment private constructor(
         private const val MAXIMUM_TAXED_TOTAL_PRICE = 9999999999
         private val TAX_RATE = BigDecimal.valueOf(0.1)
 
-        fun fromOrderCreationRequest(order: OrderOuterClass.Order): PaymentValidationResult {
-            val payment = order.payment
+        fun fromOrderCreationRequest(payment: OrderOuterClass.Payment): Result<Payment, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
             // 税込金額上限チェック
@@ -33,23 +35,19 @@ data class Payment private constructor(
                 validationErrors.add(PaymentValidationError.MissMatchTaxedTotalPrice(payment))
             }
 
-            if (validationErrors.isNotEmpty()) return PaymentValidationResult.Failure(validationErrors)
-
-            return PaymentValidationResult.Success(
-                Payment(
-                    paymentMethodType = PaymentMethodType.fromString(payment.paymentMethod.name),
-                    deliveryCharge = payment.deliveryCharge,
-                    nonTaxedTotalPrice = payment.nonTaxedTotalPrice,
-                    tax = payment.tax,
-                    taxedTotalPrice = payment.taxedTotalPrice
+            return if (validationErrors.isNotEmpty())
+                Err(validationErrors)
+            else
+                Ok(
+                    Payment(
+                        paymentMethodType = PaymentMethodType.fromString(payment.paymentMethod.name),
+                        deliveryCharge = payment.deliveryCharge,
+                        nonTaxedTotalPrice = payment.nonTaxedTotalPrice,
+                        tax = payment.tax,
+                        taxedTotalPrice = payment.taxedTotalPrice
+                    )
                 )
-            )
         }
-    }
-
-    sealed interface PaymentValidationResult {
-        data class Success(val payment: Payment) : PaymentValidationResult
-        data class Failure(val validationErrors: List<ValidationError>) : PaymentValidationResult
     }
 
     sealed interface PaymentValidationError : ValidationError {
