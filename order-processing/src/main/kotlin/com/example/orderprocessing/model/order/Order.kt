@@ -2,6 +2,10 @@ package com.example.orderprocessing.model.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.getOrElse
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -21,39 +25,33 @@ class Order private constructor(
 ) {
 
     companion object {
-        fun fromOrderCreationRequest(request: OrderOuterClass.OrderCreationRequest): OrderValidationResult {
+        fun fromOrderCreationRequest(request: OrderOuterClass.OrderCreationRequest): Result<Order, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
-            val order = request.order
-            var orderItems: OrderItems? = null
-            when (val orderItemsValidationResult = OrderItems.fromOrderCreationRequest(order.itemsList)) {
-                is OrderItems.OrderItemsValidationResult.Success -> {
-                    orderItems = orderItemsValidationResult.orderItems
+
+            val orderProto = request.order
+            val orderItems = OrderItems
+                .fromOrderCreationRequest(orderProto.itemsList)
+                .getOrElse {
+                    validationErrors.addAll(it)
+                    null
                 }
 
-                is OrderItems.OrderItemsValidationResult.Failure -> {
-                    validationErrors.addAll(orderItemsValidationResult.validationErrors)
-                }
-            }
-            val delivery = Delivery.fromOrderCreationRequest(order)
-            val user = User.fromOrderCreationRequest(order)
-            val blackLevel = BlackLevel.fromString(order.user.blackLevel.name)
+            val delivery = Delivery.fromOrderCreationRequest(orderProto)
+            val user = User.fromOrderCreationRequest(orderProto)
+            val blackLevel = BlackLevel.fromString(orderProto.user.blackLevel.name)
             if (!isBlackLevelCanBeOrdered(blackLevel)) {
                 validationErrors.add(OrderValidationErrors.IllegalOrderByBlackUser(blackLevel))
             }
 
-            var payment: Payment? = null
-            when (val paymentValidationResult = Payment.fromOrderCreationRequest(order)) {
-                is Payment.PaymentValidationResult.Success -> {
-                    payment = paymentValidationResult.payment
+            val payment = Payment
+                .fromOrderCreationRequest(orderProto.payment)
+                .getOrElse { errors ->
+                    validationErrors.addAll(errors)
+                    null
                 }
-
-                is Payment.PaymentValidationResult.Failure -> {
-                    validationErrors.addAll(paymentValidationResult.validationErrors)
-                }
-            }
 
             // 金額整合性チェック
-            if (orderItems?.nonTaxedTotalPrice() != order.payment.nonTaxedTotalPrice) {
+            if (orderItems?.nonTaxedTotalPrice() != orderProto.payment.nonTaxedTotalPrice) {
                 validationErrors.add(
                     OrderValidationErrors.IllegalNonTaxedTotalPrice(
                         orderItems,
@@ -63,22 +61,22 @@ class Order private constructor(
             }
 
             if (validationErrors.isNotEmpty() || orderItems == null || payment == null) {
-                return OrderValidationResult.Failure(validationErrors)
+                return Err(validationErrors)
             }
 
-            return OrderValidationResult.Success(
+            return Ok(
                 Order(
                     orderId = OrderId.new(),
                     orderItems = orderItems,
-                    chainId = order.chain.id,
-                    shopId = order.shop.id,
+                    chainId = orderProto.chain.id,
+                    shopId = orderProto.shop.id,
                     delivery = delivery,
                     user = user,
                     payment = payment,
                     blackLevel = blackLevel,
                     time = LocalDateTime.ofEpochSecond(
-                        order.time.seconds,
-                        order.time.nanos,
+                        orderProto.time.seconds,
+                        orderProto.time.nanos,
                         ZoneOffset.of("+09:00")
                     )
                 )
@@ -91,11 +89,6 @@ class Order private constructor(
                 BlackLevel.HIGH -> false
             }
         }
-    }
-
-    sealed interface OrderValidationResult {
-        data class Success(val order: Order) : OrderValidationResult
-        data class Failure(val validationErrors: List<ValidationError>) : OrderValidationResult
     }
 
     sealed interface OrderValidationErrors : ValidationError {
