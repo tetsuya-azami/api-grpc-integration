@@ -6,6 +6,7 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 data class Payment private constructor(
     val paymentMethodType: PaymentMethodType,
@@ -27,11 +28,15 @@ data class Payment private constructor(
                 validationErrors.add(PaymentValidationError.IllegalTaxedTotalPrice)
             }
             // 消費税額整合性チェック
-            if (BigDecimal.valueOf(payment.nonTaxedTotalPrice) * TAX_RATE != BigDecimal.valueOf(payment.tax)) {
+            if ((BigDecimal.valueOf(payment.nonTaxedTotalPrice + payment.deliveryCharge) * TAX_RATE).setScale(
+                    0,
+                    RoundingMode.DOWN
+                ) != BigDecimal.valueOf(payment.tax)
+            ) {
                 validationErrors.add(PaymentValidationError.IllegalTax(payment))
             }
             // 税込合計金額整合性チェック
-            if (payment.nonTaxedTotalPrice + payment.tax != payment.taxedTotalPrice) {
+            if (payment.nonTaxedTotalPrice + payment.deliveryCharge + payment.tax != payment.taxedTotalPrice) {
                 validationErrors.add(PaymentValidationError.MissMatchTaxedTotalPrice(payment))
             }
 
