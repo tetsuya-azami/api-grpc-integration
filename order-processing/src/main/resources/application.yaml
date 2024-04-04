@@ -4,3 +4,11 @@ spring:
     url: jdbc:mysql://localhost:3306/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf8&serverTimezone=SERVER&allowMultiQueries=true
     username: root
     password: root
+logging:
+  level:
+    com:
+      example:
+        orderprocessing:
+          repository:
+            mapper:
+              generated: DEBUG
