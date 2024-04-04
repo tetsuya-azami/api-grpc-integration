@@ -11,5 +11,6 @@ services:
     volumes:
       - order_processing:/var/lib/mysql
       - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./conf.d:/etc/mysql/conf.d/
 volumes:
   order_processing:
