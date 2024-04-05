@@ -3,14 +3,10 @@ package com.example.orderprocessing.controller
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderServiceGrpcKt
 import com.example.orderprocessing.error.ValidationError
+import com.example.orderprocessing.error.exception.OrderProcessingIllegalArgumentException
 import com.example.orderprocessing.model.order.Order
 import com.example.orderprocessing.usecase.command.RegisterOrder
 import com.github.michaelbull.result.getOrElse
-import com.google.rpc.BadRequest
-import io.grpc.Metadata
-import io.grpc.Status
-import io.grpc.StatusException
-import io.grpc.protobuf.ProtoUtils
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
 
@@ -33,19 +29,7 @@ class OrderController(
             }
 
         if (validationErrors.isNotEmpty() || order == null) {
-            val messages = validationErrors.joinToString(separator = "\n") { it.message }
-
-            val fieldViolation = BadRequest.FieldViolation
-                .newBuilder()
-                .setField("all")
-                .setDescription(messages)
-                .build()
-            val badRequestError = BadRequest.newBuilder().addFieldViolations(fieldViolation).build()
-
-            val errorDetail = Metadata()
-            errorDetail.put(ProtoUtils.keyForProto(badRequestError), badRequestError)
-
-            throw StatusException(Status.INVALID_ARGUMENT, errorDetail)
+            throw OrderProcessingIllegalArgumentException(validationErrors)
         }
 
         val orderId = registerOrder.execute(order)
