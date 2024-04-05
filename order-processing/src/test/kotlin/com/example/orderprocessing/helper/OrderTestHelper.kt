@@ -2,11 +2,11 @@ package com.example.orderprocessing.helper
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderOuterClass.Payment.PaymentMethod
-import com.example.orderprocessing.model.order.Order
-import com.example.orderprocessing.model.order.OrderId
-import com.example.orderprocessing.model.order.OrderItem
-import com.example.orderprocessing.repository.entity.generated.OrderItemsBase
-import com.example.orderprocessing.repository.entity.generated.OrdersBase
+import com.example.orderprocessing.domain.model.Order
+import com.example.orderprocessing.domain.model.OrderId
+import com.example.orderprocessing.domain.model.OrderItem
+import com.example.orderprocessing.infrastructure.entity.generated.OrderItemsBase
+import com.example.orderprocessing.infrastructure.entity.generated.OrdersBase
 import com.google.protobuf.Timestamp
 import com.google.type.Money
 import org.assertj.core.api.Assertions

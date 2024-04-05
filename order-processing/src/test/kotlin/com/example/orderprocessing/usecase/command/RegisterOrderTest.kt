@@ -1,7 +1,7 @@
 package com.example.orderprocessing.usecase.command
 
 import com.example.orderprocessing.helper.OrderTestHelper
-import com.example.orderprocessing.repository.order.OrderRepository
+import com.example.orderprocessing.infrastructure.order.OrderRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

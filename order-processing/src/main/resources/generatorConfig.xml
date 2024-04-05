@@ -14,9 +14,9 @@
             <property name="useJSR310Types" value="true"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.example.orderprocessing.repository.entity.generated"
+        <javaModelGenerator targetPackage="com.example.orderprocessing.infrastructure.entity.generated"
                             targetProject="src/main/kotlin"/>
-        <javaClientGenerator targetPackage="com.example.orderprocessing.repository.mapper.generated"
+        <javaClientGenerator targetPackage="com.example.orderprocessing.infrastructure.mapper.generated"
                              targetProject="src/main/kotlin"/>
 
         <table tableName="orders" schema="test">
