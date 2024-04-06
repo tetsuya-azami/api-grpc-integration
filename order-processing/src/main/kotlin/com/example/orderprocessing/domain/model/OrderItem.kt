@@ -1,30 +1,31 @@
 package com.example.orderprocessing.domain.model
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
+import com.example.orderprocessing.presentation.order.OrderItemParam
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.getOrElse
+import java.math.BigDecimal
 
 
 class OrderItem private constructor(
     val itemId: Long,
-    val price: Long,
+    val price: BigDecimal,
     val quantity: Int,
     val attributes: OrderItemAttributes
 ) {
     companion object {
         const val MINIMUM_QUANTITY = 1
         const val MAXIMUM_QUANTITY = 100
-        fun fromOrderCreationRequest(orderItemProto: OrderOuterClass.Item): Result<OrderItem, List<ValidationError>> {
+        fun fromParam(orderItemParam: OrderItemParam): Result<OrderItem, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
-            if (orderItemProto.quantity !in MINIMUM_QUANTITY..MAXIMUM_QUANTITY) {
-                validationErrors.add(OrderItemValidationErrors.IllegalItemQuantity(orderItemProto))
+            if (orderItemParam.quantity !in MINIMUM_QUANTITY..MAXIMUM_QUANTITY) {
+                validationErrors.add(OrderItemValidationErrors.IllegalItemQuantity(orderItemParam))
             }
 
-            val orderItemAttributes = OrderItemAttributes.fromOrderCreationRequest(orderItemProto)
+            val orderItemAttributes = OrderItemAttributes.fromParam(orderItemParam)
                 .getOrElse {
                     validationErrors.addAll(it)
                     null
@@ -36,23 +37,23 @@ class OrderItem private constructor(
 
             return Ok(
                 OrderItem(
-                    itemId = orderItemProto.id,
-                    price = orderItemProto.price.units,
-                    orderItemProto.quantity,
+                    itemId = orderItemParam.id,
+                    price = orderItemParam.price,
+                    quantity = orderItemParam.quantity,
                     attributes = orderItemAttributes
                 )
             )
         }
     }
 
-    fun nonTaxedTotalPrice(): Long {
-        return this.price * this.quantity
+    fun nonTaxedTotalPrice(): BigDecimal {
+        return this.price.multiply(this.quantity.toBigDecimal())
     }
 
     sealed interface OrderItemValidationErrors : ValidationError {
-        data class IllegalItemQuantity(val orderItem: OrderOuterClass.Item) : OrderItemValidationErrors {
+        data class IllegalItemQuantity(val orderItemParam: OrderItemParam) : OrderItemValidationErrors {
             override val message: String
-                get() = "商品の数量は${MINIMUM_QUANTITY}個から${MAXIMUM_QUANTITY}個の間で注文できます。商品ID: ${orderItem.id}, 数量: ${orderItem.quantity}"
+                get() = "商品の数量は${MINIMUM_QUANTITY}個から${MAXIMUM_QUANTITY}個の間で注文できます。商品ID: ${orderItemParam.id}, 数量: ${orderItemParam.quantity}"
         }
     }
 

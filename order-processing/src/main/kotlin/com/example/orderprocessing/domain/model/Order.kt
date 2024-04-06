@@ -1,13 +1,12 @@
 package com.example.orderprocessing.domain.model
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
+import com.example.orderprocessing.presentation.order.OrderParam
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.getOrElse
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 /**
  * 注文ルートエンティティ
@@ -25,31 +24,31 @@ class Order private constructor(
 ) {
 
     companion object {
-        fun fromOrderCreationRequest(request: OrderOuterClass.OrderCreationRequest): Result<Order, List<ValidationError>> {
+        fun fromParam(orderParam: OrderParam): Result<Order, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
-            val orderProto = request.order
-            val orderItems = OrderItems.fromOrderCreationRequest(orderProto.itemsList)
+            val orderItems = OrderItems.fromParam(orderParam.itemParams)
                 .getOrElse {
                     validationErrors.addAll(it)
                     null
                 }
 
-            val delivery = Delivery.fromOrderCreationRequest(orderProto)
-            val user = User.fromOrderCreationRequest(orderProto)
-            val blackLevel = BlackLevel.fromString(orderProto.user.blackLevel.name)
+            val delivery = Delivery.fromParam(orderParam.deliveryParam)
+            val user = User.fromParam(orderParam.userParam)
+
+            val blackLevel = orderParam.blackLevel
             if (!isBlackLevelCanBeOrdered(blackLevel)) {
                 validationErrors.add(OrderValidationErrors.IllegalOrderByBlackUser(blackLevel))
             }
 
-            val payment = Payment.fromOrderCreationRequest(orderProto.payment)
+            val payment = Payment.fromParam(orderParam.paymentParam)
                 .getOrElse { errors ->
                     validationErrors.addAll(errors)
                     null
                 }
 
             // 金額整合性チェック
-            if (orderItems?.nonTaxedTotalPrice() != orderProto.payment.nonTaxedTotalPrice) {
+            if (orderItems?.nonTaxedTotalPrice() != orderParam.paymentParam.nonTaxedTotalPrice) {
                 validationErrors.add(
                     OrderValidationErrors.IllegalNonTaxedTotalPrice(
                         orderItems,
@@ -66,17 +65,13 @@ class Order private constructor(
                 Order(
                     orderId = OrderId.new(),
                     orderItems = orderItems,
-                    chainId = orderProto.chain.id,
-                    shopId = orderProto.shop.id,
+                    chainId = orderParam.chainId,
+                    shopId = orderParam.shopId,
                     delivery = delivery,
                     user = user,
                     payment = payment,
                     blackLevel = blackLevel,
-                    time = LocalDateTime.ofEpochSecond(
-                        orderProto.time.seconds,
-                        orderProto.time.nanos,
-                        ZoneOffset.of("+09:00")
-                    )
+                    time = orderParam.time
                 )
             )
         }

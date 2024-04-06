@@ -1,8 +1,8 @@
 package com.example.orderprocessing.domain.model
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.domain.model.OrderItemAttributes.OrderItemAttributesValidationError.IllegalOrderItemAttributeSize
 import com.example.orderprocessing.error.ValidationError
+import com.example.orderprocessing.presentation.order.OrderItemParam
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
@@ -13,18 +13,18 @@ class OrderItemAttributes private constructor(val value: List<OrderItemAttribute
         const val MINIMUM_ATTRIBUTE_SIZE = 0
         const val MAXIMUM_ATTRIBUTE_SIZE = 100
 
-        fun fromOrderCreationRequest(
-            orderItemProto: OrderOuterClass.Item
+        fun fromParam(
+            orderItemParam: OrderItemParam
         ): Result<OrderItemAttributes, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
-            val itemAttributesProto = orderItemProto.attributesList
+            val attributeParams = orderItemParam.attributeParams
 
-            if (itemAttributesProto.size !in MINIMUM_ATTRIBUTE_SIZE..MAXIMUM_ATTRIBUTE_SIZE) {
-                validationErrors.add(IllegalOrderItemAttributeSize(orderItemProto))
+            if (attributeParams.size !in MINIMUM_ATTRIBUTE_SIZE..MAXIMUM_ATTRIBUTE_SIZE) {
+                validationErrors.add(IllegalOrderItemAttributeSize(orderItemParam))
             }
 
-            val itemAttributes = itemAttributesProto.mapNotNull {
-                OrderItemAttribute.fromOrderCreationRequest(it)
+            val itemAttributes = attributeParams.mapNotNull {
+                OrderItemAttribute.fromParam(it)
                     .getOrElse { errors ->
                         validationErrors.addAll(errors)
                         null
@@ -40,10 +40,10 @@ class OrderItemAttributes private constructor(val value: List<OrderItemAttribute
     }
 
     sealed interface OrderItemAttributesValidationError : ValidationError {
-        data class IllegalOrderItemAttributeSize(val orderItem: OrderOuterClass.Item) :
+        data class IllegalOrderItemAttributeSize(val orderItemParam: OrderItemParam) :
             OrderItemAttributesValidationError {
             override val message: String
-                get() = "商品属性は${MINIMUM_ATTRIBUTE_SIZE}文字から${MAXIMUM_ATTRIBUTE_SIZE}文字の間で商品に紐づけることができます。商品ID: ${orderItem.id}, 商品属性: ${orderItem.attributesList}"
+                get() = "商品属性は${MINIMUM_ATTRIBUTE_SIZE}つから${MAXIMUM_ATTRIBUTE_SIZE}つの間で商品に紐づけることができます。商品ID: ${orderItemParam.id}, 商品属性: ${orderItemParam.attributeParams}"
         }
     }
 }

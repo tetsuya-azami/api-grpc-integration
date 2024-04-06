@@ -2,7 +2,6 @@ package com.example.orderprocessing.presentation.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderServiceGrpcKt
-import com.example.orderprocessing.error.ValidationError
 import com.example.orderprocessing.usecase.command.RegisterOrder
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
@@ -16,10 +15,10 @@ class OrderController(
 
     override suspend fun createOrder(request: OrderOuterClass.OrderCreationRequest): OrderOuterClass.OrderCreationResponse {
         logger.info("receive request: $request")
-        
-        val order = OrderParam.fromProto(request.order)
 
-        val orderId = registerOrder.execute(order)
+        val orderParam = OrderParam.fromProto(request.order)
+
+        val orderId = registerOrder.execute(orderParam)
 
         val response =
             OrderOuterClass.OrderCreationResponse

@@ -1,11 +1,12 @@
 package com.example.orderprocessing.domain.model
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
+import com.example.orderprocessing.presentation.order.OrderItemParam
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.getOrElse
+import java.math.BigDecimal
 
 data class OrderItems private constructor(val value: List<OrderItem>) {
 
@@ -13,15 +14,15 @@ data class OrderItems private constructor(val value: List<OrderItem>) {
         private const val MINIMUM_ITEM_SIZE = 1
         private const val MAXIMUM_ITEM_SIZE = 100
 
-        fun fromOrderCreationRequest(itemListProto: List<OrderOuterClass.Item>): Result<OrderItems, List<ValidationError>> {
+        fun fromParam(itemParams: List<OrderItemParam>): Result<OrderItems, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
-            if (itemListProto.size !in MINIMUM_ITEM_SIZE..MAXIMUM_ITEM_SIZE) {
+            if (itemParams.size !in MINIMUM_ITEM_SIZE..MAXIMUM_ITEM_SIZE) {
                 validationErrors.add(OrderItemsValidationError.IllegalItemSize)
             }
 
-            val orderItems = itemListProto.mapNotNull {
-                OrderItem.fromOrderCreationRequest(it)
+            val orderItems = itemParams.mapNotNull {
+                OrderItem.fromParam(it)
                     .getOrElse { errors ->
                         validationErrors.addAll(errors)
                         null
@@ -36,7 +37,7 @@ data class OrderItems private constructor(val value: List<OrderItem>) {
         return value.size
     }
 
-    fun nonTaxedTotalPrice(): Long {
+    fun nonTaxedTotalPrice(): BigDecimal {
         return this.value.sumOf(OrderItem::nonTaxedTotalPrice)
     }
 

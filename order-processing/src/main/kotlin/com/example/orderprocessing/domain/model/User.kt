@@ -1,15 +1,14 @@
 package com.example.orderprocessing.domain.model
 
-import com.example.grpcinterface.proto.OrderOuterClass
+import com.example.orderprocessing.presentation.order.UserParam
 
 data class User private constructor(
     val userId: Long
 ) {
     companion object {
-        fun fromOrderCreationRequest(order: OrderOuterClass.Order): User {
-            val user = order.user
+        fun fromParam(userParam: UserParam): User {
             return User(
-                userId = user.id
+                userId = userParam.id
             )
         }
     }

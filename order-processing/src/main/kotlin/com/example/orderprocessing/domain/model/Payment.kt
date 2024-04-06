@@ -1,7 +1,7 @@
 package com.example.orderprocessing.domain.model
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderprocessing.error.ValidationError
+import com.example.orderprocessing.presentation.order.PaymentParam
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
@@ -10,34 +10,34 @@ import java.math.RoundingMode
 
 data class Payment private constructor(
     val paymentMethodType: PaymentMethodType,
-    val deliveryCharge: Long,
-    val nonTaxedTotalPrice: Long,
-    val tax: Long,
-    val taxedTotalPrice: Long
+    val deliveryCharge: BigDecimal,
+    val nonTaxedTotalPrice: BigDecimal,
+    val tax: BigDecimal,
+    val taxedTotalPrice: BigDecimal
 ) {
     companion object {
-        private const val MINIMUM_TAXED_TOTAL_PRICE = 0
-        private const val MAXIMUM_TAXED_TOTAL_PRICE = 9999999999
+        private val MINIMUM_TAXED_TOTAL_PRICE = BigDecimal.valueOf(0)
+        private val MAXIMUM_TAXED_TOTAL_PRICE = BigDecimal.valueOf(9999999999)
         private val TAX_RATE = BigDecimal.valueOf(0.1)
 
-        fun fromOrderCreationRequest(payment: OrderOuterClass.Payment): Result<Payment, List<ValidationError>> {
+        fun fromParam(paymentParam: PaymentParam): Result<Payment, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
             // 税込金額上限チェック
-            if (payment.taxedTotalPrice < MINIMUM_TAXED_TOTAL_PRICE || MAXIMUM_TAXED_TOTAL_PRICE < payment.taxedTotalPrice) {
+            if (paymentParam.taxedTotalPrice < MINIMUM_TAXED_TOTAL_PRICE || MAXIMUM_TAXED_TOTAL_PRICE < paymentParam.taxedTotalPrice) {
                 validationErrors.add(PaymentValidationError.IllegalTaxedTotalPrice)
             }
             // 消費税額整合性チェック
-            if ((BigDecimal.valueOf(payment.nonTaxedTotalPrice + payment.deliveryCharge) * TAX_RATE).setScale(
+            if (((paymentParam.nonTaxedTotalPrice + paymentParam.deliveryCharge) * TAX_RATE).setScale(
                     0,
                     RoundingMode.DOWN
-                ) != BigDecimal.valueOf(payment.tax)
+                ) != paymentParam.tax
             ) {
-                validationErrors.add(PaymentValidationError.IllegalTax(payment))
+                validationErrors.add(PaymentValidationError.IllegalTax(paymentParam))
             }
             // 税込合計金額整合性チェック
-            if (payment.nonTaxedTotalPrice + payment.deliveryCharge + payment.tax != payment.taxedTotalPrice) {
-                validationErrors.add(PaymentValidationError.MissMatchTaxedTotalPrice(payment))
+            if (paymentParam.nonTaxedTotalPrice + paymentParam.deliveryCharge + paymentParam.tax != paymentParam.taxedTotalPrice) {
+                validationErrors.add(PaymentValidationError.MissMatchTaxedTotalPrice(paymentParam))
             }
 
             return if (validationErrors.isNotEmpty())
@@ -45,11 +45,11 @@ data class Payment private constructor(
             else
                 Ok(
                     Payment(
-                        paymentMethodType = PaymentMethodType.fromString(payment.paymentMethod.name),
-                        deliveryCharge = payment.deliveryCharge,
-                        nonTaxedTotalPrice = payment.nonTaxedTotalPrice,
-                        tax = payment.tax,
-                        taxedTotalPrice = payment.taxedTotalPrice
+                        paymentMethodType = PaymentMethodType.fromString(paymentParam.paymentMethod.name),
+                        deliveryCharge = paymentParam.deliveryCharge,
+                        nonTaxedTotalPrice = paymentParam.nonTaxedTotalPrice,
+                        tax = paymentParam.tax,
+                        taxedTotalPrice = paymentParam.taxedTotalPrice
                     )
                 )
         }
@@ -61,14 +61,14 @@ data class Payment private constructor(
                 get() = "税抜き合計金額は${MINIMUM_TAXED_TOTAL_PRICE}から${MAXIMUM_TAXED_TOTAL_PRICE}の間でなければなりません。"
         }
 
-        data class IllegalTax(val payment: OrderOuterClass.Payment) : PaymentValidationError {
+        data class IllegalTax(val paymentParam: PaymentParam) : PaymentValidationError {
             override val message: String
-                get() = "消費税額が不整合です。税抜き合計金額: ${payment.nonTaxedTotalPrice}, 消費税: ${payment.tax}"
+                get() = "消費税額が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}"
         }
 
-        data class MissMatchTaxedTotalPrice(val payment: OrderOuterClass.Payment) : PaymentValidationError {
+        data class MissMatchTaxedTotalPrice(val paymentParam: PaymentParam) : PaymentValidationError {
             override val message: String
-                get() = "税込合計価格が不整合です。税抜き合計金額: ${payment.nonTaxedTotalPrice}, 消費税: ${payment.tax}, 税込合計金額: ${payment.taxedTotalPrice}"
+                get() = "税込合計価格が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}, 税込合計金額: ${paymentParam.taxedTotalPrice}"
         }
     }
 }
