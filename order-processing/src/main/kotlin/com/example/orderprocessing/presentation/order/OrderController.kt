@@ -2,11 +2,8 @@ package com.example.orderprocessing.presentation.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderServiceGrpcKt
-import com.example.orderprocessing.domain.model.Order
 import com.example.orderprocessing.error.ValidationError
-import com.example.orderprocessing.error.exception.OrderProcessingIllegalArgumentException
 import com.example.orderprocessing.usecase.command.RegisterOrder
-import com.github.michaelbull.result.getOrElse
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
 
@@ -19,18 +16,8 @@ class OrderController(
 
     override suspend fun createOrder(request: OrderOuterClass.OrderCreationRequest): OrderOuterClass.OrderCreationResponse {
         logger.info("receive request: $request")
-
-        val validationErrors = mutableListOf<ValidationError>()
-
-        val order = Order.fromOrderCreationRequest(request)
-            .getOrElse {
-                validationErrors.addAll(it)
-                null
-            }
-
-        if (validationErrors.isNotEmpty() || order == null) {
-            throw OrderProcessingIllegalArgumentException(validationErrors)
-        }
+        
+        val order = OrderParam.fromProto(request.order)
 
         val orderId = registerOrder.execute(order)
 
