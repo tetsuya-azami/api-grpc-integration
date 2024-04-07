@@ -41,22 +41,20 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
 interface ItemsBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<ItemsBase>, CommonUpdateMapper {
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @Results(
-        id = "ItemsBaseResult", value = [
-            Result(column = "item_id", property = "itemId", jdbcType = JdbcType.BIGINT, id = true),
-            Result(column = "chain_id", property = "chainId", jdbcType = JdbcType.BIGINT),
-            Result(column = "shop_id", property = "shopId", jdbcType = JdbcType.BIGINT),
-            Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR),
-            Result(column = "price", property = "price", jdbcType = JdbcType.DECIMAL),
-            Result(column = "description", property = "description", jdbcType = JdbcType.VARCHAR),
-            Result(column = "created_at", property = "createdAt", jdbcType = JdbcType.TIMESTAMP),
-            Result(column = "updated_at", property = "updatedAt", jdbcType = JdbcType.TIMESTAMP)
-        ]
-    )
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
+    @Results(id="ItemsBaseResult", value = [
+        Result(column="item_id", property="itemId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="chain_id", property="chainId", jdbcType=JdbcType.BIGINT),
+        Result(column="shop_id", property="shopId", jdbcType=JdbcType.BIGINT),
+        Result(column="name", property="name", jdbcType=JdbcType.VARCHAR),
+        Result(column="price", property="price", jdbcType=JdbcType.DECIMAL),
+        Result(column="description", property="description", jdbcType=JdbcType.VARCHAR),
+        Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
+    ])
     fun selectMany(selectStatement: SelectStatementProvider): List<ItemsBase>
 
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @ResultMap("ItemsBaseResult")
     fun selectOne(selectStatement: SelectStatementProvider): ItemsBase?
 }

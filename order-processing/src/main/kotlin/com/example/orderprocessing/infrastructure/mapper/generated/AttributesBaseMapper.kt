@@ -37,21 +37,18 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
-interface AttributesBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<AttributesBase>,
-    CommonUpdateMapper {
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @Results(
-        id = "AttributesBaseResult", value = [
-            Result(column = "attribute_id", property = "attributeId", jdbcType = JdbcType.BIGINT, id = true),
-            Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR),
-            Result(column = "value", property = "value", jdbcType = JdbcType.VARCHAR),
-            Result(column = "created_at", property = "createdAt", jdbcType = JdbcType.TIMESTAMP),
-            Result(column = "updated_at", property = "updatedAt", jdbcType = JdbcType.TIMESTAMP)
-        ]
-    )
+interface AttributesBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<AttributesBase>, CommonUpdateMapper {
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
+    @Results(id="AttributesBaseResult", value = [
+        Result(column="attribute_id", property="attributeId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="name", property="name", jdbcType=JdbcType.VARCHAR),
+        Result(column="value", property="value", jdbcType=JdbcType.VARCHAR),
+        Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
+    ])
     fun selectMany(selectStatement: SelectStatementProvider): List<AttributesBase>
 
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @ResultMap("AttributesBaseResult")
     fun selectOne(selectStatement: SelectStatementProvider): AttributesBase?
 }

@@ -35,19 +35,16 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
-interface PaymentMethodsBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PaymentMethodsBase>,
-    CommonUpdateMapper {
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @Results(
-        id = "PaymentMethodsBaseResult", value = [
-            Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR, id = true),
-            Result(column = "created_at", property = "createdAt", jdbcType = JdbcType.TIMESTAMP),
-            Result(column = "updated_at", property = "updatedAt", jdbcType = JdbcType.TIMESTAMP)
-        ]
-    )
+interface PaymentMethodsBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<PaymentMethodsBase>, CommonUpdateMapper {
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
+    @Results(id="PaymentMethodsBaseResult", value = [
+        Result(column="name", property="name", jdbcType=JdbcType.VARCHAR, id=true),
+        Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
+    ])
     fun selectMany(selectStatement: SelectStatementProvider): List<PaymentMethodsBase>
 
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @ResultMap("PaymentMethodsBaseResult")
     fun selectOne(selectStatement: SelectStatementProvider): PaymentMethodsBase?
 }

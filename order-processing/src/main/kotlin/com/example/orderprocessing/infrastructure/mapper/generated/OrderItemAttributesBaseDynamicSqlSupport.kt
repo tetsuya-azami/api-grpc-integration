@@ -21,8 +21,7 @@ object OrderItemAttributesBaseDynamicSqlSupport {
 
     val updatedAt = orderItemAttributesBase.updatedAt
 
-    class OrderItemAttributesBase :
-        AliasableSqlTable<OrderItemAttributesBase>("order_item_attributes", ::OrderItemAttributesBase) {
+    class OrderItemAttributesBase : AliasableSqlTable<OrderItemAttributesBase>("order_item_attributes", ::OrderItemAttributesBase) {
         val orderId = column<String>(name = "order_id", jdbcType = JDBCType.VARCHAR)
 
         val itemId = column<Long>(name = "item_id", jdbcType = JDBCType.BIGINT)

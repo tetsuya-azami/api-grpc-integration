@@ -37,21 +37,18 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
-interface OrderItemAttributesBaseMapper : CommonCountMapper, CommonDeleteMapper,
-    CommonInsertMapper<OrderItemAttributesBase>, CommonUpdateMapper {
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @Results(
-        id = "OrderItemAttributesBaseResult", value = [
-            Result(column = "order_id", property = "orderId", jdbcType = JdbcType.VARCHAR, id = true),
-            Result(column = "item_id", property = "itemId", jdbcType = JdbcType.BIGINT, id = true),
-            Result(column = "attribute_id", property = "attributeId", jdbcType = JdbcType.BIGINT, id = true),
-            Result(column = "created_at", property = "createdAt", jdbcType = JdbcType.TIMESTAMP),
-            Result(column = "updated_at", property = "updatedAt", jdbcType = JdbcType.TIMESTAMP)
-        ]
-    )
+interface OrderItemAttributesBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<OrderItemAttributesBase>, CommonUpdateMapper {
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
+    @Results(id="OrderItemAttributesBaseResult", value = [
+        Result(column="order_id", property="orderId", jdbcType=JdbcType.VARCHAR, id=true),
+        Result(column="item_id", property="itemId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="attribute_id", property="attributeId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
+    ])
     fun selectMany(selectStatement: SelectStatementProvider): List<OrderItemAttributesBase>
 
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @ResultMap("OrderItemAttributesBaseResult")
     fun selectOne(selectStatement: SelectStatementProvider): OrderItemAttributesBase?
 }

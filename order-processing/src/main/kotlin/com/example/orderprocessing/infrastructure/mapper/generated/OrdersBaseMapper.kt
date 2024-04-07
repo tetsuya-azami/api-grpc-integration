@@ -47,28 +47,26 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 
 @Mapper
 interface OrdersBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<OrdersBase>, CommonUpdateMapper {
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
-    @Results(
-        id = "OrdersBaseResult", value = [
-            Result(column = "order_id", property = "orderId", jdbcType = JdbcType.VARCHAR, id = true),
-            Result(column = "chain_id", property = "chainId", jdbcType = JdbcType.BIGINT),
-            Result(column = "shop_id", property = "shopId", jdbcType = JdbcType.BIGINT),
-            Result(column = "user_id", property = "userId", jdbcType = JdbcType.BIGINT),
-            Result(column = "payment_method", property = "paymentMethod", jdbcType = JdbcType.VARCHAR),
-            Result(column = "delivery_address_id", property = "deliveryAddressId", jdbcType = JdbcType.BIGINT),
-            Result(column = "delivery_type", property = "deliveryType", jdbcType = JdbcType.VARCHAR),
-            Result(column = "delivery_charge", property = "deliveryCharge", jdbcType = JdbcType.DECIMAL),
-            Result(column = "non_taxed_total_price", property = "nonTaxedTotalPrice", jdbcType = JdbcType.DECIMAL),
-            Result(column = "tax", property = "tax", jdbcType = JdbcType.DECIMAL),
-            Result(column = "taxed_total_price", property = "taxedTotalPrice", jdbcType = JdbcType.DECIMAL),
-            Result(column = "time", property = "time", jdbcType = JdbcType.TIMESTAMP),
-            Result(column = "created_at", property = "createdAt", jdbcType = JdbcType.TIMESTAMP),
-            Result(column = "updated_at", property = "updatedAt", jdbcType = JdbcType.TIMESTAMP)
-        ]
-    )
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
+    @Results(id="OrdersBaseResult", value = [
+        Result(column="order_id", property="orderId", jdbcType=JdbcType.VARCHAR, id=true),
+        Result(column="chain_id", property="chainId", jdbcType=JdbcType.BIGINT),
+        Result(column="shop_id", property="shopId", jdbcType=JdbcType.BIGINT),
+        Result(column="user_id", property="userId", jdbcType=JdbcType.BIGINT),
+        Result(column="payment_method", property="paymentMethod", jdbcType=JdbcType.VARCHAR),
+        Result(column="delivery_address_id", property="deliveryAddressId", jdbcType=JdbcType.BIGINT),
+        Result(column="delivery_type", property="deliveryType", jdbcType=JdbcType.VARCHAR),
+        Result(column="delivery_charge", property="deliveryCharge", jdbcType=JdbcType.DECIMAL),
+        Result(column="non_taxed_total_price", property="nonTaxedTotalPrice", jdbcType=JdbcType.DECIMAL),
+        Result(column="tax", property="tax", jdbcType=JdbcType.DECIMAL),
+        Result(column="taxed_total_price", property="taxedTotalPrice", jdbcType=JdbcType.DECIMAL),
+        Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
+    ])
     fun selectMany(selectStatement: SelectStatementProvider): List<OrdersBase>
 
-    @SelectProvider(type = SqlProviderAdapter::class, method = "select")
+    @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @ResultMap("OrdersBaseResult")
     fun selectOne(selectStatement: SelectStatementProvider): OrdersBase?
 }
@@ -141,22 +139,7 @@ fun OrdersBaseMapper.insertSelective(row: OrdersBase) =
         map(updatedAt).toPropertyWhenPresent("updatedAt", row::updatedAt)
     }
 
-private val columnList = listOf(
-    orderId,
-    chainId,
-    shopId,
-    userId,
-    paymentMethod,
-    deliveryAddressId,
-    deliveryType,
-    deliveryCharge,
-    nonTaxedTotalPrice,
-    tax,
-    taxedTotalPrice,
-    time,
-    createdAt,
-    updatedAt
-)
+private val columnList = listOf(orderId, chainId, shopId, userId, paymentMethod, deliveryAddressId, deliveryType, deliveryCharge, nonTaxedTotalPrice, tax, taxedTotalPrice, time, createdAt, updatedAt)
 
 fun OrdersBaseMapper.selectOne(completer: SelectCompleter) =
     selectOne(this::selectOne, columnList, ordersBase, completer)
