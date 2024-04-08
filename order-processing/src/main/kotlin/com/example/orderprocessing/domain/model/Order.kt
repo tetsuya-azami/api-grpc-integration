@@ -34,11 +34,21 @@ class Order private constructor(
                 }
 
             val delivery = Delivery.fromParam(orderParam.deliveryParam)
+                .getOrElse {
+                    validationErrors.addAll(it)
+                    null
+                }
+
             val user = User.fromParam(orderParam.userParam)
 
-            val blackLevel = orderParam.blackLevel
-            if (!isBlackLevelCanBeOrdered(blackLevel)) {
-                validationErrors.add(OrderValidationErrors.IllegalOrderByBlackUser(blackLevel))
+            val blackLevel = BlackLevel.fromString(orderParam.blackLevel).getOrElse {
+                validationErrors.addAll(it)
+                null
+            }?.let {
+                if (!isBlackLevelCanBeOrdered(it)) {
+                    validationErrors.add(OrderValidationErrors.IllegalOrderByBlackUser(it))
+                }
+                it
             }
 
             val payment = Payment.fromParam(orderParam.paymentParam)
@@ -57,23 +67,22 @@ class Order private constructor(
                 )
             }
 
-            if (validationErrors.isNotEmpty() || orderItems == null || payment == null) {
-                return Err(validationErrors)
-            }
-
-            return Ok(
-                Order(
-                    orderId = OrderId.new(),
-                    orderItems = orderItems,
-                    chainId = orderParam.chainId,
-                    shopId = orderParam.shopId,
-                    delivery = delivery,
-                    user = user,
-                    payment = payment,
-                    blackLevel = blackLevel,
-                    time = orderParam.time
+            return if (validationErrors.isNotEmpty() || orderItems == null || payment == null || delivery == null || blackLevel == null)
+                Err(validationErrors)
+            else
+                Ok(
+                    Order(
+                        orderId = OrderId.new(),
+                        orderItems = orderItems,
+                        chainId = orderParam.chainId,
+                        shopId = orderParam.shopId,
+                        delivery = delivery,
+                        user = user,
+                        payment = payment,
+                        blackLevel = blackLevel,
+                        time = orderParam.time
+                    )
                 )
-            )
         }
 
         private fun isBlackLevelCanBeOrdered(blackLevel: BlackLevel): Boolean {

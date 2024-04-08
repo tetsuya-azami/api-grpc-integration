@@ -5,6 +5,7 @@ import com.example.orderprocessing.presentation.order.PaymentParam
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.getOrElse
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -40,12 +41,17 @@ data class Payment private constructor(
                 validationErrors.add(PaymentValidationError.MissMatchTaxedTotalPrice(paymentParam))
             }
 
-            return if (validationErrors.isNotEmpty())
+            val paymentMethodType = PaymentMethodType.fromString(paymentParam.paymentMethod).getOrElse {
+                validationErrors.addAll(it)
+                null
+            }
+
+            return if (validationErrors.isNotEmpty() || paymentMethodType == null)
                 Err(validationErrors)
             else
                 Ok(
                     Payment(
-                        paymentMethodType = PaymentMethodType.fromString(paymentParam.paymentMethod.name),
+                        paymentMethodType = paymentMethodType,
                         deliveryCharge = paymentParam.deliveryCharge,
                         nonTaxedTotalPrice = paymentParam.nonTaxedTotalPrice,
                         tax = paymentParam.tax,

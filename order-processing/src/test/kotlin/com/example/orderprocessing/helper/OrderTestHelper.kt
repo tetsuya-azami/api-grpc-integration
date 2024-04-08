@@ -32,13 +32,13 @@ class OrderTestHelper {
                 chainId = chainId,
                 shopId = shopId,
                 deliveryParam = DeliveryParam(
-                    deliveryType = deliveryType,
+                    deliveryType = deliveryType.name,
                     addressId = addressId
                 ),
                 userParam = UserParam(id = userId),
-                blackLevel = blackLevel,
+                blackLevel = blackLevel.name,
                 paymentParam = PaymentParam(
-                    paymentMethod = paymentMethod,
+                    paymentMethod = paymentMethod.name,
                     deliveryCharge = deliveryCharge,
                     nonTaxedTotalPrice = nonTaxedTotalPrice,
                     tax = tax,
@@ -137,9 +137,9 @@ class OrderTestHelper {
             Assertions.assertThat(actual.shopId).isEqualTo(expected.shopId)
             Assertions.assertThat(actual.user.userId).isEqualTo(expected.userParam.id)
             Assertions.assertThat(actual.payment.paymentMethodType.name)
-                .isEqualTo(expected.paymentParam.paymentMethod.name)
+                .isEqualTo(expected.paymentParam.paymentMethod)
             Assertions.assertThat(actual.delivery.addressId).isEqualTo(expected.deliveryParam.addressId)
-            Assertions.assertThat(actual.delivery.type.name).isEqualTo(expected.deliveryParam.deliveryType.name)
+            Assertions.assertThat(actual.delivery.type.name).isEqualTo(expected.deliveryParam.deliveryType)
             Assertions.assertThat(actual.payment.deliveryCharge).isEqualTo(expected.paymentParam.deliveryCharge)
             Assertions.assertThat(actual.payment.nonTaxedTotalPrice).isEqualTo(expected.paymentParam.nonTaxedTotalPrice)
             Assertions.assertThat(actual.payment.tax).isEqualTo(expected.paymentParam.tax)
