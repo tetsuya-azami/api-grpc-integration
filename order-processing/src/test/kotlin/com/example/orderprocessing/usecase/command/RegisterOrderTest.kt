@@ -1,5 +1,6 @@
 package com.example.orderprocessing.usecase.command
 
+import com.example.orderprocessing.domain.model.OrderId
 import com.example.orderprocessing.helper.OrderTestHelper
 import com.example.orderprocessing.infrastructure.order.OrderRepository
 import io.mockk.every
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.jvm.isAccessible
 
 class RegisterOrderTest {
 
@@ -30,15 +33,18 @@ class RegisterOrderTest {
     @Test
     fun test() {
         // Given
+        val orderParam = OrderTestHelper.createOrderParam()
         val mockedOrderRepository = mockk<OrderRepository>()
-        val order = OrderTestHelper.createTestOrder()
-        every { mockedOrderRepository.registerOrder(any(), any()) } returns order.orderId
+        val primaryConstructor = OrderId::class.primaryConstructor
+        primaryConstructor!!.isAccessible = true
+        val orderId = primaryConstructor.call("1")
+        every { mockedOrderRepository.registerOrder(any(), any()) } returns orderId
         val sut = RegisterOrder(mockedOrderRepository)
 
         // When
-        val actualOrderId = sut.execute(order)
+        val actualOrderId = sut.execute(orderParam)
 
         // Then
-        assertThat(actualOrderId).isEqualTo(order.orderId)
+        assertThat(actualOrderId).isEqualTo(orderId)
     }
 }

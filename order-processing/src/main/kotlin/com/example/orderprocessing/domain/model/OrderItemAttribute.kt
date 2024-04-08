@@ -7,10 +7,18 @@ import com.github.michaelbull.result.Result
 
 data class OrderItemAttribute private constructor(
     val attributeId: Long,
+    val name: String,
+    val value: String
 ) {
     companion object {
         fun fromParam(attributeParam: AttributeParam): Result<OrderItemAttribute, List<ValidationError>> {
-            return Ok(OrderItemAttribute(attributeId = attributeParam.id))
+            return Ok(
+                OrderItemAttribute(
+                    attributeId = attributeParam.id,
+                    name = attributeParam.name,
+                    value = attributeParam.value
+                )
+            )
         }
     }
 }

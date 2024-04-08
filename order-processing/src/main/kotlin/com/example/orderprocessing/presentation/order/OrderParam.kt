@@ -5,7 +5,7 @@ import com.example.orderprocessing.domain.model.BlackLevel
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-data class OrderParam private constructor(
+data class OrderParam(
     val itemParams: List<OrderItemParam>,
     val chainId: Long,
     val shopId: Long,

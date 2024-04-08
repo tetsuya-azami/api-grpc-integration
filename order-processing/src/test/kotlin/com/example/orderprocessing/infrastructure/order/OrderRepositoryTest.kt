@@ -1,8 +1,8 @@
 package com.example.orderprocessing.infrastructure.order
 
+import com.example.orderprocessing.helper.OrderTestHelper
 import com.example.orderprocessing.helper.OrderTestHelper.Companion.assert_登録された注文商品が正しいこと
 import com.example.orderprocessing.helper.OrderTestHelper.Companion.assert_登録された注文情報が正しいこと
-import com.example.orderprocessing.helper.OrderTestHelper.Companion.createTestOrder
 import com.example.orderprocessing.infrastructure.mapper.generated.OrderItemAttributesBaseMapper
 import com.example.orderprocessing.infrastructure.mapper.generated.OrderItemsBaseMapper
 import com.example.orderprocessing.infrastructure.mapper.generated.OrdersBaseMapper
@@ -51,7 +51,7 @@ class OrderRepositoryTest @Autowired constructor(
     )
     fun insertTest() {
         // Given
-        val order = createTestOrder()
+        val order = OrderTestHelper.createOrder()
 
         // When
         val insertedOrderId = orderRepository.registerOrder(order, now)
@@ -66,7 +66,7 @@ class OrderRepositoryTest @Autowired constructor(
 
         // Then OrderItems
         val insertedOrderItemBases = orderItemsMapper.select { }
-        assertThat(insertedOrderItemBases.size).isEqualTo(2)
+        assertThat(insertedOrderItemBases.size).isEqualTo(3)
         val expectedOrderItems = order.orderItems.value
         insertedOrderItemBases.forEachIndexed { index, orderItemsBase ->
             assert_登録された注文商品が正しいこと(
@@ -78,14 +78,11 @@ class OrderRepositoryTest @Autowired constructor(
 
         // Then OrderItemAttributes
         val insertedOrderItemAttributes = orderItemAttributeMapper.select { }
-        assertThat(insertedOrderItemAttributes.size).isEqualTo(4)
+        assertThat(insertedOrderItemAttributes.size).isEqualTo(6)
 
-        val expectedItemIdAndAttributeIdPairs = listOf(
-            Pair(1L, 1L),
-            Pair(1L, 4L),
-            Pair(2L, 2L),
-            Pair(2L, 5L)
-        )
+        val expectedItemIdAndAttributeIdPairs = order.orderItems.value.flatMap { orderItem ->
+            orderItem.attributes.value.map { attribute -> Pair(orderItem.itemId, attribute.attributeId) }
+        }
 
         expectedItemIdAndAttributeIdPairs.forEachIndexed { index, (expectedItemId, expectedAttributeId) ->
             assertThat(insertedOrderItemAttributes[index].orderId).isEqualTo(insertedOrderId.value)

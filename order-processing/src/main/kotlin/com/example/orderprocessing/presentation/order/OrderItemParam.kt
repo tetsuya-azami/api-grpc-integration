@@ -3,7 +3,7 @@ package com.example.orderprocessing.presentation.order
 import com.example.grpcinterface.proto.OrderOuterClass
 import java.math.BigDecimal
 
-data class OrderItemParam private constructor(
+data class OrderItemParam(
     val id: Long,
     val name: String,
     val price: BigDecimal,
