@@ -20,14 +20,13 @@ class OrderController(
 
         val orderId = registerOrder.execute(orderParam)
 
-        val response =
-            OrderOuterClass.OrderCreationResponse
-                .newBuilder()
-                .setId(orderId.value)
-                .build()
-
-        logger.info("send response: $response")
-
-        return response
+        return OrderOuterClass.OrderCreationResponse
+            .newBuilder()
+            .setId(orderId.value)
+            .build()
+            .let {
+                logger.info("send response: $it")
+                it
+            }
     }
 }
