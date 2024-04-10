@@ -40,6 +40,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.23")
     testImplementation("org.assertj:assertj-core:3.25.3")
     testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("io.grpc:grpc-testing:1.62.2")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
 }
 

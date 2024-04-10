@@ -1,17 +1,86 @@
 package com.example.orderprocessing.helper
 
+import com.example.grpcinterface.proto.OrderOuterClass
+import com.example.grpcinterface.proto.OrderOuterClass.*
+import com.example.grpcinterface.proto.OrderOuterClass.Delivery
+import com.example.grpcinterface.proto.OrderOuterClass.Item.Attribute
+import com.example.grpcinterface.proto.OrderOuterClass.Payment
+import com.example.grpcinterface.proto.OrderOuterClass.User
 import com.example.orderprocessing.domain.model.*
+import com.example.orderprocessing.domain.model.Order
 import com.example.orderprocessing.infrastructure.entity.generated.OrderItemsBase
 import com.example.orderprocessing.infrastructure.entity.generated.OrdersBase
 import com.example.orderprocessing.presentation.order.*
 import com.github.michaelbull.result.get
+import com.google.protobuf.Timestamp
+import com.google.type.Money
 import org.assertj.core.api.Assertions
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class OrderTestHelper {
     companion object {
         private val now: LocalDateTime = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
+
+        fun createOrderProto(
+            itemProtos: List<Item> = createDefaultOrderItemProtos(),
+            chainId: Long = 1,
+            shopId: Long = 1,
+            deliveryType: Delivery.Type = Delivery.Type.IMMEDIATE,
+            addressId: Long = 1,
+            userId: Long = 1,
+            blackLevel: User.BlackLevel = User.BlackLevel.LOW,
+            paymentMethod: Payment.PaymentMethod = Payment.PaymentMethod.CASH,
+            deliveryCharge: Long = 350,
+            nonTaxedTotalPrice: Long = 1713,
+            tax: Long = 206,
+            taxedTotalPrice: Long = 2269
+        ): OrderOuterClass.Order {
+            return OrderOuterClass.Order.newBuilder()
+                .addAllItems(
+                    itemProtos
+                )
+                .setChain(
+                    Chain.newBuilder()
+                        .setId(chainId)
+                        .build()
+                )
+                .setShop(
+                    Shop.newBuilder()
+                        .setId(shopId)
+                        .build()
+                )
+                .setDelivery(
+                    Delivery.newBuilder()
+                        .setType(deliveryType)
+                        .setAddressId(addressId)
+                        .build()
+                )
+                .setUser(
+                    User.newBuilder()
+                        .setId(userId)
+                        .setBlackLevel(blackLevel)
+                        .build()
+                )
+                .setPayment(
+                    Payment.newBuilder()
+                        .setPaymentMethod(paymentMethod)
+                        .setDeliveryCharge(deliveryCharge)
+                        .setNonTaxedTotalPrice(nonTaxedTotalPrice)
+                        .setTax(tax)
+                        .setTaxedTotalPrice(taxedTotalPrice)
+                        .build()
+                )
+                .setTime(
+                    Timestamp.newBuilder()
+                        .setSeconds(
+                            now.toEpochSecond(ZoneOffset.of("+09:00"))
+                        )
+                        .build()
+                )
+                .build()
+        }
 
         fun createOrderParam(
             itemParams: List<OrderItemParam> = createDefaultOrderItemParams(),
@@ -80,6 +149,28 @@ class OrderTestHelper {
             ).get()!!
         }
 
+        fun createOrderItemProto(
+            id: Long = 1,
+            price: Long,
+            quantity: Int,
+            attributeProtos: List<Attribute> = createDefaultOrderItemAttributeProtos()
+        ): Item {
+            return Item.newBuilder()
+                .setId(id)
+                .setName("テスト商品$id")
+                .setPrice(
+                    Money.newBuilder()
+                        .setUnits(price)
+                        .setCurrencyCode("JPY")
+                        .build()
+                )
+                .addAllAttributes(
+                    attributeProtos
+                )
+                .setQuantity(quantity)
+                .build()
+        }
+
         fun createOrderItemParam(
             id: Long = 1,
             price: BigDecimal,
@@ -99,6 +190,21 @@ class OrderTestHelper {
             orderItemParam: OrderItemParam
         ): OrderItem {
             return OrderItem.fromParam(orderItemParam = orderItemParam).get()!!
+        }
+
+        fun createDefaultOrderItemProtos(): List<Item> {
+            return listOf(
+                createOrderItemProto(
+                    id = 1,
+                    price = 150,
+                    quantity = 1
+                ),
+                createOrderItemProto(
+                    id = 2,
+                    price = 200,
+                    quantity = 2
+                ),
+            )
         }
 
         fun createDefaultOrderItemParams(): List<OrderItemParam> {
@@ -125,6 +231,21 @@ class OrderTestHelper {
             return listOf(
                 createOrderItemAttributeParam(1),
                 createOrderItemAttributeParam(2)
+            )
+        }
+
+        fun createOrderItemAttributeProto(id: Long): Attribute {
+            return Attribute.newBuilder()
+                .setId(id)
+                .setName("テスト属性名$id")
+                .setValue("テスト属性値$id")
+                .build()
+        }
+
+        private fun createDefaultOrderItemAttributeProtos(): List<Attribute> {
+            return listOf(
+                createOrderItemAttributeProto(1),
+                createOrderItemAttributeProto(2)
             )
         }
 
