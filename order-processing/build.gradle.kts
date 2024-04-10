@@ -41,6 +41,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.25.3")
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("io.grpc:grpc-testing:1.62.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
 }
 
