@@ -4,47 +4,47 @@ import com.example.orderprocessing.domain.model.OrderId
 import com.example.orderprocessing.helper.OrderTestHelper
 import com.example.orderprocessing.infrastructure.order.OrderRepository
 import io.mockk.every
-import io.mockk.mockk
+import io.mockk.impl.annotations.InjectMockKs
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import io.mockk.mockkStatic
-import io.mockk.unmockkAll
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import java.time.LocalDateTime
-import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.jvm.isAccessible
 
+@ExtendWith(MockKExtension::class)
 class RegisterOrderTest {
 
+    @InjectMockKs
+    private lateinit var sut: RegisterOrder
+
+    @MockK
+    private lateinit var orderRepository: OrderRepository
+    private lateinit var testOrderId: OrderId
     private val now = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
 
     @BeforeEach
     fun setUp() {
         mockkStatic(LocalDateTime::class)
         every { LocalDateTime.now() } returns now
-    }
 
-    @AfterEach
-    fun tearDown() {
-        unmockkAll()
+        testOrderId = OrderId.new()
+        every { orderRepository.registerOrder(any(), any()) } returns testOrderId
     }
 
     @Test
-    fun test() {
+    fun 正常系() {
         // Given
         val orderParam = OrderTestHelper.createOrderParam()
-        val mockedOrderRepository = mockk<OrderRepository>()
-        val primaryConstructor = OrderId::class.primaryConstructor
-        primaryConstructor!!.isAccessible = true
-        val orderId = primaryConstructor.call("1")
-        every { mockedOrderRepository.registerOrder(any(), any()) } returns orderId
-        val sut = RegisterOrder(mockedOrderRepository)
 
         // When
         val actualOrderId = sut.execute(orderParam)
 
         // Then
-        assertThat(actualOrderId).isEqualTo(orderId)
+        assertThat(actualOrderId).isEqualTo(testOrderId)
+        verify(exactly = 1) { orderRepository.registerOrder(any(), now) }
     }
 }
