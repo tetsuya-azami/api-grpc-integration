@@ -21,7 +21,7 @@ enum class BlackLevel {
     sealed interface BlackLevelValidationErrors : ValidationError {
         data class IllegalBlackLevel(val value: String) : BlackLevelValidationErrors {
             override val message: String
-                get() = "ブラックレベルは${DeliveryType.entries}の中から選んでください。ブラックレベル: $value"
+                get() = "ブラックレベルは${BlackLevel.entries}の中から選んでください。ブラックレベル: $value"
         }
     }
 }
