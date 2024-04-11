@@ -2,6 +2,7 @@ package com.example.orderprocessing.infrastructure.order
 
 import com.example.orderprocessing.helper.OrderTestHelper
 import com.example.orderprocessing.helper.OrderTestHelper.Companion.assert_登録された注文商品が正しいこと
+import com.example.orderprocessing.helper.OrderTestHelper.Companion.assert_登録された注文商品属性が正しいこと
 import com.example.orderprocessing.helper.OrderTestHelper.Companion.assert_登録された注文情報が正しいこと
 import com.example.orderprocessing.infrastructure.mapper.generated.OrderItemAttributesBaseMapper
 import com.example.orderprocessing.infrastructure.mapper.generated.OrderItemsBaseMapper
@@ -81,15 +82,16 @@ class OrderRepositoryTest @Autowired constructor(
         assertThat(insertedOrderItemAttributes.size).isEqualTo(6)
 
         val expectedItemIdAndAttributeIdPairs = order.orderItems.value.flatMap { orderItem ->
-            orderItem.attributes.value.map { attribute -> Pair(orderItem.itemId, attribute.attributeId) }
+            orderItem.attributes.value.map { attribute -> Pair(orderItem, attribute) }
         }
 
-        expectedItemIdAndAttributeIdPairs.forEachIndexed { index, (expectedItemId, expectedAttributeId) ->
-            assertThat(insertedOrderItemAttributes[index].orderId).isEqualTo(insertedOrderId.value)
-            assertThat(insertedOrderItemAttributes[index].itemId).isEqualTo(expectedItemId)
-            assertThat(insertedOrderItemAttributes[index].attributeId).isEqualTo(expectedAttributeId)
-            assertThat(insertedOrderItemAttributes[index].createdAt).isEqualTo(now)
-            assertThat(insertedOrderItemAttributes[index].updatedAt).isEqualTo(now)
+        expectedItemIdAndAttributeIdPairs.forEachIndexed { index, (expectedOrderItem, expectedAttribute) ->
+            assert_登録された注文商品属性が正しいこと(
+                order.orderId,
+                expectedOrderItem,
+                expectedAttribute,
+                insertedOrderItemAttributes[index]
+            )
         }
     }
 }

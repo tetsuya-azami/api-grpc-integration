@@ -8,13 +8,14 @@ import com.example.grpcinterface.proto.OrderOuterClass.Payment
 import com.example.grpcinterface.proto.OrderOuterClass.User
 import com.example.orderprocessing.domain.model.*
 import com.example.orderprocessing.domain.model.Order
+import com.example.orderprocessing.infrastructure.entity.generated.OrderItemAttributesBase
 import com.example.orderprocessing.infrastructure.entity.generated.OrderItemsBase
 import com.example.orderprocessing.infrastructure.entity.generated.OrdersBase
 import com.example.orderprocessing.presentation.order.*
 import com.github.michaelbull.result.get
 import com.google.protobuf.Timestamp
 import com.google.type.Money
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -253,39 +254,39 @@ class OrderTestHelper {
             expected: OrderParam,
             actual: Order
         ) {
-            Assertions.assertThat(actual.orderId).isNotNull
-            Assertions.assertThat(actual.chainId).isEqualTo(expected.chainId)
-            Assertions.assertThat(actual.shopId).isEqualTo(expected.shopId)
-            Assertions.assertThat(actual.user.userId).isEqualTo(expected.userParam.id)
-            Assertions.assertThat(actual.payment.paymentMethodType.name)
+            assertThat(actual.orderId).isNotNull
+            assertThat(actual.chainId).isEqualTo(expected.chainId)
+            assertThat(actual.shopId).isEqualTo(expected.shopId)
+            assertThat(actual.user.userId).isEqualTo(expected.userParam.id)
+            assertThat(actual.payment.paymentMethodType.name)
                 .isEqualTo(expected.paymentParam.paymentMethod)
-            Assertions.assertThat(actual.delivery.addressId).isEqualTo(expected.deliveryParam.addressId)
-            Assertions.assertThat(actual.delivery.type.name).isEqualTo(expected.deliveryParam.deliveryType)
-            Assertions.assertThat(actual.payment.deliveryCharge).isEqualTo(expected.paymentParam.deliveryCharge)
-            Assertions.assertThat(actual.payment.nonTaxedTotalPrice).isEqualTo(expected.paymentParam.nonTaxedTotalPrice)
-            Assertions.assertThat(actual.payment.tax).isEqualTo(expected.paymentParam.tax)
-            Assertions.assertThat(actual.payment.taxedTotalPrice).isEqualTo(expected.paymentParam.taxedTotalPrice)
-            Assertions.assertThat(actual.time).isEqualTo(expected.time)
+            assertThat(actual.delivery.addressId).isEqualTo(expected.deliveryParam.addressId)
+            assertThat(actual.delivery.type.name).isEqualTo(expected.deliveryParam.deliveryType)
+            assertThat(actual.payment.deliveryCharge).isEqualTo(expected.paymentParam.deliveryCharge)
+            assertThat(actual.payment.nonTaxedTotalPrice).isEqualTo(expected.paymentParam.nonTaxedTotalPrice)
+            assertThat(actual.payment.tax).isEqualTo(expected.paymentParam.tax)
+            assertThat(actual.payment.taxedTotalPrice).isEqualTo(expected.paymentParam.taxedTotalPrice)
+            assertThat(actual.time).isEqualTo(expected.time)
         }
 
         fun assert_登録された注文情報が正しいこと(
             expected: Order,
             actual: OrdersBase
         ) {
-            Assertions.assertThat(actual.orderId).isEqualTo(expected.orderId.value)
-            Assertions.assertThat(actual.chainId).isEqualTo(expected.chainId)
-            Assertions.assertThat(actual.shopId).isEqualTo(expected.shopId)
-            Assertions.assertThat(actual.userId).isEqualTo(expected.user.userId)
-            Assertions.assertThat(actual.paymentMethod).isEqualTo(expected.payment.paymentMethodType.name)
-            Assertions.assertThat(actual.deliveryAddressId).isEqualTo(expected.delivery.addressId)
-            Assertions.assertThat(actual.deliveryType).isEqualTo(expected.delivery.type.name)
-            Assertions.assertThat(actual.deliveryCharge).isEqualTo(expected.payment.deliveryCharge.toLong())
-            Assertions.assertThat(actual.nonTaxedTotalPrice).isEqualTo(expected.payment.nonTaxedTotalPrice.toLong())
-            Assertions.assertThat(actual.tax).isEqualTo(expected.payment.tax.toLong())
-            Assertions.assertThat(actual.taxedTotalPrice).isEqualTo(expected.payment.taxedTotalPrice.toLong())
-            Assertions.assertThat(actual.time).isEqualTo(expected.time)
-            Assertions.assertThat(actual.createdAt).isEqualTo(now)
-            Assertions.assertThat(actual.updatedAt).isEqualTo(now)
+            assertThat(actual.orderId).isEqualTo(expected.orderId.value)
+            assertThat(actual.chainId).isEqualTo(expected.chainId)
+            assertThat(actual.shopId).isEqualTo(expected.shopId)
+            assertThat(actual.userId).isEqualTo(expected.user.userId)
+            assertThat(actual.paymentMethod).isEqualTo(expected.payment.paymentMethodType.name)
+            assertThat(actual.deliveryAddressId).isEqualTo(expected.delivery.addressId)
+            assertThat(actual.deliveryType).isEqualTo(expected.delivery.type.name)
+            assertThat(actual.deliveryCharge).isEqualTo(expected.payment.deliveryCharge.toLong())
+            assertThat(actual.nonTaxedTotalPrice).isEqualTo(expected.payment.nonTaxedTotalPrice.toLong())
+            assertThat(actual.tax).isEqualTo(expected.payment.tax.toLong())
+            assertThat(actual.taxedTotalPrice).isEqualTo(expected.payment.taxedTotalPrice.toLong())
+            assertThat(actual.time).isEqualTo(expected.time)
+            assertThat(actual.createdAt).isEqualTo(now)
+            assertThat(actual.updatedAt).isEqualTo(now)
         }
 
         fun assert_登録された注文商品が正しいこと(
@@ -293,11 +294,24 @@ class OrderTestHelper {
             expectedOrderItem: OrderItem,
             actual: OrderItemsBase
         ) {
-            Assertions.assertThat(actual.orderId).isEqualTo(expectedOrderId.value)
-            Assertions.assertThat(actual.itemId).isEqualTo(expectedOrderItem.itemId)
-            Assertions.assertThat(actual.quantity).isEqualTo(expectedOrderItem.quantity)
-            Assertions.assertThat(actual.createdAt).isEqualTo(now)
-            Assertions.assertThat(actual.updatedAt).isEqualTo(now)
+            assertThat(actual.orderId).isEqualTo(expectedOrderId.value)
+            assertThat(actual.itemId).isEqualTo(expectedOrderItem.itemId)
+            assertThat(actual.quantity).isEqualTo(expectedOrderItem.quantity)
+            assertThat(actual.createdAt).isEqualTo(now)
+            assertThat(actual.updatedAt).isEqualTo(now)
+        }
+
+        fun assert_登録された注文商品属性が正しいこと(
+            expectedOrderId: OrderId,
+            expectedOrderItem: OrderItem,
+            expectedOrderItemAttribute: OrderItemAttribute,
+            actual: OrderItemAttributesBase
+        ) {
+            assertThat(actual.orderId).isEqualTo(expectedOrderId.value)
+            assertThat(actual.itemId).isEqualTo(expectedOrderItem.itemId)
+            assertThat(actual.attributeId).isEqualTo(expectedOrderItemAttribute.attributeId)
+            assertThat(actual.createdAt).isEqualTo(now)
+            assertThat(actual.updatedAt).isEqualTo(now)
         }
     }
 }
