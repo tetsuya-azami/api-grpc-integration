@@ -21,6 +21,7 @@ class RegisterOrder(
     @Transactional
     fun execute(orderParam: OrderParam): OrderId {
         logger.info("注文登録処理開始")
+        val now = LocalDateTime.now()
 
         val validationErrors = mutableListOf<ValidationError>()
 
@@ -34,10 +35,11 @@ class RegisterOrder(
             throw OrderProcessingIllegalArgumentException(validationErrors = validationErrors)
         }
 
-        val now = LocalDateTime.now()
-        val registeredOrderId = orderRepository.registerOrder(order, now)
-
-        logger.info("注文登録処理終了")
-        return registeredOrderId
+        return orderRepository
+            .registerOrder(order, now)
+            .let {
+                logger.info("注文登録処理終了")
+                it
+            }
     }
 }
