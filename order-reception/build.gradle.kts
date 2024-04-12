@@ -48,7 +48,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-val basePackage = "com.example.orderreception"
+val basePackage = "com.example.orderreception.openapi"
 
 openApiGenerate {
     generatorName = "kotlin-spring"

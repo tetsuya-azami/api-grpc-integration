@@ -1,10 +1,10 @@
 package com.example.orderreception.presentation.order
 
-import com.example.orderreception.api.OrderApi
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
-import com.example.orderreception.model.CreateOrderRequest
-import com.example.orderreception.model.OrderCreationSuccessResponse
-import com.example.orderreception.model.OrderCreationSuccessResponseData
+import com.example.orderreception.openapi.api.OrderApi
+import com.example.orderreception.openapi.model.CreateOrderRequest
+import com.example.orderreception.openapi.model.OrderCreationSuccessResponse
+import com.example.orderreception.openapi.model.OrderCreationSuccessResponseData
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

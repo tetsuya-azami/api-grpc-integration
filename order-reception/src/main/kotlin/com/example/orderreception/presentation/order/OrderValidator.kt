@@ -2,9 +2,9 @@ package com.example.orderreception.presentation.order
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderreception.error.ValidationError
-import com.example.orderreception.model.CreateOrderRequest
-import com.example.orderreception.model.Delivery
-import com.example.orderreception.model.Payment
+import com.example.orderreception.openapi.model.CreateOrderRequest
+import com.example.orderreception.openapi.model.Delivery
+import com.example.orderreception.openapi.model.Payment
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
