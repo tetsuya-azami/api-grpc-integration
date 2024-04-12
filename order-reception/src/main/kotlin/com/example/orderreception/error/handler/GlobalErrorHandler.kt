@@ -1,7 +1,7 @@
 package com.example.orderreception.error.handler
 
 import com.example.orderreception.ResponseCode
-import com.example.orderreception.error.exception.ValidationErrorException
+import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.model.ErrorData
 import com.example.orderreception.model.ValidationErrorResponse
 import org.springframework.http.HttpStatus
@@ -25,11 +25,11 @@ class GlobalErrorHandler {
     }
 
     @ExceptionHandler
-    fun handleValidationException(ex: ValidationErrorException): ResponseEntity<ValidationErrorResponse> {
+    fun handleValidationException(ex: OrderReceptionIllegalArgumentException): ResponseEntity<ValidationErrorResponse> {
         return ResponseEntity(
             ValidationErrorResponse(
                 ResponseCode.VALIDATION_ERROR.name,
-                ErrorData(ex.message)
+                ErrorData(ex.validationErrors.joinToString(separator = "\n") { it.message })
             ),
             HttpStatus.BAD_REQUEST
         )

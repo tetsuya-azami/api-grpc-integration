@@ -1,7 +1,7 @@
 package com.example.orderreception.presentation.order
 
 import com.example.orderreception.api.OrderApi
-import com.example.orderreception.error.exception.ValidationErrorException
+import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.model.CreateOrderRequest
 import com.example.orderreception.model.OrderCreationSuccessResponse
 import com.example.orderreception.model.OrderCreationSuccessResponseData
@@ -20,11 +20,10 @@ class OrderController(
     override fun createOrder(createOrderRequest: CreateOrderRequest): ResponseEntity<OrderCreationSuccessResponse> {
         logger.info("Create order request: $createOrderRequest")
 
-        orderValidator.isOrderValid(createOrderRequest).let {
-            if (it is OrderValidationResult.Invalid) {
-                logger.warn("注文情報のバリデーションに失敗しました。: $it")
-                throw ValidationErrorException(it.message)
-            }
+        val validationErrors = orderValidator.isOrderValid(createOrderRequest)
+        if (validationErrors.isNotEmpty()) {
+            logger.warn("注文情報のバリデーションに失敗しました。: $${validationErrors}")
+            throw OrderReceptionIllegalArgumentException(validationErrors = validationErrors)
         }
 
         logger.info("Order created successfully: $createOrderRequest")
