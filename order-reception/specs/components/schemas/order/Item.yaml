@@ -9,12 +9,6 @@ properties:
     example: 1
     minimum: 1
     maximum: 9999999999
-  name:
-    description: 商品名
-    type: string
-    example: "消しゴム"
-    minLength: 1
-    maxLength: 250
   price:
     description: 商品価格
     type: integer
