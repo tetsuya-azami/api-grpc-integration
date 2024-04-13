@@ -2,8 +2,8 @@ package com.example.orderreception.error.handler
 
 import com.example.orderreception.ResponseCode
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
-import com.example.orderreception.model.ErrorData
-import com.example.orderreception.model.ValidationErrorResponse
+import com.example.orderreception.openapi.model.ErrorData
+import com.example.orderreception.openapi.model.ValidationErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
