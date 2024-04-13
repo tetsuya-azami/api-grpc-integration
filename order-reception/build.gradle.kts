@@ -32,6 +32,7 @@ dependencies {
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
     implementation("net.devh:grpc-client-spring-boot-starter:3.0.0.RELEASE")
+    implementation("com.michael-bull.kotlin-result:kotlin-result:2.0.0")
     implementation(project(":grpc-interface"))
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
