@@ -1,6 +1,5 @@
 package com.example.orderreception.presentation.order
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.orderreception.error.ValidationError
 import com.example.orderreception.openapi.model.CreateOrderRequest
 import com.example.orderreception.openapi.model.Delivery
@@ -22,7 +21,7 @@ class OrderValidator {
             LocalDateTime.parse(order.time, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+09:00"))
         } catch (e: Exception) {
             e.printStackTrace()
-            validationErrors.add(OrderValidationError.IllegalOrderTime(order.time))
+            validationErrors.add(ValidationError(message = "注文日時はyyyy-mm-ddTHH:mm:ss+09:00の形式でなければなりません。注文日時: ${order.time}"))
         }
 
         return validationErrors
@@ -31,7 +30,7 @@ class OrderValidator {
     private fun getDeliveryValidationErrors(delivery: Delivery): List<ValidationError> {
         val validationErrors = mutableListOf<ValidationError>()
         if (delivery.type == null) {
-            validationErrors.add(OrderValidationError.IllegalDeliveryType(delivery.type))
+            validationErrors.add(ValidationError(message = "配送種別は${Delivery.Type.entries}のいずれかでなければなりません。配送種別: ${delivery.type?.name}"))
         }
 
         return validationErrors
@@ -40,26 +39,9 @@ class OrderValidator {
     private fun getPaymentValidationErrors(payment: Payment): List<ValidationError> {
         val validationErrors = mutableListOf<ValidationError>()
         if (payment.paymentMethod == null) {
-            validationErrors.add(OrderValidationError.IllegalPaymentType(payment.paymentMethod))
+            validationErrors.add(ValidationError(message = "支払い方法は${Payment.PaymentMethod.entries}のいずれかでなければなりません。支払い方法: ${payment.paymentMethod?.name}"))
         }
 
         return validationErrors
-    }
-
-    sealed interface OrderValidationError : ValidationError {
-        data class IllegalDeliveryType(val deliveryType: OrderOuterClass.Delivery.Type?) : OrderValidationError {
-            override val message: String
-                get() = "配送種別は${Delivery.Type.entries}のいずれかでなければなりません。配送種別: ${deliveryType?.name}"
-        }
-
-        data class IllegalPaymentType(val paymentType: OrderOuterClass.Payment.PaymentMethod?) : OrderValidationError {
-            override val message: String
-                get() = "支払い方法は${Payment.PaymentMethod.entries}のいずれかでなければなりません。支払い方法: ${paymentType?.name}"
-        }
-
-        data class IllegalOrderTime(val time: String) : OrderValidationError {
-            override val message: String
-                get() = "注文日時はyyyy-mm-ddTHH:mm:ss+09:00の形式でなければなりません。注文日時: $time"
-        }
     }
 }

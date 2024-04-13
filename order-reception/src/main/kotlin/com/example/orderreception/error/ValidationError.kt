@@ -1,5 +1,3 @@
 package com.example.orderreception.error
 
-interface ValidationError {
-    val message: String
-}
+data class ValidationError(val message: String)
