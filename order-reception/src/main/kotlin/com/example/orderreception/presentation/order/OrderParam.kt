@@ -9,6 +9,7 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.getOrElse
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class OrderParam(
     val itemParams: List<ItemParam>,
@@ -51,15 +52,19 @@ data class OrderParam(
                     null
                 }
 
-            val time = runCatching { LocalDateTime.parse(order.time) }
-                .fold(
-                    onSuccess = { it },
-                    onFailure = {
-                        logger.info(it.message, it.cause)
-                        validationErrors.add(ValidationError(message = "注文日時は「yyyy-mm-ddTHH:mm:ss+09:00」の形式でなければなりません。注文日時: ${order.time}"))
-                        null
-                    }
+            val time = runCatching {
+                LocalDateTime.parse(
+                    order.time,
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+09:00")
                 )
+            }.fold(
+                onSuccess = { it },
+                onFailure = {
+                    logger.info(it.message, it.cause)
+                    validationErrors.add(ValidationError(message = "注文日時は「yyyy-mm-ddTHH:mm:ss+09:00」の形式でなければなりません。注文日時: ${order.time}"))
+                    null
+                }
+            )
 
             return if (validationErrors.isNotEmpty() || paymentParam == null || deliveryType == null || time == null)
                 Err(validationErrors)

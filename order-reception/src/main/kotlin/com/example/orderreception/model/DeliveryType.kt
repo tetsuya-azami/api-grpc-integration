@@ -11,7 +11,7 @@ enum class DeliveryType {
 
     companion object {
         fun fromString(value: String?): Result<DeliveryType, List<ValidationError>> {
-            return entries.firstOrNull { it.name == value }
+            return entries.firstOrNull { it.name == value?.uppercase() }
                 ?.let { Ok(it) }
                 ?: Err(listOf(ValidationError(message = "配達種別は${entries}の中から選んでください。配達種別: $value")))
         }
