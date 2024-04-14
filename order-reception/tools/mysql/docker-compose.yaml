@@ -1,0 +1,16 @@
+services:
+  order_reception_mysql:
+    build:
+      context: .
+    container_name: order_reception_mysql
+    ports:
+      - "33060:33060"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+    volumes:
+      - order_reception:/var/lib/mysql
+      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./conf.d:/etc/mysql/conf.d/
+volumes:
+  order_reception:
