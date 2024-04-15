@@ -1,4 +1,11 @@
 -- 外部キー制約のためのマスタデータ登録
+-- チェーンマスタ
+INSERT INTO chains (chain_id, name, created_at, updated_at) VALUES
+(1, 'テストチェーン1', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+-- ショップマスタ
+INSERT INTO shops (shop_id, chain_id, name, created_at, updated_at) VALUES
+(1, 1, 'テストショップ1', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
 -- 商品マスタ
 INSERT INTO items (item_id, chain_id, shop_id, name, price, description, created_at, updated_at) VALUES
 (1, 1, 1, '消しゴム', 150, '消しゴムです。', '2000-01-01 00:00:00', '2000-01-01 00:00:00'),
@@ -18,3 +25,15 @@ INSERT INTO item_attributes (item_id, attribute_id, created_at, updated_at) VALU
 (3, 2, '2000-01-01 00:00:00', '2000-01-01 00:00:00'),
 (3, 3, '2000-01-01 00:00:00', '2000-01-01 00:00:00'),
 (3, 4, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
+INSERT INTO ranks (name, created_at, updated_at) VALUES
+('regular', '2000-01-01 00:00:00', '2000-01-01 00:00:00'),
+('bronze', '2000-01-01 00:00:00', '2000-01-01 00:00:00'),
+('silver', '2000-01-01 00:00:00', '2000-01-01 00:00:00'),
+('gold', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
+INSERT INTO users (user_id, first_name, last_name, phone_number, email, password, birthday, rank_id, created_at, updated_at) VALUES
+(1, '太郎', '山田', '090-1234-5678', 'test@example.com', 'password', '2000-01-01', 1, '2000-01-01 00:00:00', '2000-01-01 00:00:00');
+
+INSERT INTO addresses (address_id, user_id, postcode, prefecture, city, street_address, building, created_at, updated_at) VALUES
+(1, 1, '100-0001', '東京都', '千代田区', '千代田1-1-1', '千代田ビル1F', '2000-01-01 00:00:00', '2000-01-01 00:00:00');
