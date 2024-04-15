@@ -1,7 +1,7 @@
 package com.example.orderreception.presentation.order
 
+import com.example.orderreception.domain.model.PaymentMethodType
 import com.example.orderreception.error.ValidationError
-import com.example.orderreception.model.PaymentMethodType
 import com.example.orderreception.openapi.model.Payment
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
