@@ -3,10 +3,18 @@
  */
 package com.example.orderreception.infrastructure.entity.generated
 
+import java.time.LocalDate
+import java.time.LocalDateTime
+
 data class UsersBase(
-    var user: String? = null,
-    var currentConnections: Long? = null,
-    var totalConnections: Long? = null,
-    var maxSessionControlledMemory: Long? = null,
-    var maxSessionTotalMemory: Long? = null
+    var userId: Long? = null,
+    var firstName: String? = null,
+    var lastName: String? = null,
+    var phoneNumber: String? = null,
+    var email: String? = null,
+    var password: String? = null,
+    var birthday: LocalDate? = null,
+    var rankId: Long? = null,
+    var createdAt: LocalDateTime? = null,
+    var updatedAt: LocalDateTime? = null
 )

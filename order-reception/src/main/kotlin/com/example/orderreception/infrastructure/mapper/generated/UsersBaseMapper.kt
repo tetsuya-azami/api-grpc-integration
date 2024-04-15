@@ -4,11 +4,16 @@
 package com.example.orderreception.infrastructure.mapper.generated
 
 import com.example.orderreception.infrastructure.entity.generated.UsersBase
-import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.currentConnections
-import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.maxSessionControlledMemory
-import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.maxSessionTotalMemory
-import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.totalConnections
-import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.user
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.birthday
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.createdAt
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.email
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.firstName
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.lastName
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.password
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.phoneNumber
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.rankId
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.updatedAt
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.userId
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.usersBase
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Result
@@ -40,11 +45,16 @@ import org.mybatis.dynamic.sql.util.mybatis3.CommonUpdateMapper
 interface UsersBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertMapper<UsersBase>, CommonUpdateMapper {
     @SelectProvider(type=SqlProviderAdapter::class, method="select")
     @Results(id="UsersBaseResult", value = [
-        Result(column="USER", property="user", jdbcType=JdbcType.CHAR),
-        Result(column="CURRENT_CONNECTIONS", property="currentConnections", jdbcType=JdbcType.BIGINT),
-        Result(column="TOTAL_CONNECTIONS", property="totalConnections", jdbcType=JdbcType.BIGINT),
-        Result(column="MAX_SESSION_CONTROLLED_MEMORY", property="maxSessionControlledMemory", jdbcType=JdbcType.BIGINT),
-        Result(column="MAX_SESSION_TOTAL_MEMORY", property="maxSessionTotalMemory", jdbcType=JdbcType.BIGINT)
+        Result(column="user_id", property="userId", jdbcType=JdbcType.BIGINT, id=true),
+        Result(column="first_name", property="firstName", jdbcType=JdbcType.VARCHAR),
+        Result(column="last_name", property="lastName", jdbcType=JdbcType.VARCHAR),
+        Result(column="phone_number", property="phoneNumber", jdbcType=JdbcType.VARCHAR),
+        Result(column="email", property="email", jdbcType=JdbcType.VARCHAR),
+        Result(column="password", property="password", jdbcType=JdbcType.VARCHAR),
+        Result(column="birthday", property="birthday", jdbcType=JdbcType.DATE),
+        Result(column="rank_id", property="rankId", jdbcType=JdbcType.BIGINT),
+        Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
     fun selectMany(selectStatement: SelectStatementProvider): List<UsersBase>
 
@@ -59,22 +69,37 @@ fun UsersBaseMapper.count(completer: CountCompleter) =
 fun UsersBaseMapper.delete(completer: DeleteCompleter) =
     deleteFrom(this::delete, usersBase, completer)
 
+fun UsersBaseMapper.deleteByPrimaryKey(userId_: Long) =
+    delete {
+        where { userId isEqualTo userId_ }
+    }
+
 fun UsersBaseMapper.insert(row: UsersBase) =
     insert(this::insert, row, usersBase) {
-        map(user) toProperty "user"
-        map(currentConnections) toProperty "currentConnections"
-        map(totalConnections) toProperty "totalConnections"
-        map(maxSessionControlledMemory) toProperty "maxSessionControlledMemory"
-        map(maxSessionTotalMemory) toProperty "maxSessionTotalMemory"
+        map(userId) toProperty "userId"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(phoneNumber) toProperty "phoneNumber"
+        map(email) toProperty "email"
+        map(password) toProperty "password"
+        map(birthday) toProperty "birthday"
+        map(rankId) toProperty "rankId"
+        map(createdAt) toProperty "createdAt"
+        map(updatedAt) toProperty "updatedAt"
     }
 
 fun UsersBaseMapper.insertMultiple(records: Collection<UsersBase>) =
     insertMultiple(this::insertMultiple, records, usersBase) {
-        map(user) toProperty "user"
-        map(currentConnections) toProperty "currentConnections"
-        map(totalConnections) toProperty "totalConnections"
-        map(maxSessionControlledMemory) toProperty "maxSessionControlledMemory"
-        map(maxSessionTotalMemory) toProperty "maxSessionTotalMemory"
+        map(userId) toProperty "userId"
+        map(firstName) toProperty "firstName"
+        map(lastName) toProperty "lastName"
+        map(phoneNumber) toProperty "phoneNumber"
+        map(email) toProperty "email"
+        map(password) toProperty "password"
+        map(birthday) toProperty "birthday"
+        map(rankId) toProperty "rankId"
+        map(createdAt) toProperty "createdAt"
+        map(updatedAt) toProperty "updatedAt"
     }
 
 fun UsersBaseMapper.insertMultiple(vararg records: UsersBase) =
@@ -82,14 +107,19 @@ fun UsersBaseMapper.insertMultiple(vararg records: UsersBase) =
 
 fun UsersBaseMapper.insertSelective(row: UsersBase) =
     insert(this::insert, row, usersBase) {
-        map(user).toPropertyWhenPresent("user", row::user)
-        map(currentConnections).toPropertyWhenPresent("currentConnections", row::currentConnections)
-        map(totalConnections).toPropertyWhenPresent("totalConnections", row::totalConnections)
-        map(maxSessionControlledMemory).toPropertyWhenPresent("maxSessionControlledMemory", row::maxSessionControlledMemory)
-        map(maxSessionTotalMemory).toPropertyWhenPresent("maxSessionTotalMemory", row::maxSessionTotalMemory)
+        map(userId).toPropertyWhenPresent("userId", row::userId)
+        map(firstName).toPropertyWhenPresent("firstName", row::firstName)
+        map(lastName).toPropertyWhenPresent("lastName", row::lastName)
+        map(phoneNumber).toPropertyWhenPresent("phoneNumber", row::phoneNumber)
+        map(email).toPropertyWhenPresent("email", row::email)
+        map(password).toPropertyWhenPresent("password", row::password)
+        map(birthday).toPropertyWhenPresent("birthday", row::birthday)
+        map(rankId).toPropertyWhenPresent("rankId", row::rankId)
+        map(createdAt).toPropertyWhenPresent("createdAt", row::createdAt)
+        map(updatedAt).toPropertyWhenPresent("updatedAt", row::updatedAt)
     }
 
-private val columnList = listOf(user, currentConnections, totalConnections, maxSessionControlledMemory, maxSessionTotalMemory)
+private val columnList = listOf(userId, firstName, lastName, phoneNumber, email, password, birthday, rankId, createdAt, updatedAt)
 
 fun UsersBaseMapper.selectOne(completer: SelectCompleter) =
     selectOne(this::selectOne, columnList, usersBase, completer)
@@ -100,23 +130,66 @@ fun UsersBaseMapper.select(completer: SelectCompleter) =
 fun UsersBaseMapper.selectDistinct(completer: SelectCompleter) =
     selectDistinct(this::selectMany, columnList, usersBase, completer)
 
+fun UsersBaseMapper.selectByPrimaryKey(userId_: Long) =
+    selectOne {
+        where { userId isEqualTo userId_ }
+    }
+
 fun UsersBaseMapper.update(completer: UpdateCompleter) =
     update(this::update, usersBase, completer)
 
 fun KotlinUpdateBuilder.updateAllColumns(row: UsersBase) =
     apply {
-        set(user) equalToOrNull row::user
-        set(currentConnections) equalToOrNull row::currentConnections
-        set(totalConnections) equalToOrNull row::totalConnections
-        set(maxSessionControlledMemory) equalToOrNull row::maxSessionControlledMemory
-        set(maxSessionTotalMemory) equalToOrNull row::maxSessionTotalMemory
+        set(userId) equalToOrNull row::userId
+        set(firstName) equalToOrNull row::firstName
+        set(lastName) equalToOrNull row::lastName
+        set(phoneNumber) equalToOrNull row::phoneNumber
+        set(email) equalToOrNull row::email
+        set(password) equalToOrNull row::password
+        set(birthday) equalToOrNull row::birthday
+        set(rankId) equalToOrNull row::rankId
+        set(createdAt) equalToOrNull row::createdAt
+        set(updatedAt) equalToOrNull row::updatedAt
     }
 
 fun KotlinUpdateBuilder.updateSelectiveColumns(row: UsersBase) =
     apply {
-        set(user) equalToWhenPresent row::user
-        set(currentConnections) equalToWhenPresent row::currentConnections
-        set(totalConnections) equalToWhenPresent row::totalConnections
-        set(maxSessionControlledMemory) equalToWhenPresent row::maxSessionControlledMemory
-        set(maxSessionTotalMemory) equalToWhenPresent row::maxSessionTotalMemory
+        set(userId) equalToWhenPresent row::userId
+        set(firstName) equalToWhenPresent row::firstName
+        set(lastName) equalToWhenPresent row::lastName
+        set(phoneNumber) equalToWhenPresent row::phoneNumber
+        set(email) equalToWhenPresent row::email
+        set(password) equalToWhenPresent row::password
+        set(birthday) equalToWhenPresent row::birthday
+        set(rankId) equalToWhenPresent row::rankId
+        set(createdAt) equalToWhenPresent row::createdAt
+        set(updatedAt) equalToWhenPresent row::updatedAt
+    }
+
+fun UsersBaseMapper.updateByPrimaryKey(row: UsersBase) =
+    update {
+        set(firstName) equalToOrNull row::firstName
+        set(lastName) equalToOrNull row::lastName
+        set(phoneNumber) equalToOrNull row::phoneNumber
+        set(email) equalToOrNull row::email
+        set(password) equalToOrNull row::password
+        set(birthday) equalToOrNull row::birthday
+        set(rankId) equalToOrNull row::rankId
+        set(createdAt) equalToOrNull row::createdAt
+        set(updatedAt) equalToOrNull row::updatedAt
+        where { userId isEqualTo row.userId!! }
+    }
+
+fun UsersBaseMapper.updateByPrimaryKeySelective(row: UsersBase) =
+    update {
+        set(firstName) equalToWhenPresent row::firstName
+        set(lastName) equalToWhenPresent row::lastName
+        set(phoneNumber) equalToWhenPresent row::phoneNumber
+        set(email) equalToWhenPresent row::email
+        set(password) equalToWhenPresent row::password
+        set(birthday) equalToWhenPresent row::birthday
+        set(rankId) equalToWhenPresent row::rankId
+        set(createdAt) equalToWhenPresent row::createdAt
+        set(updatedAt) equalToWhenPresent row::updatedAt
+        where { userId isEqualTo row.userId!! }
     }

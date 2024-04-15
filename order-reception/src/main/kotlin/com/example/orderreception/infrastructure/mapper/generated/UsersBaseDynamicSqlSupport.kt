@@ -4,31 +4,53 @@
 package com.example.orderreception.infrastructure.mapper.generated
 
 import java.sql.JDBCType
+import java.time.LocalDate
+import java.time.LocalDateTime
 import org.mybatis.dynamic.sql.AliasableSqlTable
 import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
 object UsersBaseDynamicSqlSupport {
     val usersBase = UsersBase()
 
-    val user = usersBase.user
+    val userId = usersBase.userId
 
-    val currentConnections = usersBase.currentConnections
+    val firstName = usersBase.firstName
 
-    val totalConnections = usersBase.totalConnections
+    val lastName = usersBase.lastName
 
-    val maxSessionControlledMemory = usersBase.maxSessionControlledMemory
+    val phoneNumber = usersBase.phoneNumber
 
-    val maxSessionTotalMemory = usersBase.maxSessionTotalMemory
+    val email = usersBase.email
+
+    val password = usersBase.password
+
+    val birthday = usersBase.birthday
+
+    val rankId = usersBase.rankId
+
+    val createdAt = usersBase.createdAt
+
+    val updatedAt = usersBase.updatedAt
 
     class UsersBase : AliasableSqlTable<UsersBase>("users", ::UsersBase) {
-        val user = column<String>(name = "USER", jdbcType = JDBCType.CHAR)
+        val userId = column<Long>(name = "user_id", jdbcType = JDBCType.BIGINT)
 
-        val currentConnections = column<Long>(name = "CURRENT_CONNECTIONS", jdbcType = JDBCType.BIGINT)
+        val firstName = column<String>(name = "first_name", jdbcType = JDBCType.VARCHAR)
 
-        val totalConnections = column<Long>(name = "TOTAL_CONNECTIONS", jdbcType = JDBCType.BIGINT)
+        val lastName = column<String>(name = "last_name", jdbcType = JDBCType.VARCHAR)
 
-        val maxSessionControlledMemory = column<Long>(name = "MAX_SESSION_CONTROLLED_MEMORY", jdbcType = JDBCType.BIGINT)
+        val phoneNumber = column<String>(name = "phone_number", jdbcType = JDBCType.VARCHAR)
 
-        val maxSessionTotalMemory = column<Long>(name = "MAX_SESSION_TOTAL_MEMORY", jdbcType = JDBCType.BIGINT)
+        val email = column<String>(name = "email", jdbcType = JDBCType.VARCHAR)
+
+        val password = column<String>(name = "password", jdbcType = JDBCType.VARCHAR)
+
+        val birthday = column<LocalDate>(name = "birthday", jdbcType = JDBCType.DATE)
+
+        val rankId = column<Long>(name = "rank_id", jdbcType = JDBCType.BIGINT)
+
+        val createdAt = column<LocalDateTime>(name = "created_at", jdbcType = JDBCType.TIMESTAMP)
+
+        val updatedAt = column<LocalDateTime>(name = "updated_at", jdbcType = JDBCType.TIMESTAMP)
     }
 }
