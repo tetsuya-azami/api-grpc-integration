@@ -11,6 +11,7 @@ CREATE TABLE orders(
         tax decimal NOT NULL,
         taxed_total_price decimal NOT NULL,
         time datetime NOT NULL,
+        black_level integer NOT NULL,
         created_at datetime NOT NULL,
         updated_at datetime NOT NULL
 );

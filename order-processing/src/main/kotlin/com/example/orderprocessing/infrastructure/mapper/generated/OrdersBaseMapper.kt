@@ -4,6 +4,7 @@
 package com.example.orderprocessing.infrastructure.mapper.generated
 
 import com.example.orderprocessing.infrastructure.entity.generated.OrdersBase
+import com.example.orderprocessing.infrastructure.mapper.generated.OrdersBaseDynamicSqlSupport.blackLevel
 import com.example.orderprocessing.infrastructure.mapper.generated.OrdersBaseDynamicSqlSupport.chainId
 import com.example.orderprocessing.infrastructure.mapper.generated.OrdersBaseDynamicSqlSupport.createdAt
 import com.example.orderprocessing.infrastructure.mapper.generated.OrdersBaseDynamicSqlSupport.deliveryAddressId
@@ -61,6 +62,7 @@ interface OrdersBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsert
         Result(column="tax", property="tax", jdbcType=JdbcType.DECIMAL),
         Result(column="taxed_total_price", property="taxedTotalPrice", jdbcType=JdbcType.DECIMAL),
         Result(column="time", property="time", jdbcType=JdbcType.TIMESTAMP),
+        Result(column="black_level", property="blackLevel", jdbcType=JdbcType.INTEGER),
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
@@ -96,6 +98,7 @@ fun OrdersBaseMapper.insert(row: OrdersBase) =
         map(tax) toProperty "tax"
         map(taxedTotalPrice) toProperty "taxedTotalPrice"
         map(time) toProperty "time"
+        map(blackLevel) toProperty "blackLevel"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
@@ -114,6 +117,7 @@ fun OrdersBaseMapper.insertMultiple(records: Collection<OrdersBase>) =
         map(tax) toProperty "tax"
         map(taxedTotalPrice) toProperty "taxedTotalPrice"
         map(time) toProperty "time"
+        map(blackLevel) toProperty "blackLevel"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
@@ -135,11 +139,12 @@ fun OrdersBaseMapper.insertSelective(row: OrdersBase) =
         map(tax).toPropertyWhenPresent("tax", row::tax)
         map(taxedTotalPrice).toPropertyWhenPresent("taxedTotalPrice", row::taxedTotalPrice)
         map(time).toPropertyWhenPresent("time", row::time)
+        map(blackLevel).toPropertyWhenPresent("blackLevel", row::blackLevel)
         map(createdAt).toPropertyWhenPresent("createdAt", row::createdAt)
         map(updatedAt).toPropertyWhenPresent("updatedAt", row::updatedAt)
     }
 
-private val columnList = listOf(orderId, chainId, shopId, userId, paymentMethod, deliveryAddressId, deliveryType, deliveryCharge, nonTaxedTotalPrice, tax, taxedTotalPrice, time, createdAt, updatedAt)
+private val columnList = listOf(orderId, chainId, shopId, userId, paymentMethod, deliveryAddressId, deliveryType, deliveryCharge, nonTaxedTotalPrice, tax, taxedTotalPrice, time, blackLevel, createdAt, updatedAt)
 
 fun OrdersBaseMapper.selectOne(completer: SelectCompleter) =
     selectOne(this::selectOne, columnList, ordersBase, completer)
@@ -172,6 +177,7 @@ fun KotlinUpdateBuilder.updateAllColumns(row: OrdersBase) =
         set(tax) equalToOrNull row::tax
         set(taxedTotalPrice) equalToOrNull row::taxedTotalPrice
         set(time) equalToOrNull row::time
+        set(blackLevel) equalToOrNull row::blackLevel
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
     }
@@ -190,6 +196,7 @@ fun KotlinUpdateBuilder.updateSelectiveColumns(row: OrdersBase) =
         set(tax) equalToWhenPresent row::tax
         set(taxedTotalPrice) equalToWhenPresent row::taxedTotalPrice
         set(time) equalToWhenPresent row::time
+        set(blackLevel) equalToWhenPresent row::blackLevel
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt
     }
@@ -207,6 +214,7 @@ fun OrdersBaseMapper.updateByPrimaryKey(row: OrdersBase) =
         set(tax) equalToOrNull row::tax
         set(taxedTotalPrice) equalToOrNull row::taxedTotalPrice
         set(time) equalToOrNull row::time
+        set(blackLevel) equalToOrNull row::blackLevel
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
         where { orderId isEqualTo row.orderId!! }
@@ -225,6 +233,7 @@ fun OrdersBaseMapper.updateByPrimaryKeySelective(row: OrdersBase) =
         set(tax) equalToWhenPresent row::tax
         set(taxedTotalPrice) equalToWhenPresent row::taxedTotalPrice
         set(time) equalToWhenPresent row::time
+        set(blackLevel) equalToWhenPresent row::blackLevel
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt
         where { orderId isEqualTo row.orderId!! }

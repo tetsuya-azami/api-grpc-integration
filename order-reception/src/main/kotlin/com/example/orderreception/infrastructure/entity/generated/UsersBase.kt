@@ -15,6 +15,7 @@ data class UsersBase(
     var password: String? = null,
     var birthday: LocalDate? = null,
     var rankId: Long? = null,
+    var blackLevel: Int? = null,
     var createdAt: LocalDateTime? = null,
     var updatedAt: LocalDateTime? = null
 )

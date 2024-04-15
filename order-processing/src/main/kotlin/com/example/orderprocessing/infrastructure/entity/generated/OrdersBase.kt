@@ -18,6 +18,7 @@ data class OrdersBase(
     var tax: Long? = null,
     var taxedTotalPrice: Long? = null,
     var time: LocalDateTime? = null,
+    var blackLevel: Int? = null,
     var createdAt: LocalDateTime? = null,
     var updatedAt: LocalDateTime? = null
 )

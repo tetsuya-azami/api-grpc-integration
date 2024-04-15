@@ -61,6 +61,7 @@ CREATE TABLE users(
         password varchar(250) NOT NULL,
         birthday date NOT NULL,
         rank_id bigint NOT NULL,
+        black_level integer NOT NULL DEFAULT 0,
         created_at datetime NOT NULL,
         updated_at datetime NOT NULL,
         FOREIGN KEY (rank_id) REFERENCES ranks(rank_id)

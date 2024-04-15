@@ -35,6 +35,8 @@ object OrdersBaseDynamicSqlSupport {
 
     val time = ordersBase.time
 
+    val blackLevel = ordersBase.blackLevel
+
     val createdAt = ordersBase.createdAt
 
     val updatedAt = ordersBase.updatedAt
@@ -63,6 +65,8 @@ object OrdersBaseDynamicSqlSupport {
         val taxedTotalPrice = column<Long>(name = "taxed_total_price", jdbcType = JDBCType.DECIMAL)
 
         val time = column<LocalDateTime>(name = "time", jdbcType = JDBCType.TIMESTAMP)
+
+        val blackLevel = column<Int>(name = "black_level", jdbcType = JDBCType.INTEGER)
 
         val createdAt = column<LocalDateTime>(name = "created_at", jdbcType = JDBCType.TIMESTAMP)
 

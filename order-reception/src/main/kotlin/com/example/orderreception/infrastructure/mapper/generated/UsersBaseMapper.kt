@@ -5,6 +5,7 @@ package com.example.orderreception.infrastructure.mapper.generated
 
 import com.example.orderreception.infrastructure.entity.generated.UsersBase
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.birthday
+import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.blackLevel
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.createdAt
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.email
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseDynamicSqlSupport.firstName
@@ -53,6 +54,7 @@ interface UsersBaseMapper : CommonCountMapper, CommonDeleteMapper, CommonInsertM
         Result(column="password", property="password", jdbcType=JdbcType.VARCHAR),
         Result(column="birthday", property="birthday", jdbcType=JdbcType.DATE),
         Result(column="rank_id", property="rankId", jdbcType=JdbcType.BIGINT),
+        Result(column="black_level", property="blackLevel", jdbcType=JdbcType.INTEGER),
         Result(column="created_at", property="createdAt", jdbcType=JdbcType.TIMESTAMP),
         Result(column="updated_at", property="updatedAt", jdbcType=JdbcType.TIMESTAMP)
     ])
@@ -84,6 +86,7 @@ fun UsersBaseMapper.insert(row: UsersBase) =
         map(password) toProperty "password"
         map(birthday) toProperty "birthday"
         map(rankId) toProperty "rankId"
+        map(blackLevel) toProperty "blackLevel"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
@@ -98,6 +101,7 @@ fun UsersBaseMapper.insertMultiple(records: Collection<UsersBase>) =
         map(password) toProperty "password"
         map(birthday) toProperty "birthday"
         map(rankId) toProperty "rankId"
+        map(blackLevel) toProperty "blackLevel"
         map(createdAt) toProperty "createdAt"
         map(updatedAt) toProperty "updatedAt"
     }
@@ -115,11 +119,12 @@ fun UsersBaseMapper.insertSelective(row: UsersBase) =
         map(password).toPropertyWhenPresent("password", row::password)
         map(birthday).toPropertyWhenPresent("birthday", row::birthday)
         map(rankId).toPropertyWhenPresent("rankId", row::rankId)
+        map(blackLevel).toPropertyWhenPresent("blackLevel", row::blackLevel)
         map(createdAt).toPropertyWhenPresent("createdAt", row::createdAt)
         map(updatedAt).toPropertyWhenPresent("updatedAt", row::updatedAt)
     }
 
-private val columnList = listOf(userId, firstName, lastName, phoneNumber, email, password, birthday, rankId, createdAt, updatedAt)
+private val columnList = listOf(userId, firstName, lastName, phoneNumber, email, password, birthday, rankId, blackLevel, createdAt, updatedAt)
 
 fun UsersBaseMapper.selectOne(completer: SelectCompleter) =
     selectOne(this::selectOne, columnList, usersBase, completer)
@@ -148,6 +153,7 @@ fun KotlinUpdateBuilder.updateAllColumns(row: UsersBase) =
         set(password) equalToOrNull row::password
         set(birthday) equalToOrNull row::birthday
         set(rankId) equalToOrNull row::rankId
+        set(blackLevel) equalToOrNull row::blackLevel
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
     }
@@ -162,6 +168,7 @@ fun KotlinUpdateBuilder.updateSelectiveColumns(row: UsersBase) =
         set(password) equalToWhenPresent row::password
         set(birthday) equalToWhenPresent row::birthday
         set(rankId) equalToWhenPresent row::rankId
+        set(blackLevel) equalToWhenPresent row::blackLevel
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt
     }
@@ -175,6 +182,7 @@ fun UsersBaseMapper.updateByPrimaryKey(row: UsersBase) =
         set(password) equalToOrNull row::password
         set(birthday) equalToOrNull row::birthday
         set(rankId) equalToOrNull row::rankId
+        set(blackLevel) equalToOrNull row::blackLevel
         set(createdAt) equalToOrNull row::createdAt
         set(updatedAt) equalToOrNull row::updatedAt
         where { userId isEqualTo row.userId!! }
@@ -189,6 +197,7 @@ fun UsersBaseMapper.updateByPrimaryKeySelective(row: UsersBase) =
         set(password) equalToWhenPresent row::password
         set(birthday) equalToWhenPresent row::birthday
         set(rankId) equalToWhenPresent row::rankId
+        set(blackLevel) equalToWhenPresent row::blackLevel
         set(createdAt) equalToWhenPresent row::createdAt
         set(updatedAt) equalToWhenPresent row::updatedAt
         where { userId isEqualTo row.userId!! }

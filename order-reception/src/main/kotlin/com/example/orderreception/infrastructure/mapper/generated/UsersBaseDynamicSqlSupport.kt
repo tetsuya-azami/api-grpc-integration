@@ -28,6 +28,8 @@ object UsersBaseDynamicSqlSupport {
 
     val rankId = usersBase.rankId
 
+    val blackLevel = usersBase.blackLevel
+
     val createdAt = usersBase.createdAt
 
     val updatedAt = usersBase.updatedAt
@@ -48,6 +50,8 @@ object UsersBaseDynamicSqlSupport {
         val birthday = column<LocalDate>(name = "birthday", jdbcType = JDBCType.DATE)
 
         val rankId = column<Long>(name = "rank_id", jdbcType = JDBCType.BIGINT)
+
+        val blackLevel = column<Int>(name = "black_level", jdbcType = JDBCType.INTEGER)
 
         val createdAt = column<LocalDateTime>(name = "created_at", jdbcType = JDBCType.TIMESTAMP)
 
