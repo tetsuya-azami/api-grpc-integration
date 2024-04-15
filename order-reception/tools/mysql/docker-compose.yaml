@@ -4,10 +4,13 @@ services:
       context: .
     container_name: order_reception_mysql
     ports:
-      - "33060:33060"
+      - 3307:3307
+    expose:
+      - 3307
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: test
+      MYSQL_TCP_PORT: 3307
     volumes:
       - order_reception:/var/lib/mysql
       - ./initdb.d:/docker-entrypoint-initdb.d
