@@ -8,6 +8,7 @@ import com.example.orderprocessing.infrastructure.mapper.generated.OrderItemAttr
 import com.example.orderprocessing.infrastructure.mapper.generated.OrderItemsBaseMapper
 import com.example.orderprocessing.infrastructure.mapper.generated.OrdersBaseMapper
 import com.example.orderprocessing.infrastructure.mapper.generated.select
+import com.example.orderprocessing.infrastructure.repository.order.OrderRepository
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll

@@ -4,7 +4,7 @@ import com.example.orderprocessing.domain.model.Order
 import com.example.orderprocessing.domain.model.OrderId
 import com.example.orderprocessing.error.ValidationError
 import com.example.orderprocessing.error.exception.OrderProcessingIllegalArgumentException
-import com.example.orderprocessing.infrastructure.order.OrderRepository
+import com.example.orderprocessing.infrastructure.repository.order.OrderRepository
 import com.example.orderprocessing.presentation.order.OrderParam
 import com.github.michaelbull.result.getOrElse
 import org.slf4j.LoggerFactory

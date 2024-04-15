@@ -1,4 +1,4 @@
-package com.example.orderprocessing.infrastructure.order
+package com.example.orderprocessing.infrastructure.repository.order
 
 import com.example.orderprocessing.domain.model.Order
 import com.example.orderprocessing.domain.model.OrderId

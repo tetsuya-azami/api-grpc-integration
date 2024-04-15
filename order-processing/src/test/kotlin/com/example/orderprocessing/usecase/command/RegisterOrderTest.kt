@@ -2,7 +2,7 @@ package com.example.orderprocessing.usecase.command
 
 import com.example.orderprocessing.domain.model.OrderId
 import com.example.orderprocessing.helper.OrderTestHelper
-import com.example.orderprocessing.infrastructure.order.OrderRepository
+import com.example.orderprocessing.infrastructure.repository.order.OrderRepository
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
