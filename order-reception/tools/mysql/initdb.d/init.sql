@@ -1,3 +1,19 @@
+CREATE TABLE chains(
+       chain_id bigint PRIMARY KEY AUTO_INCREMENT,
+       name varchar(250) NOT NULL,
+       created_at datetime NOT NULL,
+       updated_at datetime NOT NULL
+);
+
+CREATE TABLE shops(
+       shop_id bigint PRIMARY KEY AUTO_INCREMENT,
+       chain_id bigint NOT NULL,
+       name varchar(250) NOT NULL,
+       created_at datetime NOT NULL,
+       updated_at datetime NOT NULL,
+       FOREIGN KEY (chain_id) REFERENCES chains(chain_id)
+);
+
 CREATE TABLE items(
         item_id bigint PRIMARY KEY AUTO_INCREMENT,
         chain_id bigint NOT NULL,
@@ -6,9 +22,9 @@ CREATE TABLE items(
         price decimal NOT NULL,
         description varchar(500) NOT NULL,
         created_at datetime NOT NULL,
-        updated_at datetime NOT NULL
---        FOREIGN KEY (chain_id) REFERENCES chains(chain_id),
---        FOREIGN KEY (shop_id) REFERENCES shops(shop_id)
+        updated_at datetime NOT NULL,
+        FOREIGN KEY (chain_id) REFERENCES chains(chain_id),
+        FOREIGN KEY (shop_id) REFERENCES shops(shop_id)
 );
 
 CREATE TABLE attributes(
@@ -62,20 +78,3 @@ CREATE TABLE addresses(
         updated_at datetime NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-
---
--- CREATE TABLE chains(
---        chain_id bigint PRIMARY KEY AUTO_INCREMENT,
---        name varchar(250) NOT NULL,
---        created_at datetime NOT NULL,
---        updated_at datetime NOT NULL
--- );
---
--- CREATE TABLE shops(
---        shop_id bigint PRIMARY KEY AUTO_INCREMENT,
---        chain_id bigint NOT NULL,
---        name varchar(250) NOT NULL,
---        created_at datetime NOT NULL,
---        updated_at datetime NOT NULL,
---        FOREIGN KEY (chain_id) REFERENCES chains(chain_id)
--- );
