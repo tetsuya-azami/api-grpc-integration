@@ -41,6 +41,7 @@ dependencies {
     implementation("net.devh:grpc-client-spring-boot-starter:3.0.0.RELEASE")
     implementation("com.michael-bull.kotlin-result:kotlin-result:2.0.0")
     implementation(project(":grpc-interface"))
+    implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
     implementation("org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.5.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
