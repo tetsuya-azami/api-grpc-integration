@@ -1,4 +1,4 @@
-package com.example.orderreception.domain.model
+package com.example.orderreception.domain.model.order
 
 import com.example.orderreception.error.ValidationError
 import com.github.michaelbull.result.Err
