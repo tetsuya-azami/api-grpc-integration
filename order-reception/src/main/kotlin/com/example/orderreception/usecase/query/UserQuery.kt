@@ -1,4 +1,4 @@
-package com.example.orderreception.domain.query
+package com.example.orderreception.usecase.query
 
 import com.example.orderreception.domain.model.order.User
 

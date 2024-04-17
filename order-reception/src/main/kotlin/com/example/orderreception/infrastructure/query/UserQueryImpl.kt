@@ -2,9 +2,9 @@ package com.example.orderreception.infrastructure.query
 
 import com.example.orderreception.domain.model.order.BlackLevel
 import com.example.orderreception.domain.model.order.User
-import com.example.orderreception.domain.query.UserQuery
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseMapper
 import com.example.orderreception.infrastructure.mapper.generated.selectByPrimaryKey
+import com.example.orderreception.usecase.query.UserQuery
 import org.springframework.stereotype.Repository
 
 @Repository
