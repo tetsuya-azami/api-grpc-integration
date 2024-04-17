@@ -4,6 +4,7 @@ import com.example.orderreception.ResponseCode
 import com.example.orderreception.error.exception.IllegalMasterDataException
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.openapi.model.ErrorData
+import com.example.orderreception.openapi.model.ServerErrorResponse
 import com.example.orderreception.openapi.model.ValidationErrorResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -45,6 +46,18 @@ class GlobalErrorHandler {
         logger.error("Illegal master data: ${ex.message}")
         return ResponseEntity(
             ValidationErrorResponse(
+                ResponseCode.SERVER_ERROR.name,
+                ErrorData("予期せぬエラーが発生しました。")
+            ),
+            HttpStatus.INTERNAL_SERVER_ERROR
+        )
+    }
+
+    @ExceptionHandler
+    fun handleException(ex: Exception): ResponseEntity<ServerErrorResponse> {
+        logger.error("Unexpected error: ${ex.message}")
+        return ResponseEntity(
+            ServerErrorResponse(
                 ResponseCode.SERVER_ERROR.name,
                 ErrorData("予期せぬエラーが発生しました。")
             ),
