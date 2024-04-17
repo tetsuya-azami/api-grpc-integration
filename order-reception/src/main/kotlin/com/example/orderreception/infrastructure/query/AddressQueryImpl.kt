@@ -5,16 +5,21 @@ import com.example.orderreception.infrastructure.mapper.generated.AddressesBaseM
 import com.example.orderreception.infrastructure.mapper.generated.selectOne
 import com.example.orderreception.usecase.query.AddressQuery
 import org.mybatis.dynamic.sql.util.kotlin.model.select
+import org.springframework.stereotype.Repository
 import com.example.orderreception.infrastructure.mapper.generated.AddressesBaseDynamicSqlSupport as sqlSupport
 
+@Repository
 class AddressQueryImpl(
-    val addressesBaseMapper: AddressesBaseMapper
+    private val addressesBaseMapper: AddressesBaseMapper
 ) : AddressQuery {
-    override fun findById(addressId: Long): Address? {
+    override fun findById(addressId: Long, userId: Long): Address? {
         val addressesBase = addressesBaseMapper.selectOne {
             select(sqlSupport.addressId) {
                 where {
                     sqlSupport.addressId isEqualTo addressId
+                    and {
+                        sqlSupport.userId isEqualTo userId
+                    }
                 }
             }
         }

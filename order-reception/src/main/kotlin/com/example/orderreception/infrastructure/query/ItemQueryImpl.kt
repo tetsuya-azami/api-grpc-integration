@@ -9,7 +9,7 @@ import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynam
 
 @Repository
 class ItemQueryImpl(
-    val itemsBaseMapper: ItemsBaseMapper
+    private val itemsBaseMapper: ItemsBaseMapper
 ) : ItemQuery {
     override fun existsItem(itemId: Long, chainId: Long, shopId: Long): ItemsBase? {
 

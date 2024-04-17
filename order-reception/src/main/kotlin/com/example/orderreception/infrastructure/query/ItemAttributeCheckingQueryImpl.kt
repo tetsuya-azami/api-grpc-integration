@@ -9,7 +9,7 @@ import com.example.orderreception.infrastructure.mapper.generated.ItemAttributes
 
 @Repository
 class ItemAttributeCheckingQueryImpl(
-    val itemAttributesBaseMapper: ItemAttributesBaseMapper
+    private val itemAttributesBaseMapper: ItemAttributesBaseMapper
 ) : ItemAttributeCheckingQuery {
     override fun existsItemAttribute(itemId: Long, attributeId: Long): Boolean {
         val attributesBase = itemAttributesBaseMapper.selectOne {
