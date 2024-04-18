@@ -2,15 +2,15 @@ package com.example.orderreception.infrastructure.query
 
 import com.example.orderreception.infrastructure.entity.generated.ItemsBase
 import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseMapper
-import com.example.orderreception.usecase.query.ItemQuery
+import com.example.orderreception.usecase.query.ItemCheckingQuery
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.springframework.stereotype.Repository
 import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynamicSqlSupport as sqlSupport
 
 @Repository
-class ItemQueryImpl(
+class ItemCheckingQueryImpl(
     private val itemsBaseMapper: ItemsBaseMapper
-) : ItemQuery {
+) : ItemCheckingQuery {
     override fun existsItem(itemId: Long, chainId: Long, shopId: Long): ItemsBase? {
 
         val itemsBase = itemsBaseMapper.selectOne(
