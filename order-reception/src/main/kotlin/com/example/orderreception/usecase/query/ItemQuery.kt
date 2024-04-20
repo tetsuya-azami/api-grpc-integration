@@ -1,8 +1,8 @@
 package com.example.orderreception.usecase.query
 
 import com.example.orderreception.domain.model.order.Item
-import com.example.orderreception.infrastructure.query.ItemQueryParam
+import com.example.orderreception.presentation.order.ItemParam
 
 interface ItemQuery {
-    fun findItems(itemQueryParams: List<ItemQueryParam>): List<Item>
+    fun findItems(itemParams: List<ItemParam>, chainId: Long, shopId: Long): List<Item>
 }

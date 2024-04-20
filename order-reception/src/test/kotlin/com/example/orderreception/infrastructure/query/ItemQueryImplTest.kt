@@ -1,5 +1,6 @@
 package com.example.orderreception.infrastructure.query
 
+import com.example.orderreception.presentation.order.ItemParam
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,13 +23,13 @@ class ItemQueryImplTest @Autowired constructor(
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     fun test() {
-        val itemQueryParams = listOf(
-            ItemQueryParam(itemId = 1, chainId = 1, shopId = 1),
-            ItemQueryParam(itemId = 2, chainId = 1, shopId = 1),
-            ItemQueryParam(itemId = 3, chainId = 1, shopId = 1),
+        val itemParams = listOf(
+            ItemParam(itemId = 1, price = BigDecimal.valueOf(1), attributes = listOf(), quantity = 1),
+            ItemParam(itemId = 2, price = BigDecimal.valueOf(1), attributes = listOf(), quantity = 1),
+            ItemParam(itemId = 3, price = BigDecimal.valueOf(1), attributes = listOf(), quantity = 1)
         )
 
-        val results = sut.findItems(itemQueryParams).sortedBy { it.itemId }
+        val results = sut.findItems(itemParams, 1, 1).sortedBy { it.itemId }
         assertThat(results.size).isEqualTo(3)
         for ((index, result) in results.withIndex()) {
             assertThat(result.itemId).isEqualTo(index + 1L)
