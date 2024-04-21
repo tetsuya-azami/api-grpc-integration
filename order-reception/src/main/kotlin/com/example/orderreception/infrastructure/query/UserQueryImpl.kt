@@ -1,6 +1,5 @@
 package com.example.orderreception.infrastructure.query
 
-import com.example.orderreception.domain.model.order.BlackLevel
 import com.example.orderreception.domain.model.order.User
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseMapper
 import com.example.orderreception.infrastructure.mapper.generated.selectByPrimaryKey
@@ -8,9 +7,11 @@ import com.example.orderreception.usecase.query.UserQuery
 import org.springframework.stereotype.Repository
 
 @Repository
-class UserQueryImpl(val usersBaseMapper: UsersBaseMapper) : UserQuery {
+class UserQueryImpl(
+    private val usersBaseMapper: UsersBaseMapper
+) : UserQuery {
     override fun findById(userId: Long): User? {
         val usersBase = usersBaseMapper.selectByPrimaryKey(userId)
-        return usersBase?.let { User(it.userId!!, BlackLevel.fromBase(it)) }
+        return usersBase?.let { User.fromBase(usersBase) }
     }
 }
