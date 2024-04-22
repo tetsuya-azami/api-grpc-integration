@@ -20,7 +20,7 @@ data class OrderItem private constructor(
             return OrderItem(
                 itemId = itemWithAttributesBase.itemId!!,
                 name = itemWithAttributesBase.name!!,
-                price = BigDecimal.valueOf(itemWithAttributesBase.price!!),
+                price = itemWithAttributesBase.price!!,
                 attributes = attributes,
                 quantity = itemParam.quantity
             )
