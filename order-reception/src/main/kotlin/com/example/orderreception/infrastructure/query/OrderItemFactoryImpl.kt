@@ -53,12 +53,12 @@ class OrderItemFactoryImpl(
         }
 
         return select(
-            itemSupport.itemId,
-            itemSupport.name,
-            itemSupport.price,
-            attributeSupport.attributeId,
-            attributeSupport.name,
-            attributeSupport.value
+            itemSupport.itemId.qualifiedWith("i"),
+            itemSupport.name.qualifiedWith("i"),
+            itemSupport.price.qualifiedWith("i"),
+            attributeSupport.attributeId.qualifiedWith("a"),
+            attributeSupport.name.qualifiedWith("a"),
+            attributeSupport.value.qualifiedWith("a")
         ).from(
             select(
                 itemSupport.itemId,
@@ -75,9 +75,12 @@ class OrderItemFactoryImpl(
             ), "i"
         ).leftJoin(
             itemAttributesSelectStatement, "ia"
-        ).on(itemSupport.itemId, equalTo(itemAttributesSupport.itemId))
-            .leftJoin(attributeSupport.attributesBase)
-            .on(itemAttributesSupport.itemAttributesBase.attributeId, equalTo(attributeSupport.attributeId))
+        ).on(itemSupport.itemId.qualifiedWith("i"), equalTo(itemAttributesSupport.itemId.qualifiedWith("ia")))
+            .leftJoin(attributeSupport.attributesBase, "a")
+            .on(
+                itemAttributesSupport.itemAttributesBase.attributeId.qualifiedWith("ia"),
+                equalTo(attributeSupport.attributeId.qualifiedWith("a"))
+            )
             .build()
             .render(RenderingStrategies.MYBATIS3)
     }

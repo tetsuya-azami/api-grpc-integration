@@ -16,7 +16,12 @@ interface ItemAttributesMappler {
             Result(column = "item_id", property = "itemId", jdbcType = JdbcType.BIGINT, id = true),
             Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR),
             Result(column = "price", property = "price", jdbcType = JdbcType.DECIMAL),
-            Result(many = Many(resultMap = "AttributesBaseResult"))
+            Result(
+                column = "item_id",
+                property = "attributes",
+                javaType = List::class,
+                many = Many(resultMap = "AttributesBaseResult", columnPrefix = "a")
+            )
         ]
     )
     fun select(selectStatement: SelectStatementProvider): ItemWithAttributesBase
@@ -27,8 +32,6 @@ interface ItemAttributesMappler {
             Result(column = "attribute_id", property = "attributeId", jdbcType = JdbcType.BIGINT, id = true),
             Result(column = "name", property = "name", jdbcType = JdbcType.VARCHAR),
             Result(column = "value", property = "value", jdbcType = JdbcType.VARCHAR),
-            Result(column = "created_at", property = "createdAt", jdbcType = JdbcType.TIMESTAMP),
-            Result(column = "updated_at", property = "updatedAt", jdbcType = JdbcType.TIMESTAMP)
         ]
     )
     fun selectAttributes(selectStatement: SelectStatementProvider): List<AttributesBase>
