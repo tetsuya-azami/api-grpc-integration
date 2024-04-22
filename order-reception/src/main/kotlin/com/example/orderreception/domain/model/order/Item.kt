@@ -1,7 +1,6 @@
 package com.example.orderreception.domain.model.order
 
-import com.example.orderreception.infrastructure.entity.generated.AttributesBase
-import com.example.orderreception.infrastructure.entity.generated.ItemsBase
+import com.example.orderreception.infrastructure.entity.custom.ItemWithAttributesBase
 import com.example.orderreception.presentation.order.ItemParam
 import java.math.BigDecimal
 
@@ -13,15 +12,15 @@ data class Item private constructor(
     val quantity: Int
 ) {
     companion object {
-        fun fromBaseAndParam(itemsBase: ItemsBase, attributesBases: List<AttributesBase>, itemParam: ItemParam): Item {
-            val attributes = attributesBases.map { attributesBase ->
+        fun fromBaseAndParam(itemWithAttributesBase: ItemWithAttributesBase, itemParam: ItemParam): Item {
+            val attributes = itemWithAttributesBase.attributes.map { attributesBase ->
                 Attribute.fromBase(attributesBase = attributesBase)
             }
 
             return Item(
-                itemId = itemsBase.itemId!!,
-                name = itemsBase.name!!,
-                price = BigDecimal.valueOf(itemsBase.price!!),
+                itemId = itemWithAttributesBase.itemId!!,
+                name = itemWithAttributesBase.name!!,
+                price = BigDecimal.valueOf(itemWithAttributesBase.price!!),
                 attributes = attributes,
                 quantity = itemParam.quantity
             )
