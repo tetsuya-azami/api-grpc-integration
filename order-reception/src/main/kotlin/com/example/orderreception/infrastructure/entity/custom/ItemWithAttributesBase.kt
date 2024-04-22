@@ -7,5 +7,5 @@ data class ItemWithAttributesBase(
     var itemId: Long? = null,
     var name: String? = null,
     var price: BigDecimal? = null,
-    var attributes: List<AttributesBase>
+    var attributes: List<AttributesBase> = mutableListOf()
 )

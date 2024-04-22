@@ -20,7 +20,7 @@ interface ItemAttributesMappler {
                 column = "item_id",
                 property = "attributes",
                 javaType = List::class,
-                many = Many(resultMap = "AttributesBaseResult", columnPrefix = "a")
+                many = Many(resultMap = "AttributesBaseResult", columnPrefix = "a_")
             )
         ]
     )

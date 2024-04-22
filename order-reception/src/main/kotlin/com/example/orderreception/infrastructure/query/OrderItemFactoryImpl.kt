@@ -56,9 +56,9 @@ class OrderItemFactoryImpl(
             itemSupport.itemId.qualifiedWith("i"),
             itemSupport.name.qualifiedWith("i"),
             itemSupport.price.qualifiedWith("i"),
-            attributeSupport.attributeId.qualifiedWith("a"),
-            attributeSupport.name.qualifiedWith("a"),
-            attributeSupport.value.qualifiedWith("a")
+            attributeSupport.attributeId.qualifiedWith("a").`as`("a_attribute_id"),
+            attributeSupport.name.qualifiedWith("a").`as`("a_name"),
+            attributeSupport.value.qualifiedWith("a").`as`("a_value")
         ).from(
             select(
                 itemSupport.itemId,
