@@ -1,6 +1,6 @@
 package com.example.orderreception.infrastructure.query
 
-import com.example.orderreception.domain.model.order.Item
+import com.example.orderreception.domain.model.order.OrderItem
 import com.example.orderreception.error.ValidationError
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.infrastructure.mapper.custom.ItemAttributesMappler
@@ -20,14 +20,14 @@ import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynam
 class OrderItemFactoryImpl(
     private val itemAttributesMappler: ItemAttributesMappler
 ) : OrderItemFactory {
-    override fun createOrderItems(itemParams: List<ItemParam>, chainId: Long, shopId: Long): List<Item> {
+    override fun createOrderItems(itemParams: List<ItemParam>, chainId: Long, shopId: Long): List<OrderItem> {
         if (itemParams.isEmpty()) throw OrderReceptionIllegalArgumentException(listOf(ValidationError("商品情報がありません。")))
 
         return itemParams.map { itemParam ->
             val selectStatementProvider =
                 getSelectStatementProvider(itemParam.itemId, chainId, shopId, itemParam.attributes)
             val itemWithAttributesBase = itemAttributesMappler.select(selectStatementProvider)
-            Item.fromBaseAndParam(itemWithAttributesBase, itemParam)
+            OrderItem.fromBaseAndParam(itemWithAttributesBase, itemParam)
         }
     }
 

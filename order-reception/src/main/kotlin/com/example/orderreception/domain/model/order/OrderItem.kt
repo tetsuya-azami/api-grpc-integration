@@ -4,7 +4,7 @@ import com.example.orderreception.infrastructure.entity.custom.ItemWithAttribute
 import com.example.orderreception.presentation.order.ItemParam
 import java.math.BigDecimal
 
-data class Item private constructor(
+data class OrderItem private constructor(
     val itemId: Long,
     val name: String,
     val price: BigDecimal,
@@ -12,12 +12,12 @@ data class Item private constructor(
     val quantity: Int
 ) {
     companion object {
-        fun fromBaseAndParam(itemWithAttributesBase: ItemWithAttributesBase, itemParam: ItemParam): Item {
+        fun fromBaseAndParam(itemWithAttributesBase: ItemWithAttributesBase, itemParam: ItemParam): OrderItem {
             val attributes = itemWithAttributesBase.attributes.map { attributesBase ->
                 Attribute.fromBase(attributesBase = attributesBase)
             }
 
-            return Item(
+            return OrderItem(
                 itemId = itemWithAttributesBase.itemId!!,
                 name = itemWithAttributesBase.name!!,
                 price = BigDecimal.valueOf(itemWithAttributesBase.price!!),
