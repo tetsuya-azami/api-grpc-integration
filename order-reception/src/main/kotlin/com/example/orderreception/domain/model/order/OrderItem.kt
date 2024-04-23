@@ -1,7 +1,7 @@
 package com.example.orderreception.domain.model.order
 
 import com.example.orderreception.infrastructure.entity.custom.ItemWithAttributesBase
-import com.example.orderreception.presentation.order.ItemParam
+import com.example.orderreception.presentation.order.OrderItemParam
 import java.math.BigDecimal
 
 data class OrderItem private constructor(
@@ -12,7 +12,10 @@ data class OrderItem private constructor(
     val quantity: Int
 ) {
     companion object {
-        fun fromBaseAndParam(itemWithAttributesBase: ItemWithAttributesBase, itemParam: ItemParam): OrderItem {
+        fun fromBaseAndParam(
+            itemWithAttributesBase: ItemWithAttributesBase,
+            orderItemParam: OrderItemParam
+        ): OrderItem {
             val attributes = itemWithAttributesBase.attributes.map { attributesBase ->
                 Attribute.fromBase(attributesBase = attributesBase)
             }
@@ -22,7 +25,7 @@ data class OrderItem private constructor(
                 name = itemWithAttributesBase.name!!,
                 price = itemWithAttributesBase.price!!,
                 attributes = attributes,
-                quantity = itemParam.quantity
+                quantity = orderItemParam.quantity
             )
         }
     }

@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class OrderParam(
-    val itemParams: List<ItemParam>,
+    val orderItemParams: List<OrderItemParam>,
     val chainId: Long,
     val shopId: Long,
     val deliveryParam: DeliveryParam,
@@ -35,9 +35,9 @@ data class OrderParam(
                 }
             if (order.user.id == null) validationErrors.add(ValidationError(message = "ユーザ情報がありません。"))
 
-            val itemParams =
+            val orderItemParams =
                 order.items
-                    .map { ItemParam.fromOpenApi(it) }
+                    .map { OrderItemParam.fromOpenApi(it) }
                     .mapNotNull { result ->
                         result.getOrElse { errors ->
                             validationErrors.addAll(errors)
@@ -69,7 +69,7 @@ data class OrderParam(
                 Err(validationErrors)
             else Ok(
                 OrderParam(
-                    itemParams = itemParams,
+                    orderItemParams = orderItemParams,
                     chainId = order.chain.id!!,
                     shopId = order.shop.id!!,
                     deliveryParam = deliveryParam!!,

@@ -5,7 +5,7 @@ import com.example.orderreception.error.ValidationError
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.infrastructure.mapper.custom.ItemAttributesMappler
 import com.example.orderreception.presentation.order.AttributeParam
-import com.example.orderreception.presentation.order.ItemParam
+import com.example.orderreception.presentation.order.OrderItemParam
 import com.example.orderreception.usecase.query.OrderItemFactory
 import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.render.RenderingStrategies
@@ -23,10 +23,10 @@ import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynam
 class OrderItemFactoryImpl(
     private val itemAttributesMappler: ItemAttributesMappler
 ) : OrderItemFactory {
-    override fun createOrderItems(itemParams: List<ItemParam>, chainId: Long, shopId: Long): List<OrderItem> {
-        if (itemParams.isEmpty()) throw OrderReceptionIllegalArgumentException(listOf(ValidationError("商品情報がありません。")))
+    override fun createOrderItems(orderItemParams: List<OrderItemParam>, chainId: Long, shopId: Long): List<OrderItem> {
+        if (orderItemParams.isEmpty()) throw OrderReceptionIllegalArgumentException(listOf(ValidationError("商品情報がありません。")))
 
-        return itemParams.map { itemParam ->
+        return orderItemParams.map { itemParam ->
             val selectStatementProvider =
                 getSelectStatementProvider(itemParam.itemId, chainId, shopId, itemParam.attributes)
             val itemWithAttributesBase = itemAttributesMappler.select(selectStatementProvider)

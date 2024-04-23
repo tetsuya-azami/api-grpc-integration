@@ -8,14 +8,14 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.getOrElse
 import java.math.BigDecimal
 
-data class ItemParam(
+data class OrderItemParam(
     val itemId: Long,
     val price: BigDecimal,
     val attributes: List<AttributeParam>,
     val quantity: Int
 ) {
     companion object {
-        fun fromOpenApi(item: Item): Result<ItemParam, List<ValidationError>> {
+        fun fromOpenApi(item: Item): Result<OrderItemParam, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
             if (item.id == null) validationErrors.add(ValidationError(message = "商品IDがありません。"))
             if (item.price == null) validationErrors.add(ValidationError(message = "商品価格がありません。"))
@@ -31,7 +31,7 @@ data class ItemParam(
 
             return if (validationErrors.isNotEmpty()) Err(validationErrors)
             else Ok(
-                ItemParam(
+                OrderItemParam(
                     itemId = item.id!!,
                     price = BigDecimal.valueOf(item.price!!),
                     attributes = attributeParams,

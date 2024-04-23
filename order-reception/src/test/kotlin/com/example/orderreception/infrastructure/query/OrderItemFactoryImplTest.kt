@@ -1,7 +1,7 @@
 package com.example.orderreception.infrastructure.query
 
 import com.example.orderreception.presentation.order.AttributeParam
-import com.example.orderreception.presentation.order.ItemParam
+import com.example.orderreception.presentation.order.OrderItemParam
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,14 +24,14 @@ class OrderItemFactoryImplTest @Autowired constructor(
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
     )
     fun test() {
-        val itemParams = listOf(
-            ItemParam(
+        val orderItemParams = listOf(
+            OrderItemParam(
                 itemId = 1,
                 price = BigDecimal.valueOf(100),
                 attributes = listOf(AttributeParam(attributeId = 1)),
                 quantity = 1
             ),
-            ItemParam(
+            OrderItemParam(
                 itemId = 2,
                 price = BigDecimal.valueOf(200),
                 attributes = listOf(
@@ -40,7 +40,7 @@ class OrderItemFactoryImplTest @Autowired constructor(
                 ),
                 quantity = 2
             ),
-            ItemParam(
+            OrderItemParam(
                 itemId = 3,
                 price = BigDecimal.valueOf(300),
                 attributes = listOf(
@@ -52,7 +52,7 @@ class OrderItemFactoryImplTest @Autowired constructor(
             )
         )
 
-        val results = sut.createOrderItems(itemParams, 1, 1).sortedBy { it.itemId }
+        val results = sut.createOrderItems(orderItemParams, 1, 1).sortedBy { it.itemId }
         assertThat(results.size).isEqualTo(3)
         for ((index, result) in results.withIndex()) {
             assertThat(result.itemId).isEqualTo(index + 1L)
