@@ -11,9 +11,12 @@ import org.mybatis.dynamic.sql.SqlBuilder.*
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.springframework.stereotype.Repository
-import com.example.orderreception.infrastructure.mapper.generated.AttributesBaseDynamicSqlSupport as attributeSupport
-import com.example.orderreception.infrastructure.mapper.generated.ItemAttributesBaseDynamicSqlSupport as itemAttributesSupport
-import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynamicSqlSupport as itemSupport
+import com.example.orderreception.infrastructure.mapper.generated.AttributesBaseDynamicSqlSupport as a
+import com.example.orderreception.infrastructure.mapper.generated.AttributesBaseDynamicSqlSupport.attributesBase as attributes
+import com.example.orderreception.infrastructure.mapper.generated.ItemAttributesBaseDynamicSqlSupport as ia
+import com.example.orderreception.infrastructure.mapper.generated.ItemAttributesBaseDynamicSqlSupport.itemAttributesBase as itemAttributes
+import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynamicSqlSupport as i
+import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynamicSqlSupport.itemsBase as items
 
 
 @Repository
@@ -31,55 +34,58 @@ class OrderItemFactoryImpl(
         }
     }
 
+    // TODO: SQL直書きしたい（複雑なクエリだとdynamic-sqlは見づらい）
     private fun getSelectStatementProvider(
         itemId: Long,
         chainId: Long,
         shopId: Long,
-        attributes: List<AttributeParam>
+        attributeParams: List<AttributeParam>
     ): SelectStatementProvider {
 
         var itemAttributesSelectStatement = select(
-            itemAttributesSupport.itemId,
-            itemAttributesSupport.attributeId
+            ia.itemId,
+            ia.attributeId
         ).from(
-            itemAttributesSupport.itemAttributesBase
+            itemAttributes
         ).where(
-            itemAttributesSupport.attributeId, isEqualTo(attributes[0].attributeId)
+            ia.attributeId, isEqualTo(attributeParams[0].attributeId)
         )
 
-        for (attribute in attributes.drop(1)) {
+        for (attribute in attributeParams.drop(1)) {
             itemAttributesSelectStatement =
-                itemAttributesSelectStatement.or(itemAttributesSupport.attributeId, isEqualTo(attribute.attributeId))
+                itemAttributesSelectStatement.or(ia.attributeId, isEqualTo(attribute.attributeId))
         }
 
         return select(
-            itemSupport.itemId.qualifiedWith("i"),
-            itemSupport.name.qualifiedWith("i"),
-            itemSupport.price.qualifiedWith("i"),
-            attributeSupport.attributeId.qualifiedWith("a").`as`("a_attribute_id"),
-            attributeSupport.name.qualifiedWith("a").`as`("a_name"),
-            attributeSupport.value.qualifiedWith("a").`as`("a_value")
+            i.itemId.qualifiedWith("i"),
+            i.name.qualifiedWith("i"),
+            i.price.qualifiedWith("i"),
+            a.attributeId.qualifiedWith("a").`as`("a_attribute_id"),
+            a.name.qualifiedWith("a").`as`("a_name"),
+            a.value.qualifiedWith("a").`as`("a_value")
         ).from(
             select(
-                itemSupport.itemId,
-                itemSupport.name,
-                itemSupport.price
+                i.itemId,
+                i.name,
+                i.price
             ).from(
-                itemSupport.itemsBase
+                items
             ).where(
-                itemSupport.itemId, isEqualTo(itemId)
+                i.itemId, isEqualTo(itemId)
             ).and(
-                itemSupport.chainId, isEqualTo(chainId)
+                i.chainId, isEqualTo(chainId)
             ).and(
-                itemSupport.shopId, isEqualTo(shopId)
+                i.shopId, isEqualTo(shopId)
             ), "i"
         ).leftJoin(
             itemAttributesSelectStatement, "ia"
-        ).on(itemSupport.itemId.qualifiedWith("i"), equalTo(itemAttributesSupport.itemId.qualifiedWith("ia")))
-            .leftJoin(attributeSupport.attributesBase, "a")
+        ).on(
+            i.itemId.qualifiedWith("i"),
+            equalTo(ia.itemId.qualifiedWith("ia"))
+        ).leftJoin(attributes, "a")
             .on(
-                itemAttributesSupport.itemAttributesBase.attributeId.qualifiedWith("ia"),
-                equalTo(attributeSupport.attributeId.qualifiedWith("a"))
+                itemAttributes.attributeId.qualifiedWith("ia"),
+                equalTo(a.attributeId.qualifiedWith("a"))
             )
             .build()
             .render(RenderingStrategies.MYBATIS3)
