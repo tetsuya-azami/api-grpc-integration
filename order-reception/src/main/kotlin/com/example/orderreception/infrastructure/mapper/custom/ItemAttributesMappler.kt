@@ -24,7 +24,7 @@ interface ItemAttributesMappler {
             )
         ]
     )
-    fun select(selectStatement: SelectStatementProvider): ItemWithAttributesBase
+    fun select(selectStatement: SelectStatementProvider): ItemWithAttributesBase?
 
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @Results(
