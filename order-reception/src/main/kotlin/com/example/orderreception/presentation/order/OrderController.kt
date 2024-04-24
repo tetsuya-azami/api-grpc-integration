@@ -5,6 +5,7 @@ import com.example.orderreception.openapi.api.OrderApi
 import com.example.orderreception.openapi.model.CreateOrderRequest
 import com.example.orderreception.openapi.model.OrderCreationSuccessResponse
 import com.example.orderreception.openapi.model.OrderCreationSuccessResponseData
+import com.example.orderreception.usecase.RegisterOrder
 import com.github.michaelbull.result.getOrElse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class OrderController : OrderApi {
+class OrderController(
+    private val registerOrder: RegisterOrder
+) : OrderApi {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -25,10 +28,11 @@ class OrderController : OrderApi {
                 throw OrderReceptionIllegalArgumentException(validationErrors = errors)
             }
 
-        logger.info("Order created successfully: $createOrderRequest")
+        val registeredOrderId = registerOrder.execute(orderParam)
+
+        logger.info("Order created successfully: $registeredOrderId")
         return ResponseEntity(
-            // TODO: Replace with actual order ID
-            OrderCreationSuccessResponse("SUCCESS", OrderCreationSuccessResponseData("11111")),
+            OrderCreationSuccessResponse("SUCCESS", OrderCreationSuccessResponseData(registeredOrderId)),
             HttpStatus.CREATED
         )
     }
