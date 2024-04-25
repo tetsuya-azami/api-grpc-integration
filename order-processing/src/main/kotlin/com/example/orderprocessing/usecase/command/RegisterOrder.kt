@@ -32,6 +32,7 @@ class RegisterOrder(
             }
 
         if (validationErrors.isNotEmpty() || order == null) {
+            logger.warn("不正なリクエストです。$validationErrors")
             throw OrderProcessingIllegalArgumentException(validationErrors = validationErrors)
         }
 
