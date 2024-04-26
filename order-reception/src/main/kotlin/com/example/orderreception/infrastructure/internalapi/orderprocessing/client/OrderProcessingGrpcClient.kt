@@ -3,9 +3,15 @@ package com.example.orderreception.infrastructure.internalapi.orderprocessing.cl
 import com.example.grpcinterface.proto.OrderServiceGrpc.OrderServiceBlockingStub
 import com.example.orderreception.domain.model.order.OrderItem
 import com.example.orderreception.domain.model.order.User
+import com.example.orderreception.error.ValidationError
+import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.infrastructure.internalapi.orderprocessing.request.RegisterOrderRequest
 import com.example.orderreception.infrastructure.internalapi.orderprocessing.response.RegisterOrderResponse
 import com.example.orderreception.presentation.order.OrderParam
+import com.google.rpc.BadRequest
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
+import io.grpc.protobuf.ProtoUtils
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -22,7 +28,18 @@ class OrderProcessingGrpcClient(
         // TODO: 非同期での連携を検討
         return try {
             val orderCreationResponse = orderServiceStub.createOrder(registerOrderRequest.orderCreationRequest)
-            RegisterOrderResponse(orderId = orderCreationResponse.id)
+            return RegisterOrderResponse(orderId = orderCreationResponse.id)
+        } catch (e: StatusRuntimeException) {
+            logger.warn("OrderProcessingとの通信で予期せぬエラーが発生しました。", e)
+            if (e.status.code == Status.INVALID_ARGUMENT.code) {
+                val errorDetails = e.trailers?.get(ProtoUtils.keyForProto(BadRequest.getDefaultInstance()))
+                val validationErrors = errorDetails?.fieldViolationsList?.map {
+                    ValidationError(message = "${it.field}: ${it.description}")
+                }
+                logger.warn("バリデーションエラーリスト: $validationErrors")
+                throw OrderReceptionIllegalArgumentException(validationErrors = validationErrors!!)
+            }
+            throw e
         } catch (e: Exception) {
             logger.warn("OrderProcessingとの通信で予期せぬエラーが発生しました。", e)
             throw e
