@@ -3,13 +3,14 @@ package com.example.orderreception.infrastructure.internalapi.orderprocessing.re
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderOuterClass.*
 import com.example.grpcinterface.proto.OrderOuterClass.Delivery.Type
-import com.example.grpcinterface.proto.OrderOuterClass.Items.Attribute
+import com.example.grpcinterface.proto.OrderOuterClass.Item.Attribute
 import com.example.grpcinterface.proto.OrderOuterClass.Payment.PaymentMethod
 import com.example.grpcinterface.proto.OrderOuterClass.User.BlackLevel
 import com.example.orderreception.domain.model.order.OrderItem
 import com.example.orderreception.domain.model.order.User
 import com.example.orderreception.presentation.order.OrderParam
 import com.google.protobuf.Timestamp
+import com.google.type.Money
 import java.time.ZoneOffset
 
 data class RegisterOrderRequest private constructor(
@@ -26,10 +27,15 @@ data class RegisterOrderRequest private constructor(
                         .build()
                 }
 
-                Items.newBuilder()
+                Item.newBuilder()
                     .setId(item.itemId)
                     .setName(item.name)
-                    .setPrice(item.price.toDouble())
+                    .setPrice(
+                        Money.newBuilder()
+                            .setUnits(item.price.toLong())
+                            .setNanos(0)
+                            .setCurrencyCode("JPY")
+                    )
                     .addAllAttributes(attributesProto)
                     .setQuantity(item.quantity)
                     .build()
