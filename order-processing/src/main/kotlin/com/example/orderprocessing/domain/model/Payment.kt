@@ -63,17 +63,23 @@ data class Payment private constructor(
 
     sealed interface PaymentValidationError : ValidationError {
         data object IllegalTaxedTotalPrice : PaymentValidationError {
-            override val message: String
+            override val fieldName: String
+                get() = Payment::taxedTotalPrice.name
+            override val description: String
                 get() = "税抜き合計金額は${MINIMUM_TAXED_TOTAL_PRICE}から${MAXIMUM_TAXED_TOTAL_PRICE}の間でなければなりません。"
         }
 
         data class IllegalTax(val paymentParam: PaymentParam) : PaymentValidationError {
-            override val message: String
+            override val fieldName: String
+                get() = Payment::tax.name
+            override val description: String
                 get() = "消費税額が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}"
         }
 
         data class MissMatchTaxedTotalPrice(val paymentParam: PaymentParam) : PaymentValidationError {
-            override val message: String
+            override val fieldName: String
+                get() = Payment::class.simpleName!!
+            override val description: String
                 get() = "税込合計価格が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}, 税込合計金額: ${paymentParam.taxedTotalPrice}"
         }
     }

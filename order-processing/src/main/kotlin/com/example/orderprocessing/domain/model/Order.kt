@@ -95,14 +95,18 @@ class Order private constructor(
 
     sealed interface OrderValidationErrors : ValidationError {
         data class IllegalOrderByBlackUser(val blackLevel: BlackLevel) : OrderValidationErrors {
-            override val message: String
+            override val fieldName: String
+                get() = BlackLevel::class.simpleName!!
+            override val description: String
                 get() = "不正な注文です。BlackLevel: ${blackLevel.name}"
         }
 
         // TODO: 引数のNull許容型をやめる
         data class IllegalNonTaxedTotalPrice(val orderItems: OrderItems?, val payment: Payment?) :
             OrderValidationErrors {
-            override val message: String
+            override val fieldName: String
+                get() = Payment::nonTaxedTotalPrice.name
+            override val description: String
                 get() = "商品の税抜き合計金額が不整合です。購入商品一覧: ${orderItems?.value}, 税抜き合計金額: ${payment?.nonTaxedTotalPrice}"
         }
     }

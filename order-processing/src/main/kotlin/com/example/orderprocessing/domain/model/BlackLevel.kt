@@ -20,7 +20,9 @@ enum class BlackLevel {
 
     sealed interface BlackLevelValidationErrors : ValidationError {
         data class IllegalBlackLevel(val value: String) : BlackLevelValidationErrors {
-            override val message: String
+            override val fieldName: String
+                get() = BlackLevel::class.simpleName!!
+            override val description: String
                 get() = "ブラックレベルは${BlackLevel.entries}の中から選んでください。ブラックレベル: $value"
         }
     }

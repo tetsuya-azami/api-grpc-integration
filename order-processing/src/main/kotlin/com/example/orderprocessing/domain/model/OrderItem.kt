@@ -9,7 +9,7 @@ import com.github.michaelbull.result.getOrElse
 import java.math.BigDecimal
 
 
-class OrderItem private constructor(
+data class OrderItem private constructor(
     val itemId: Long,
     val price: BigDecimal,
     val quantity: Int,
@@ -52,7 +52,9 @@ class OrderItem private constructor(
 
     sealed interface OrderItemValidationErrors : ValidationError {
         data class IllegalItemQuantity(val orderItemParam: OrderItemParam) : OrderItemValidationErrors {
-            override val message: String
+            override val fieldName: String
+                get() = OrderItemParam::quantity.name
+            override val description: String
                 get() = "商品の数量は${MINIMUM_QUANTITY}個から${MAXIMUM_QUANTITY}個の間で注文できます。商品ID: ${orderItemParam.id}, 数量: ${orderItemParam.quantity}"
         }
     }

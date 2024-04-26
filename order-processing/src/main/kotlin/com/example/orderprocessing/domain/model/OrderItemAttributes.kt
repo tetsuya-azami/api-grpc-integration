@@ -8,7 +8,7 @@ import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.getOrElse
 
-class OrderItemAttributes private constructor(val value: List<OrderItemAttribute>) {
+data class OrderItemAttributes private constructor(val value: List<OrderItemAttribute>) {
     companion object {
         const val MINIMUM_ATTRIBUTE_SIZE = 0
         const val MAXIMUM_ATTRIBUTE_SIZE = 100
@@ -42,7 +42,9 @@ class OrderItemAttributes private constructor(val value: List<OrderItemAttribute
     sealed interface OrderItemAttributesValidationError : ValidationError {
         data class IllegalOrderItemAttributeSize(val orderItemParam: OrderItemParam) :
             OrderItemAttributesValidationError {
-            override val message: String
+            override val fieldName: String
+                get() = OrderItemAttribute::class.simpleName!!
+            override val description: String
                 get() = "商品属性は${MINIMUM_ATTRIBUTE_SIZE}つから${MAXIMUM_ATTRIBUTE_SIZE}つの間で商品に紐づけることができます。商品ID: ${orderItemParam.id}, 商品属性: ${orderItemParam.attributeParams}"
         }
     }

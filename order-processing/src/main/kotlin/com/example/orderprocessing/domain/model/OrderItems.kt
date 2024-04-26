@@ -43,7 +43,9 @@ data class OrderItems private constructor(val value: List<OrderItem>) {
 
     sealed interface OrderItemsValidationError {
         data object IllegalItemSize : ValidationError {
-            override val message: String
+            override val fieldName: String
+                get() = OrderItem::class.simpleName!!
+            override val description: String
                 get() = "商品は${MINIMUM_ITEM_SIZE}個から${MAXIMUM_ITEM_SIZE}個の間で注文できます。"
         }
     }

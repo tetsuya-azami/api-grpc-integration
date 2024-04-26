@@ -15,18 +15,16 @@ class GrpcExceptionAdvice {
     @GrpcExceptionHandler
     fun handleInvalidArgument(illegalArgumentException: OrderProcessingIllegalArgumentException): StatusException {
         val validationErrors = illegalArgumentException.validationErrors
-        val messages = validationErrors.joinToString(separator = "\n") { it.message }
+        val messages = validationErrors.joinToString(separator = "\n") { it.description }
 
         // TODO: Filedの見直し
-        val fieldViolation = BadRequest.FieldViolation
-            .newBuilder()
-            .setField("all")
-            .setDescription(messages)
-            .build()
-        val badRequestError = BadRequest
-            .newBuilder()
-            .addFieldViolations(fieldViolation)
-            .build()
+        val fieldViolations = validationErrors.map { error ->
+            BadRequest.FieldViolation.newBuilder()
+                .setField(error.fieldName)
+                .setDescription(error.description)
+                .build()
+        }
+        val badRequestError = BadRequest.newBuilder().addAllFieldViolations(fieldViolations).build()
 
         val errorDetail = Metadata()
         errorDetail.put(ProtoUtils.keyForProto(badRequestError), badRequestError)

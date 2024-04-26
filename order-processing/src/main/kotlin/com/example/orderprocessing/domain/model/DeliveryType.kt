@@ -19,7 +19,9 @@ enum class DeliveryType {
 
     sealed interface DeliveryTypeValidationErrors : ValidationError {
         data class IllegalDeliveryType(val value: String) : DeliveryTypeValidationErrors {
-            override val message: String
+            override val fieldName: String
+                get() = DeliveryType::class.simpleName!!
+            override val description: String
                 get() = "配達種別は${entries}の中から選んでください。配達種別: $value"
 
         }

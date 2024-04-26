@@ -35,6 +35,6 @@ class BlackLevelTest {
         val illegalBlackLevel = "illegalBlackLevel"
         val sut = BlackLevel.fromString(illegalBlackLevel)
         assertThat(sut.isErr).isTrue()
-        assertThat(sut.error[0].message).isEqualTo("ブラックレベルは${BlackLevel.entries}の中から選んでください。ブラックレベル: $illegalBlackLevel")
+        assertThat(sut.error[0].description).isEqualTo("ブラックレベルは${BlackLevel.entries}の中から選んでください。ブラックレベル: $illegalBlackLevel")
     }
 }
