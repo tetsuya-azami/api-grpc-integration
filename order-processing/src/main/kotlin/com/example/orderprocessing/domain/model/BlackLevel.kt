@@ -5,10 +5,10 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 
-enum class BlackLevel {
-    LOW,
-    MIDDLE,
-    HIGH;
+enum class BlackLevel(val code: Int) {
+    LOW(0),
+    MIDDLE(1),
+    HIGH(2);
 
     companion object {
         fun fromString(value: String): Result<BlackLevel, List<ValidationError>> {

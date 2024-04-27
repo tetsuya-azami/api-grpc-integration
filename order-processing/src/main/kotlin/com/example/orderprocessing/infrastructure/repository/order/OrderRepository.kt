@@ -38,6 +38,7 @@ class OrderRepository(
             tax = order.payment.tax.toLong(),
             taxedTotalPrice = order.payment.taxedTotalPrice.toLong(),
             time = order.time,
+            blackLevel = order.blackLevel.code,
             createdAt = now,
             updatedAt = now
         )
