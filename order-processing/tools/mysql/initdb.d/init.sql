@@ -16,17 +16,6 @@ CREATE TABLE orders(
         updated_at datetime NOT NULL
 );
 
-CREATE TABLE items(
-        item_id bigint PRIMARY KEY AUTO_INCREMENT,
-        chain_id bigint NOT NULL,
-        shop_id bigint NOT NULL,
-        name varchar(250) NOT NULL,
-        price decimal NOT NULL,
-        description varchar(500) NOT NULL,
-        created_at datetime NOT NULL,
-        updated_at datetime NOT NULL
-);
-
 CREATE TABLE order_items(
         order_id varchar(250) NOT NULL,
         item_id bigint NOT NULL,
@@ -34,16 +23,7 @@ CREATE TABLE order_items(
         created_at datetime NOT NULL,
         updated_at datetime NOT NULL,
         PRIMARY KEY (order_id, item_id),
-        FOREIGN KEY (order_id) REFERENCES orders(order_id),
-        FOREIGN KEY (item_id) REFERENCES items(item_id)
-);
-
-CREATE TABLE attributes(
-        attribute_id bigint PRIMARY KEY AUTO_INCREMENT,
-        name varchar(250) NOT NULL,
-        value varchar(250) NOT NULL,
-        created_at datetime NOT NULL,
-        updated_at datetime NOT NULL
+        FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
 CREATE TABLE item_attributes(
@@ -51,9 +31,7 @@ CREATE TABLE item_attributes(
         attribute_id bigint NOT NULL,
         created_at datetime NOT NULL,
         updated_at datetime NOT NULL,
-        PRIMARY KEY (item_id, attribute_id),
-        FOREIGN KEY (item_id) REFERENCES items(item_id),
-        FOREIGN KEY (attribute_id) REFERENCES attributes(attribute_id)
+        PRIMARY KEY (item_id, attribute_id)
 );
 
 CREATE TABLE order_item_attributes(
@@ -63,9 +41,7 @@ CREATE TABLE order_item_attributes(
         created_at datetime NOT NULL,
         updated_at datetime NOT NULL,
         PRIMARY KEY (order_id, item_id, attribute_id),
-        FOREIGN KEY (order_id) REFERENCES orders(order_id),
-        FOREIGN KEY (item_id) REFERENCES items(item_id),
-        FOREIGN KEY (attribute_id) REFERENCES attributes(attribute_id)
+        FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
 CREATE TABLE payment_methods(
@@ -73,6 +49,3 @@ CREATE TABLE payment_methods(
         created_at datetime NOT NULL,
         updated_at datetime NOT NULL
 );
-
--- TODO: Add Chain, Shop, User, Address, and other tables
--- TODO: Add connstraints and indexes
