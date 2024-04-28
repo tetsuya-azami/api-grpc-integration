@@ -25,10 +25,30 @@ data class PaymentParam(
                         validationErrors.addAll(errors)
                         null
                     }
-            if (payment.deliveryCharge == null) validationErrors.add(ValidationError(message = "配達料金がありません。"))
-            if (payment.nonTaxedTotalPrice == null) validationErrors.add(ValidationError(message = "税抜き合計金額がありません。"))
-            if (payment.tax == null) validationErrors.add(ValidationError(message = "消費税がありません。"))
-            if (payment.taxedTotalPrice == null) validationErrors.add(ValidationError(message = "税込み合計金額がありません。"))
+            if (payment.deliveryCharge == null) validationErrors.add(
+                ValidationError(
+                    field = "payment",
+                    message = "配達料金がありません。"
+                )
+            )
+            if (payment.nonTaxedTotalPrice == null) validationErrors.add(
+                ValidationError(
+                    field = "payment",
+                    message = "税抜き合計金額がありません。"
+                )
+            )
+            if (payment.tax == null) validationErrors.add(
+                ValidationError(
+                    field = "payment",
+                    message = "消費税がありません。"
+                )
+            )
+            if (payment.taxedTotalPrice == null) validationErrors.add(
+                ValidationError(
+                    field = "payment",
+                    message = "税込み合計金額がありません。"
+                )
+            )
 
             return if (validationErrors.isNotEmpty()) Err(validationErrors)
             else Ok(

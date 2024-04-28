@@ -24,14 +24,28 @@ class OrderItemFactoryImpl(
     private val itemAttributesMappler: ItemAttributesMappler
 ) : OrderItemFactory {
     override fun createOrderItems(orderItemParams: List<OrderItemParam>, chainId: Long, shopId: Long): List<OrderItem> {
-        if (orderItemParams.isEmpty()) throw OrderReceptionIllegalArgumentException(listOf(ValidationError("商品情報がありません。")))
+        if (orderItemParams.isEmpty()) throw OrderReceptionIllegalArgumentException(
+            listOf(
+                ValidationError(
+                    field = "orderItems",
+                    message = "商品情報がありません。"
+                )
+            )
+        )
 
         return orderItemParams.map { itemParam ->
             // TODO: itemとattributeの整合性チェック追加
             val selectStatementProvider =
                 getSelectStatementProvider(itemParam.itemId, chainId, shopId, itemParam.attributes)
             val itemWithAttributesBase = itemAttributesMappler.select(selectStatementProvider)
-                ?: throw OrderReceptionIllegalArgumentException(listOf(ValidationError(message = "該当の商品および属性がありません。itemId: ${itemParam.itemId}, attributes: ${itemParam.attributes}")))
+                ?: throw OrderReceptionIllegalArgumentException(
+                    listOf(
+                        ValidationError(
+                            field = "orderItems",
+                            message = "該当の商品および属性がありません。itemId: ${itemParam.itemId}, attributes: ${itemParam.attributes}"
+                        )
+                    )
+                )
             OrderItem.fromBaseAndParam(itemWithAttributesBase, itemParam)
         }
     }

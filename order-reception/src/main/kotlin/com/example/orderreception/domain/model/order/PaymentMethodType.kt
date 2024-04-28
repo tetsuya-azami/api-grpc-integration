@@ -17,7 +17,14 @@ enum class PaymentMethodType {
         fun fromString(value: String?): Result<PaymentMethodType, List<ValidationError>> {
             return entries.firstOrNull { it.name == value?.uppercase() }
                 ?.let { Ok(it) }
-                ?: Err(listOf(ValidationError(message = "配達種別は${PaymentMethodType.entries}の中から選んでください。配達種別: $value")))
+                ?: Err(
+                    listOf(
+                        ValidationError(
+                            field = PaymentMethodType::class.simpleName!!,
+                            message = "配達種別は${PaymentMethodType.entries}の中から選んでください。配達種別: $value"
+                        )
+                    )
+                )
         }
     }
 }

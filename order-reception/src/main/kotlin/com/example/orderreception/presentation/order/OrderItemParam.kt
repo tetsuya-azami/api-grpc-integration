@@ -17,10 +17,25 @@ data class OrderItemParam(
     companion object {
         fun fromOpenApi(item: Item): Result<OrderItemParam, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
-            if (item.id == null) validationErrors.add(ValidationError(message = "商品IDがありません。"))
-            if (item.price == null) validationErrors.add(ValidationError(message = "商品価格がありません。"))
-            if (item.attributes == null) validationErrors.add(ValidationError(message = "商品属性情報がありません。"))
-            if (item.quantity == null) validationErrors.add(ValidationError(message = "購入数量がありません。"))
+            if (item.id == null) validationErrors.add(ValidationError(field = "item", message = "商品IDがありません。"))
+            if (item.price == null) validationErrors.add(
+                ValidationError(
+                    field = "item",
+                    message = "商品価格がありません。"
+                )
+            )
+            if (item.attributes == null) validationErrors.add(
+                ValidationError(
+                    field = "item",
+                    message = "商品属性情報がありません。"
+                )
+            )
+            if (item.quantity == null) validationErrors.add(
+                ValidationError(
+                    field = "item",
+                    message = "購入数量がありません。"
+                )
+            )
 
             val attributeParams = item.attributes!!.map { AttributeParam.fromOpenApi(it) }.mapNotNull { result ->
                 result.getOrElse { errors ->

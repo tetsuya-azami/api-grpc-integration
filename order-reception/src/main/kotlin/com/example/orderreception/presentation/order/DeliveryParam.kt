@@ -21,7 +21,7 @@ data class DeliveryParam(
                 }
 
             val addressId = delivery.addressId ?: let {
-                validationErrors.add(ValidationError(message = "配達先住所情報がありません。"))
+                validationErrors.add(ValidationError(field = "delivery", message = "配達先住所情報がありません。"))
                 null
             }
 

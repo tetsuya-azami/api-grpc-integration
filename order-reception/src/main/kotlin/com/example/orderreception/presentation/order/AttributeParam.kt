@@ -9,7 +9,14 @@ import com.github.michaelbull.result.Result
 data class AttributeParam(val attributeId: Long) {
     companion object {
         fun fromOpenApi(attribute: Attribute): Result<AttributeParam, List<ValidationError>> {
-            return if (attribute.id == null) Err(listOf(ValidationError(message = "商品属性IDがありません。")))
+            return if (attribute.id == null) Err(
+                listOf(
+                    ValidationError(
+                        field = "attribute",
+                        message = "商品属性IDがありません。"
+                    )
+                )
+            )
             else Ok(
                 AttributeParam(
                     attributeId = attribute.id

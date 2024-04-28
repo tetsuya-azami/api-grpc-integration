@@ -34,7 +34,7 @@ class OrderProcessingGrpcClient(
             if (e.status.code == Status.INVALID_ARGUMENT.code) {
                 val errorDetails = e.trailers?.get(ProtoUtils.keyForProto(BadRequest.getDefaultInstance()))
                 val validationErrors = errorDetails?.fieldViolationsList?.map {
-                    ValidationError(message = "field=${it.field}, message=${it.description}")
+                    ValidationError(field = it.field, message = it.description)
                 }
                 logger.warn("バリデーションエラーリスト: $validationErrors")
                 throw OrderReceptionIllegalArgumentException(validationErrors = validationErrors!!)

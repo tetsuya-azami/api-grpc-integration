@@ -24,14 +24,24 @@ class RegisterOrder(
                 ?: run {
                     logger.warn("存在しないユーザです。userId: ${orderParam.userId}")
                     throw OrderReceptionIllegalArgumentException(
-                        validationErrors = listOf(ValidationError("存在しないユーザです。userId: ${orderParam.userId}"))
+                        validationErrors = listOf(
+                            ValidationError(
+                                field = "user",
+                                message = "存在しないユーザです。userId: ${orderParam.userId}"
+                            )
+                        )
                     )
                 }
 
         if (user.isBlackUser()) {
             logger.warn("ブラックリストユーザです。userId: ${orderParam.userId}")
             throw OrderReceptionIllegalArgumentException(
-                validationErrors = listOf(ValidationError("ブラックリストユーザです。userId: ${orderParam.userId}"))
+                validationErrors = listOf(
+                    ValidationError(
+                        field = "user",
+                        message = "ブラックリストユーザです。userId: ${orderParam.userId}"
+                    )
+                )
             )
         }
 
@@ -39,7 +49,12 @@ class RegisterOrder(
             ?: kotlin.run {
                 logger.warn("存在しない配達先住所です。userId: ${orderParam.userId}, addressId: ${orderParam.deliveryParam.addressId}")
                 throw OrderReceptionIllegalArgumentException(
-                    validationErrors = listOf(ValidationError("存在しない配達先住所です。userId: ${orderParam.userId}, addressId: ${orderParam.deliveryParam.addressId}"))
+                    validationErrors = listOf(
+                        ValidationError(
+                            field = "delivery",
+                            message = "存在しない配達先住所です。userId: ${orderParam.userId}, addressId: ${orderParam.deliveryParam.addressId}"
+                        )
+                    )
                 )
             }
 

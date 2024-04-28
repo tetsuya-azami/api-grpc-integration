@@ -36,7 +36,7 @@ class GlobalErrorHandler {
         return ResponseEntity(
             ValidationErrorResponse(
                 ResponseCode.VALIDATION_ERROR.name,
-                ex.validationErrors.map { error -> ValidationError(field = "", errorMessage = error.message) }
+                ex.validationErrors.map { error -> ValidationError(field = error.field, errorMessage = error.message) }
             ),
             HttpStatus.BAD_REQUEST
         )

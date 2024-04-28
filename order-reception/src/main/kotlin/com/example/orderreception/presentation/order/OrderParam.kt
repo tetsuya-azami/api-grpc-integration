@@ -25,15 +25,35 @@ data class OrderParam(
         fun fromOpenApi(order: Order): Result<OrderParam, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
-            if (order.items.isEmpty()) validationErrors.add(ValidationError(message = "注文商品情報がありません。"))
-            if (order.chain.id == null) validationErrors.add(ValidationError(message = "チェーン情報がありません。"))
-            if (order.shop.id == null) validationErrors.add(ValidationError(message = "店舗情報がありません。"))
+            if (order.items.isEmpty()) validationErrors.add(
+                ValidationError(
+                    field = "items",
+                    message = "注文商品情報がありません。"
+                )
+            )
+            if (order.chain.id == null) validationErrors.add(
+                ValidationError(
+                    field = "chain",
+                    message = "チェーン情報がありません。"
+                )
+            )
+            if (order.shop.id == null) validationErrors.add(
+                ValidationError(
+                    field = "shop",
+                    message = "店舗情報がありません。"
+                )
+            )
             val deliveryParam = DeliveryParam.fromOpenApi(order.delivery)
                 .getOrElse { errors ->
                     validationErrors.addAll(errors)
                     null
                 }
-            if (order.user.id == null) validationErrors.add(ValidationError(message = "ユーザ情報がありません。"))
+            if (order.user.id == null) validationErrors.add(
+                ValidationError(
+                    field = "user",
+                    message = "ユーザ情報がありません。"
+                )
+            )
 
             val orderItemParams =
                 order.items
@@ -60,7 +80,12 @@ data class OrderParam(
                 onSuccess = { it },
                 onFailure = {
                     logger.info(it.message, it.cause)
-                    validationErrors.add(ValidationError(message = "注文日時は「yyyy-mm-ddTHH:mm:ss+09:00」の形式でなければなりません。注文日時: ${order.time}"))
+                    validationErrors.add(
+                        ValidationError(
+                            field = "time",
+                            message = "注文日時は「yyyy-mm-ddTHH:mm:ss+09:00」の形式でなければなりません。注文日時: ${order.time}"
+                        )
+                    )
                     null
                 }
             )
