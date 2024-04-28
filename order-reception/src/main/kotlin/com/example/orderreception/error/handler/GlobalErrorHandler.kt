@@ -5,6 +5,7 @@ import com.example.orderreception.error.exception.IllegalMasterDataException
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.openapi.model.ErrorData
 import com.example.orderreception.openapi.model.ServerErrorResponse
+import com.example.orderreception.openapi.model.ValidationError
 import com.example.orderreception.openapi.model.ValidationErrorResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -24,7 +25,7 @@ class GlobalErrorHandler {
         return ResponseEntity(
             ValidationErrorResponse(
                 ResponseCode.VALIDATION_ERROR.name,
-                ErrorData(ex.message ?: "リクエスト形式が不正です。")
+                listOf(ValidationError(field = "", errorMessage = ex.message ?: "リクエスト形式が不正です。"))
             ),
             HttpStatusCode.valueOf(400)
         )
@@ -35,7 +36,7 @@ class GlobalErrorHandler {
         return ResponseEntity(
             ValidationErrorResponse(
                 ResponseCode.VALIDATION_ERROR.name,
-                ErrorData(ex.validationErrors.joinToString(separator = "\n") { it.message })
+                ex.validationErrors.map { error -> ValidationError(field = "", errorMessage = error.message) }
             ),
             HttpStatus.BAD_REQUEST
         )
@@ -43,11 +44,11 @@ class GlobalErrorHandler {
 
     @ExceptionHandler
     fun handleIllegalMasterDataException(ex: IllegalMasterDataException): ResponseEntity<ValidationErrorResponse> {
-        logger.error("Illegal master data: ${ex.message}")
+        logger.error("Illegal master data: ${ex.message}", ex)
         return ResponseEntity(
             ValidationErrorResponse(
                 ResponseCode.SERVER_ERROR.name,
-                ErrorData("予期せぬエラーが発生しました。")
+                listOf(ValidationError(field = "", errorMessage = "予期せぬエラーが発生しました。"))
             ),
             HttpStatus.INTERNAL_SERVER_ERROR
         )

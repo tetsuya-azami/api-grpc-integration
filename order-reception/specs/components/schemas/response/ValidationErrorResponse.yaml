@@ -8,7 +8,10 @@ properties:
     maxLength: 20
     example: "VALIDATION_ERROR"
   data:
-    $ref: "./ErrorData.yaml"
+    description: "エラー情報"
+    type: array
+    items:
+      $ref: "./ValidationError.yaml"
 required:
   - code
   - data
