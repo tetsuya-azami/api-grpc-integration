@@ -44,7 +44,7 @@ class GlobalErrorHandler {
 
     @ExceptionHandler
     fun handleIllegalMasterDataException(ex: IllegalMasterDataException): ResponseEntity<ValidationErrorResponse> {
-        logger.error("Illegal master data: ${ex.message}", ex)
+        logger.error("Illegal master data: ${ex.errorMessage}", ex)
         return ResponseEntity(
             ValidationErrorResponse(
                 ResponseCode.SERVER_ERROR.name,
