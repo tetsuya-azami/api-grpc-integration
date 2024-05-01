@@ -45,7 +45,7 @@ class RegisterOrder(
             )
         }
 
-        val address = addressQuery.findById(orderParam.deliveryParam.addressId, orderParam.userId)
+        val address = addressQuery.findByAddressIdAndUserId(orderParam.deliveryParam.addressId, orderParam.userId)
             ?: kotlin.run {
                 logger.warn("存在しない配達先住所です。userId: ${orderParam.userId}, addressId: ${orderParam.deliveryParam.addressId}")
                 throw OrderReceptionIllegalArgumentException(

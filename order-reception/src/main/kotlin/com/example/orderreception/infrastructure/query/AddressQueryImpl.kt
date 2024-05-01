@@ -13,10 +13,16 @@ import com.example.orderreception.infrastructure.mapper.generated.AddressesBaseD
 class AddressQueryImpl(
     private val addressesBaseMapper: AddressesBaseMapper
 ) : AddressQuery {
-    override fun findById(addressId: Long, userId: Long): Address? {
+    override fun findByAddressIdAndUserId(addressId: Long, userId: Long): Address? {
         val addressesBase = addressesBaseMapper.selectOne {
-            select(sqlSupport.addressId)
-                .from(sqlSupport.addressesBase)
+            select(
+                sqlSupport.userId,
+                sqlSupport.postcode,
+                sqlSupport.prefecture,
+                sqlSupport.city,
+                sqlSupport.streetAddress,
+                sqlSupport.building,
+            ).from(sqlSupport.addressesBase)
                 .where(sqlSupport.addressId, isEqualTo(addressId))
                 .and(sqlSupport.userId, isEqualTo(userId))
         }
