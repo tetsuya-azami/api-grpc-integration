@@ -51,6 +51,7 @@ class OrderItemFactoryImpl(
     }
 
     // TODO: SQL直書きしたい（複雑なクエリだとdynamic-sqlは見づらい）
+    // もしくはViewなどを使用する？
     private fun getSelectStatementProvider(
         itemId: Long,
         chainId: Long,
