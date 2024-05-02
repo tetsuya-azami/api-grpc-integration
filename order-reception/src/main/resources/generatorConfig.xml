@@ -21,6 +21,12 @@
         <javaClientGenerator targetPackage="com.example.orderreception.infrastructure.mapper.generated"
                              targetProject="src/main/kotlin"/>
 
+        <table tableName="chains" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
+        <table tableName="shops" schema="test">
+            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
+        </table>
         <table tableName="items" schema="test">
             <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
         </table>
