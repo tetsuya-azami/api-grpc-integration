@@ -109,18 +109,8 @@ class OrderItemFactoryImplTest(
             )
         }
 
-        val itemAttributePairs =
-            listOf(Pair(1L, 1L), Pair(2L, 2L), Pair(2L, 3L), Pair(3L, 2L), Pair(3L, 3L), Pair(3L, 4L))
-
+        val itemAttributeCombo = mapOf(1L to listOf(1L), 2L to listOf(2L, 3L), 3L to listOf(2L, 3L, 4L))
         // テストデータの登録
-        insertDatas(itemsBaseList, attributesBaseList, itemAttributePairs)
-    }
-
-    private fun insertDatas(
-        itemsBaseList: List<ItemsBase>,
-        attributesBaseList: List<AttributesBase>,
-        itemAttributesPairs: List<Pair<Long, Long>>
-    ) {
         chainsBaseMapper.insert(
             ChainsBase(
                 chainId = 1,
@@ -141,13 +131,15 @@ class OrderItemFactoryImplTest(
         itemsBaseMapper.insertMultiple(itemsBaseList)
         attributesBaseMapper.insertMultiple(attributesBaseList)
         itemAttributesMappler.insertMultiple(
-            itemAttributesPairs.map { pair ->
-                ItemAttributesBase(
-                    itemId = pair.first,
-                    attributeId = pair.second,
-                    createdAt = LocalDateTime.of(2000, 1, 2, 3, 4),
-                    updatedAt = LocalDateTime.of(2000, 1, 2, 3, 4),
-                )
+            itemAttributeCombo.entries.flatMap { (itemId, attributes) ->
+                attributes.map { attributeId ->
+                    ItemAttributesBase(
+                        itemId = itemId,
+                        attributeId = attributeId,
+                        createdAt = LocalDateTime.of(2000, 1, 2, 3, 4),
+                        updatedAt = LocalDateTime.of(2000, 1, 2, 3, 4),
+                    )
+                }
             }
         )
     }
