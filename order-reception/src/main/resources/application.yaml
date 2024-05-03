@@ -13,12 +13,6 @@ logging:
   level:
     #    root: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: OFF
-    com:
-      example:
-        orderreception:
-          infrastructure:
-            mapper:
-              generated: DEBUG
 grpc:
   client:
     orderProcessingGrpcClient:
