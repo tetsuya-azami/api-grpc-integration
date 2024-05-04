@@ -1,12 +1,15 @@
 package com.example.orderreception.infrastructure.query
 
 import com.example.orderreception.domain.model.order.OrderItem
+import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.infrastructure.entity.generated.*
 import com.example.orderreception.infrastructure.mapper.generated.*
 import com.example.orderreception.presentation.order.AttributeParam
 import com.example.orderreception.presentation.order.OrderItemParam
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.jdbc.Sql
@@ -14,6 +17,10 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @SpringBootTest
+@Sql(
+    scripts = ["sql/clear.sql"],
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+)
 class OrderItemFactoryImplTest(
     @Autowired private val sut: OrderItemFactoryImpl,
     @Autowired private val chainsBaseMapper: ChainsBaseMapper,
@@ -22,15 +29,15 @@ class OrderItemFactoryImplTest(
     @Autowired private val itemAttributesMappler: ItemAttributesBaseMapper,
     @Autowired private val attributesBaseMapper: AttributesBaseMapper
 ) {
+
+    @BeforeEach
+    fun setUp() {
+        insertTestData()
+    }
+
     @Test
-    @Sql(
-        scripts = ["sql/clear.sql"],
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-    )
     fun 正常に商品のリストが取得できること() {
         // given
-        insertTestData()
-
         val orderItemParams = listOf(
             OrderItemParam(
                 itemId = 1,
@@ -67,6 +74,29 @@ class OrderItemFactoryImplTest(
     }
 
     @Test
+    fun 属性情報がない場合() {
+        // given
+        val orderItemParams = listOf(
+            OrderItemParam(
+                itemId = 1,
+                price = BigDecimal.valueOf(100),
+                attributes = emptyList(),
+                quantity = 1
+            )
+        )
+        // when
+        val results = sut.createOrderItems(orderItemParams, 1, 1)
+
+        // then
+        assertThat(results.size).isEqualTo(1)
+        assertThat(results[0].itemId).isEqualTo(orderItemParams[0].itemId)
+        assertThat(results[0].name).isEqualTo("テスト商品${orderItemParams[0].itemId}")
+        assertThat(results[0].price).isEqualTo(orderItemParams[0].price)
+        assertThat(results[0].attributes.size).isEqualTo(0)
+        assertThat(results[0].quantity).isEqualTo(orderItemParams[0].quantity)
+    }
+
+    @Test
     fun 検索条件のチェーン情報と商品情報の整合性がない場合() {
         // given
         val orderItemParams = listOf(
@@ -79,9 +109,95 @@ class OrderItemFactoryImplTest(
         )
 
         // when
-        sut.createOrderItems(orderItemParams, 100, 1) // 商品情報と紐づいていないchainIdを検索条件に渡す
+        val thrownException = assertThrows<OrderReceptionIllegalArgumentException> {
+            sut.createOrderItems(orderItemParams, 100, 1) // 商品情報と紐づいていないchainIdを検索条件に渡す
+        }
         // then
+        val validationErrors = thrownException.validationErrors
+        assertThat(validationErrors.size).isEqualTo(1)
+        assertThat(validationErrors[0].field).isEqualTo("orderItems")
+        assertThat(validationErrors[0].message).isEqualTo("商品情報の整合性がありません。")
+    }
 
+    @Test
+    fun 検索条件の店舗情報と商品情報の整合性がない場合() {
+        // given
+        val orderItemParams = listOf(
+            OrderItemParam(
+                itemId = 1,
+                price = BigDecimal.valueOf(100),
+                attributes = listOf(AttributeParam(attributeId = 1)),
+                quantity = 1
+            ),
+        )
+        // when
+        val thrownException = assertThrows<OrderReceptionIllegalArgumentException> {
+            sut.createOrderItems(orderItemParams, 1, 100) // 商品情報と紐づいていないshopIdを検索条件に渡す
+        }
+        // then
+        val validationErrors = thrownException.validationErrors
+        assertThat(validationErrors.size).isEqualTo(1)
+        assertThat(validationErrors[0].field).isEqualTo("orderItems")
+        assertThat(validationErrors[0].message).isEqualTo("商品情報の整合性がありません。")
+    }
+
+    @Test
+    fun 検索条件の商品と商品属性の整合性がない場合() {
+        // given
+        val orderItemParams = listOf(
+            OrderItemParam(
+                itemId = 1,
+                price = BigDecimal.valueOf(100),
+                attributes = listOf(AttributeParam(attributeId = 100)), // 検索条件にDBに存在しないattributeIdを渡す
+                quantity = 1
+            ),
+        )
+        // when
+        val thrownException = assertThrows<OrderReceptionIllegalArgumentException> {
+            sut.createOrderItems(orderItemParams, 1, 1)
+        }
+        // then
+        val validationErrors = thrownException.validationErrors
+        assertThat(validationErrors.size).isEqualTo(1)
+        assertThat(validationErrors[0].field).isEqualTo("orderItems")
+        assertThat(validationErrors[0].message).isEqualTo("商品情報の整合性がありません。")
+    }
+
+    @Test
+    fun 商品情報がない場合() {
+        // given
+        val orderItemParams = emptyList<OrderItemParam>()
+        // when
+        val thrownException = assertThrows<OrderReceptionIllegalArgumentException> {
+            sut.createOrderItems(orderItemParams, 1, 1)
+        }
+        // then
+        val validationErrors = thrownException.validationErrors
+        assertThat(validationErrors.size).isEqualTo(1)
+        assertThat(validationErrors[0].field).isEqualTo("orderItems")
+        assertThat(validationErrors[0].message).isEqualTo("商品情報がありません。")
+    }
+
+    @Test
+    fun パラメータで渡された商品価格とDBのマスタデータの商品価格に整合性がない場合() {
+        // given
+        val orderItemParams = listOf(
+            OrderItemParam(
+                itemId = 1,
+                price = BigDecimal.valueOf(0),
+                attributes = listOf(AttributeParam(attributeId = 1)),
+                quantity = 1
+            ),
+        )
+        // when
+        val thrownException = assertThrows<OrderReceptionIllegalArgumentException> {
+            sut.createOrderItems(orderItemParams, 1, 1)
+        }
+        // then
+        val validationErrors = thrownException.validationErrors
+        assertThat(validationErrors.size).isEqualTo(1)
+        assertThat(validationErrors[0].field).isEqualTo("price")
+        assertThat(validationErrors[0].message).isEqualTo("価格の整合性がありません。")
     }
 
     private fun insertTestData() {
