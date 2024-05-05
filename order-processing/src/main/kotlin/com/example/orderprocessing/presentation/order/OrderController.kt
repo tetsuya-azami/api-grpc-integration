@@ -14,8 +14,6 @@ class OrderController(
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     override suspend fun createOrder(request: OrderOuterClass.OrderCreationRequest): OrderOuterClass.OrderCreationResponse {
-        logger.info("receive request: $request")
-
         val orderParam = OrderParam.fromProto(request.order)
 
         val orderId = registerOrder.execute(orderParam)
