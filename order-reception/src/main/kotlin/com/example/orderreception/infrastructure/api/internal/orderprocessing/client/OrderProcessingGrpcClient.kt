@@ -1,12 +1,12 @@
-package com.example.orderreception.infrastructure.internalapi.orderprocessing.client
+package com.example.orderreception.infrastructure.api.internal.orderprocessing.client
 
 import com.example.grpcinterface.proto.OrderServiceGrpc.OrderServiceBlockingStub
 import com.example.orderreception.domain.model.order.OrderItem
 import com.example.orderreception.domain.model.order.User
 import com.example.orderreception.error.ValidationError
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
-import com.example.orderreception.infrastructure.internalapi.orderprocessing.request.RegisterOrderRequest
-import com.example.orderreception.infrastructure.internalapi.orderprocessing.response.RegisterOrderResponse
+import com.example.orderreception.infrastructure.api.internal.orderprocessing.request.RegisterOrderRequest
+import com.example.orderreception.infrastructure.api.internal.orderprocessing.response.RegisterOrderResponse
 import com.example.orderreception.presentation.order.OrderParam
 import com.google.rpc.BadRequest
 import io.grpc.Status

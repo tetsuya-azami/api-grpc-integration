@@ -1,4 +1,4 @@
-package com.example.orderreception.infrastructure.internalapi.orderprocessing.request
+package com.example.orderreception.infrastructure.api.internal.orderprocessing.request
 
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderOuterClass.*

@@ -2,7 +2,7 @@ package com.example.orderreception.usecase
 
 import com.example.orderreception.error.ValidationError
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
-import com.example.orderreception.infrastructure.internalapi.orderprocessing.client.OrderProcessingGrpcClient
+import com.example.orderreception.infrastructure.api.internal.orderprocessing.client.OrderProcessingGrpcClient
 import com.example.orderreception.presentation.order.OrderParam
 import com.example.orderreception.usecase.query.AddressQuery
 import com.example.orderreception.usecase.query.OrderItemFactory
