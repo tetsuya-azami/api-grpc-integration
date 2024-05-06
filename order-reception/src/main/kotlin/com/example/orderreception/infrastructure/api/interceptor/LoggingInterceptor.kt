@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory
 class LoggingInterceptor : ClientInterceptor {
     companion object {
         private val logger = LoggerFactory.getLogger(LoggingInterceptor::class.java)
+        private const val MY_COMPONENT_NAME = "order-reception"
     }
 
     override fun <ReqT : Any?, RespT : Any?> interceptCall(
@@ -18,16 +19,33 @@ class LoggingInterceptor : ClientInterceptor {
         next: Channel
     ): ClientCall<ReqT, RespT> {
         return object : SimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOptions)) {
-            override fun start(responseListener: Listener<RespT>, headers: Metadata) {
-                logger.info("grpc request header: {}", headers)
+            override fun start(responseListener: Listener<RespT>, requestHeaders: Metadata) {
+                // 送信先のコンポーネントが送信元のコンポーネントを特定するために使用する。
+                requestHeaders.put(
+                    Metadata.Key.of("REQUEST_COMPONENT_NAME", Metadata.ASCII_STRING_MARSHALLER),
+                    MY_COMPONENT_NAME
+                )
+                logger.info("grpc request headers: {}", requestHeaders)
 
                 val overrideResponseListener = object : SimpleForwardingClientCallListener<RespT>(responseListener) {
                     /**
                      * レスポンス受信時のログ出力
                      */
                     override fun onMessage(message: RespT) {
-                        logger.info("grpc response from: {}, responseBody: {}", method.fullMethodName, message)
+                        logger.info(
+                            "grpc response from method: {}, responseBody: {}",
+                            method.fullMethodName,
+                            message
+                        )
                         super.onMessage(message)
+                    }
+
+                    /**
+                     * response header受信時のログ出力
+                     */
+                    override fun onHeaders(responseHeaders: Metadata) {
+                        logger.info("grpc response headers: {}", responseHeaders)
+                        super.onHeaders(responseHeaders)
                     }
 
                     /**
@@ -39,11 +57,14 @@ class LoggingInterceptor : ClientInterceptor {
                     }
                 }
 
-                super.start(overrideResponseListener, headers)
+                super.start(overrideResponseListener, requestHeaders)
             }
 
+            /**
+             * リクエスト送信時のログ出力
+             */
             override fun sendMessage(message: ReqT) {
-                logger.info("grpc request to: {}, requestBody: {}", method.fullMethodName, message)
+                logger.info("grpc request method: {}, requestBody: {}", method.fullMethodName, message)
                 super.sendMessage(message)
             }
         }
