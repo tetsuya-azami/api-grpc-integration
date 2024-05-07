@@ -1,0 +1,21 @@
+{
+  "methodConfig": [
+    {
+      "name": [
+        {
+          "service": "com.example.grpcinterface.proto.OrderService",
+          "method": "CreateOrder"
+        }
+      ],
+      "retryPolicy": {
+        "maxAttempts": 5.0,
+        "initialBackoff": "0.5s",
+        "maxBackoff": "30s",
+        "backoffMultiplier": 2.0,
+        "retryableStatusCodes": [
+          "UNAVAILABLE"
+        ]
+      }
+    }
+  ]
+}
