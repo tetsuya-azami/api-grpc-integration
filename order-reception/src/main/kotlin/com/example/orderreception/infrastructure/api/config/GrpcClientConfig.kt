@@ -1,4 +1,4 @@
-package com.example.orderreception.config
+package com.example.orderreception.infrastructure.api.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
