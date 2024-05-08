@@ -22,8 +22,9 @@ class OrderProcessingGrpcClient(
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun registerOrder(orderParam: OrderParam, items: List<OrderItem>, user: User): RegisterOrderResponse {
-        val registerOrderRequest = RegisterOrderRequest.fromModel(orderParam = orderParam, items = items, user = user)
+    fun registerOrder(orderParam: OrderParam, orderItems: List<OrderItem>, user: User): RegisterOrderResponse {
+        val registerOrderRequest =
+            RegisterOrderRequest.fromModel(orderParam = orderParam, items = orderItems, user = user)
 
         // TODO: 非同期での連携を検討
         return try {
