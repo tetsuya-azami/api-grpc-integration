@@ -46,6 +46,10 @@ dependencies {
     implementation("org.mybatis.dynamic-sql:mybatis-dynamic-sql:1.5.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("net.devh:grpc-server-spring-boot-starter:3.0.0.RELEASE")
+    testImplementation("io.grpc:grpc-testing:1.62.2")
+    testImplementation(project(":grpc-interface"))
+    testImplementation("io.grpc:grpc-kotlin-stub:1.4.1")
 }
 
 tasks.register("mybatisGenerator") {
