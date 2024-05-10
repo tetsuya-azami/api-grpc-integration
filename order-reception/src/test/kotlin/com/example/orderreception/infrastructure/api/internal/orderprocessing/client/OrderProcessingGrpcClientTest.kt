@@ -2,10 +2,10 @@ package com.example.orderreception.infrastructure.api.internal.orderprocessing.c
 
 import com.example.grpcinterface.proto.OrderServiceGrpc
 import com.example.orderreception.domain.model.order.*
+import com.example.orderreception.helper.OrderParamTestHelper
 import com.example.orderreception.infrastructure.entity.custom.ItemWithAttributesBase
 import com.example.orderreception.infrastructure.entity.generated.AttributesBase
 import com.example.orderreception.infrastructure.entity.generated.UsersBase
-import com.example.orderreception.presentation.order.*
 import io.grpc.ManagedChannel
 import io.grpc.Server
 import io.grpc.inprocess.InProcessChannelBuilder
@@ -18,7 +18,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
-import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -66,18 +65,18 @@ class OrderProcessingGrpcClientTest {
         val targetServer = OrderProcessingServerImplForIntegrationTest()
         serviceRegistry.addService(targetServer)
 
-        val orderParam = getOrderParam()
-        val orderItems = orderParam.orderItemParams.mapIndexed { index, orderItemParam ->
-            val attributes = orderItemParam.attributes.mapIndexed { index, attributeParam ->
+        val orderParam = OrderParamTestHelper.getTestInstance()
+        val orderItems = orderParam.orderItemParams.mapIndexed { orderItemParamIndex, orderItemParam ->
+            val attributes = orderItemParam.attributes.mapIndexed { attributeParamIndex, attributeParam ->
                 AttributesBase(
                     attributeId = attributeParam.attributeId,
-                    name = "属性名$index",
-                    value = "属性値$index"
+                    name = "属性名$attributeParamIndex",
+                    value = "属性値$attributeParamIndex"
                 )
             }
             val itemWithAttributesBase = ItemWithAttributesBase(
                 itemId = orderItemParam.itemId,
-                name = "テスト商品$index",
+                name = "テスト商品$orderItemParamIndex",
                 price = orderItemParam.price,
                 attributes = attributes
             )
@@ -138,38 +137,5 @@ class OrderProcessingGrpcClientTest {
             assertThat(it.order.time.seconds).isEqualTo(now.toEpochSecond(ZoneOffset.of("+09:00")))
             assertThat(it.order.time.nanos).isEqualTo(0)
         }
-    }
-
-    private fun getOrderParam(): OrderParam {
-        val orderItemParams = listOf(
-            OrderItemParam(
-                itemId = 1,
-                price = BigDecimal.valueOf(100),
-                attributes = listOf(AttributeParam(1), AttributeParam(2)),
-                quantity = 1,
-            ),
-            OrderItemParam(
-                itemId = 2,
-                price = BigDecimal.valueOf(200),
-                attributes = listOf(AttributeParam(3), AttributeParam(4)),
-                quantity = 2,
-            )
-        )
-
-        return OrderParam(
-            orderItemParams = orderItemParams,
-            chainId = 1,
-            shopId = 1,
-            deliveryParam = DeliveryParam(DeliveryType.IMMEDIATE, 1),
-            userId = 1,
-            paymentParam = PaymentParam(
-                paymentMethod = PaymentMethodType.PAYPAY,
-                deliveryCharge = BigDecimal.valueOf(350),
-                nonTaxedTotalPrice = BigDecimal.valueOf(850),
-                tax = BigDecimal.valueOf(85),
-                taxedTotalPrice = BigDecimal.valueOf(935)
-            ),
-            time = now,
-        )
     }
 }
