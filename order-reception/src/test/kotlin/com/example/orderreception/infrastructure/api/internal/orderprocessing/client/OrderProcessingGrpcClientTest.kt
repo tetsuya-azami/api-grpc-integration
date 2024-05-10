@@ -6,15 +6,21 @@ import com.example.orderreception.infrastructure.entity.custom.ItemWithAttribute
 import com.example.orderreception.infrastructure.entity.generated.AttributesBase
 import com.example.orderreception.infrastructure.entity.generated.UsersBase
 import com.example.orderreception.presentation.order.*
+import io.grpc.ManagedChannel
+import io.grpc.Server
 import io.grpc.inprocess.InProcessChannelBuilder
 import io.grpc.inprocess.InProcessServerBuilder
 import io.grpc.testing.GrpcCleanupRule
+import io.grpc.util.MutableHandlerRegistry
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @SpringBootTest
 class OrderProcessingGrpcClientTest {
@@ -24,9 +30,42 @@ class OrderProcessingGrpcClientTest {
 
     @get:Rule
     val grpcCleanup = GrpcCleanupRule()
+    private lateinit var serviceRegistry: MutableHandlerRegistry
+    private lateinit var testServerName: String
+    private lateinit var inProcessServers: Server
+    private lateinit var inProcessChannel: ManagedChannel
+
+    @Before
+    fun setUp() {
+        serviceRegistry = MutableHandlerRegistry()
+        testServerName = InProcessServerBuilder.generateName()
+        inProcessServers = grpcCleanup.register(
+            InProcessServerBuilder
+                .forName(testServerName)
+                .directExecutor()
+                .fallbackHandlerRegistry(serviceRegistry)
+                .build()
+                .start()
+        )
+        inProcessChannel = grpcCleanup.register(
+            InProcessChannelBuilder.forName(testServerName)
+                .directExecutor()
+                .build()
+        )
+    }
+
+    @After
+    fun tearDown() {
+        inProcessServers.shutdownNow()
+        inProcessChannel.shutdownNow()
+    }
 
     @Test
     fun 正常系() {
+        // given
+        val targetServer = OrderProcessingServerImplForIntegrationTest()
+        serviceRegistry.addService(targetServer)
+
         val orderParam = getOrderParam()
         val orderItems = orderParam.orderItemParams.mapIndexed { index, orderItemParam ->
             val attributes = orderItemParam.attributes.mapIndexed { index, attributeParam ->
@@ -45,23 +84,9 @@ class OrderProcessingGrpcClientTest {
             OrderItem.fromBaseAndParam(itemWithAttributesBase = itemWithAttributesBase, orderItemParam = orderItemParam)
         }
 
-        val serverName = InProcessServerBuilder.generateName()
-        grpcCleanup.register(
-            InProcessServerBuilder
-                .forName(serverName)
-                .directExecutor()
-                // TODO: 内部処理を差し替えられるようにする(異常系の実施をするため)
-                .addService(OrderProcessingServerImplForIntegrationTest())
-                .build()
-                .start()
-        )
-        val channel = grpcCleanup.register(
-            InProcessChannelBuilder.forName(serverName)
-                .directExecutor()
-                .build()
-        )
-        val sut = OrderProcessingGrpcClient(OrderServiceGrpc.newBlockingStub(channel))
+        val sut = OrderProcessingGrpcClient(OrderServiceGrpc.newBlockingStub(inProcessChannel))
 
+        // when
         val result = sut.registerOrder(
             orderParam = orderParam,
             orderItems = orderItems,
@@ -70,11 +95,49 @@ class OrderProcessingGrpcClientTest {
             )
         )
 
+        // then
         assertThat(result.orderId).isEqualTo("testId")
-    }
-
-    private fun setUpInProcessServer() {
-
+        // リクエスト内容の検証
+        targetServer.receivedOrderCreationRequest.let {
+            assertThat(it.order.itemsList).hasSize(2)
+            assertThat(it.order.itemsList[0].id).isEqualTo(1)
+            assertThat(it.order.itemsList[0].price.units).isEqualTo(100)
+            assertThat(it.order.itemsList[0].price.nanos).isEqualTo(0)
+            assertThat(it.order.itemsList[0].price.currencyCode).isEqualTo("JPY")
+            assertThat(it.order.itemsList[0].attributesList).hasSize(2)
+            assertThat(it.order.itemsList[0].attributesList[0].id).isEqualTo(1)
+            assertThat(it.order.itemsList[0].attributesList[0].name).isEqualTo("属性名0")
+            assertThat(it.order.itemsList[0].attributesList[0].value).isEqualTo("属性値0")
+            assertThat(it.order.itemsList[0].attributesList[1].id).isEqualTo(2)
+            assertThat(it.order.itemsList[0].attributesList[1].name).isEqualTo("属性名1")
+            assertThat(it.order.itemsList[0].attributesList[1].value).isEqualTo("属性値1")
+            assertThat(it.order.itemsList[0].quantity).isEqualTo(1)
+            assertThat(it.order.itemsList[1].id).isEqualTo(2)
+            assertThat(it.order.itemsList[1].price.units).isEqualTo(200)
+            assertThat(it.order.itemsList[1].price.nanos).isEqualTo(0)
+            assertThat(it.order.itemsList[1].price.currencyCode).isEqualTo("JPY")
+            assertThat(it.order.itemsList[1].attributesList).hasSize(2)
+            assertThat(it.order.itemsList[1].attributesList[0].id).isEqualTo(3)
+            assertThat(it.order.itemsList[1].attributesList[0].name).isEqualTo("属性名0")
+            assertThat(it.order.itemsList[1].attributesList[0].value).isEqualTo("属性値0")
+            assertThat(it.order.itemsList[1].attributesList[1].id).isEqualTo(4)
+            assertThat(it.order.itemsList[1].attributesList[1].name).isEqualTo("属性名1")
+            assertThat(it.order.itemsList[1].attributesList[1].value).isEqualTo("属性値1")
+            assertThat(it.order.itemsList[1].quantity).isEqualTo(2)
+            assertThat(it.order.chain.id).isEqualTo(1)
+            assertThat(it.order.shop.id).isEqualTo(1)
+            assertThat(it.order.delivery.type.name).isEqualTo(DeliveryType.IMMEDIATE.name)
+            assertThat(it.order.delivery.addressId).isEqualTo(1)
+            assertThat(it.order.user.id).isEqualTo(1)
+            assertThat(it.order.user.blackLevel.name).isEqualTo(BlackLevel.LOW.name)
+            assertThat(it.order.payment.paymentMethod.name).isEqualTo(PaymentMethodType.PAYPAY.name)
+            assertThat(it.order.payment.deliveryCharge).isEqualTo(350)
+            assertThat(it.order.payment.nonTaxedTotalPrice).isEqualTo(850)
+            assertThat(it.order.payment.tax).isEqualTo(85)
+            assertThat(it.order.payment.taxedTotalPrice).isEqualTo(935)
+            assertThat(it.order.time.seconds).isEqualTo(now.toEpochSecond(ZoneOffset.of("+09:00")))
+            assertThat(it.order.time.nanos).isEqualTo(0)
+        }
     }
 
     private fun getOrderParam(): OrderParam {
