@@ -13,9 +13,9 @@ import io.grpc.inprocess.InProcessServerBuilder
 import io.grpc.testing.GrpcCleanupRule
 import io.grpc.util.MutableHandlerRegistry
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import java.math.BigDecimal
@@ -35,7 +35,7 @@ class OrderProcessingGrpcClientTest {
     private lateinit var inProcessServers: Server
     private lateinit var inProcessChannel: ManagedChannel
 
-    @Before
+    @BeforeEach
     fun setUp() {
         serviceRegistry = MutableHandlerRegistry()
         testServerName = InProcessServerBuilder.generateName()
@@ -54,7 +54,7 @@ class OrderProcessingGrpcClientTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         inProcessServers.shutdownNow()
         inProcessChannel.shutdownNow()
