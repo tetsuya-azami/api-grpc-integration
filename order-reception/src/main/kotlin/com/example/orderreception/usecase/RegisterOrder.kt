@@ -63,8 +63,6 @@ class RegisterOrder(
             chainId = orderParam.chainId,
             shopId = orderParam.shopId
         )
-        // TODO: パラメータで渡されたpriceとDBのpriceの相関チェック
-
         // TODO: Orderモデルを作って渡すようにする
         val registerOrderResponse = orderProcessingGrpcClient.registerOrder(orderParam, items, user)
 
