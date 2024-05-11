@@ -1,13 +1,12 @@
 package com.example.orderreception.infrastructure.api.internal.orderprocessing.client
 
 import com.example.grpcinterface.proto.OrderServiceGrpc.OrderServiceBlockingStub
-import com.example.orderreception.domain.model.order.OrderItem
+import com.example.orderreception.domain.model.order.Order
 import com.example.orderreception.domain.model.order.User
 import com.example.orderreception.error.ValidationError
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import com.example.orderreception.infrastructure.api.internal.orderprocessing.request.RegisterOrderRequest
 import com.example.orderreception.infrastructure.api.internal.orderprocessing.response.RegisterOrderResponse
-import com.example.orderreception.presentation.order.OrderParam
 import com.google.rpc.BadRequest
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
@@ -22,9 +21,9 @@ class OrderProcessingGrpcClient(
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun registerOrder(orderParam: OrderParam, orderItems: List<OrderItem>, user: User): RegisterOrderResponse {
+    fun registerOrder(order: Order, user: User): RegisterOrderResponse {
         val registerOrderRequest =
-            RegisterOrderRequest.fromModel(orderParam = orderParam, items = orderItems, user = user)
+            RegisterOrderRequest.fromModel(order = order, user = user)
 
         // TODO: 非同期での連携を検討
         return try {

@@ -1,26 +1,19 @@
 package com.example.orderreception.presentation.order
 
 import com.example.orderreception.error.ValidationError
-import com.example.orderreception.openapi.model.Attribute
-import com.github.michaelbull.result.Err
-import com.github.michaelbull.result.Ok
-import com.github.michaelbull.result.Result
+import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 
 data class AttributeParam(val attributeId: Long) {
     companion object {
-        fun fromOpenApi(attribute: Attribute): Result<AttributeParam, List<ValidationError>> {
-            return if (attribute.id == null) Err(
-                listOf(
-                    ValidationError(
-                        field = "attribute",
-                        message = "商品属性IDがありません。"
-                    )
+        fun new(attributeId: Long?): AttributeParam {
+            if (attributeId == null) {
+                throw OrderReceptionIllegalArgumentException(
+                    listOf(ValidationError("attribute", "属性情報がありません。"))
                 )
-            )
-            else Ok(
-                AttributeParam(
-                    attributeId = attribute.id
-                )
+            }
+            
+            return AttributeParam(
+                attributeId = attributeId
             )
         }
     }

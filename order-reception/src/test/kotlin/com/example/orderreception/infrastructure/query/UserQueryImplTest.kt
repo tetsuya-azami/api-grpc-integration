@@ -42,7 +42,7 @@ class UserQueryImplTest(
 
         // then
         assertThat(actual?.id).isEqualTo(expected.userId)
-        assertThat(actual?.blackLevel).isEqualTo(BlackLevel.fromBase(expected))
+        assertThat(actual?.blackLevel).isEqualTo(BlackLevel.reconstruct(expected))
     }
 
     @Test

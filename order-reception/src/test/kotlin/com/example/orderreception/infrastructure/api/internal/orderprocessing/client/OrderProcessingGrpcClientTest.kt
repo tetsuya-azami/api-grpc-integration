@@ -89,7 +89,7 @@ class OrderProcessingGrpcClientTest {
         val result = sut.registerOrder(
             orderParam = orderParam,
             orderItems = orderItems,
-            user = User.fromBase(
+            user = User.reconstruct(
                 UsersBase(userId = 1L, blackLevel = BlackLevel.LOW.code)
             )
         )

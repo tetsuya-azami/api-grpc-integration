@@ -1,5 +1,6 @@
 package com.example.orderreception.infrastructure.query
 
+import com.example.orderreception.domain.model.order.Attribute
 import com.example.orderreception.domain.model.order.OrderItem
 import com.example.orderreception.error.ValidationError
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
@@ -77,7 +78,19 @@ class OrderItemFactoryImpl(
                 )
             }
 
-            OrderItem.fromBaseAndParam(itemWithAttributesBase, itemParam)
+            OrderItem.reconstruct(
+                itemId = itemWithAttributesBase.itemId!!,
+                name = itemWithAttributesBase.name!!,
+                price = itemWithAttributesBase.price!!,
+                attributes = itemWithAttributesBase.attributes.map {
+                    Attribute.reconstruct(
+                        id = it.attributeId!!,
+                        name = it.name!!,
+                        value = it.value!!
+                    )
+                },
+                quantity = itemParam.quantity,
+            )
         }
     }
 

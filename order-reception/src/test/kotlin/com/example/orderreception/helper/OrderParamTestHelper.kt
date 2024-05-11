@@ -33,7 +33,7 @@ class OrderParamTestHelper {
                 deliveryParam = DeliveryParam(DeliveryType.IMMEDIATE, 1),
                 userId = 1,
                 paymentParam = PaymentParam(
-                    paymentMethod = PaymentMethodType.PAYPAY,
+                    paymentMethodType = PaymentMethodType.PAYPAY,
                     deliveryCharge = BigDecimal.valueOf(350),
                     nonTaxedTotalPrice = BigDecimal.valueOf(850),
                     tax = BigDecimal.valueOf(85),

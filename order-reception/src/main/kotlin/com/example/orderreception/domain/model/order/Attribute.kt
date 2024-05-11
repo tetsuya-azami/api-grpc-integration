@@ -1,18 +1,20 @@
 package com.example.orderreception.domain.model.order
 
-import com.example.orderreception.infrastructure.entity.generated.AttributesBase
-
 data class Attribute private constructor(
     val id: Long,
     val name: String,
     val value: String
 ) {
     companion object {
-        fun fromBase(attributesBase: AttributesBase): Attribute {
+        fun reconstruct(
+            id: Long,
+            name: String,
+            value: String
+        ): Attribute {
             return Attribute(
-                id = attributesBase.attributeId!!,
-                name = attributesBase.name!!,
-                value = attributesBase.value!!
+                id = id,
+                name = name,
+                value = value
             )
         }
     }

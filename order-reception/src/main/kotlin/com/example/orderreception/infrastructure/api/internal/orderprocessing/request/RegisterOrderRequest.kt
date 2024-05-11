@@ -6,9 +6,7 @@ import com.example.grpcinterface.proto.OrderOuterClass.Delivery.Type
 import com.example.grpcinterface.proto.OrderOuterClass.Item.Attribute
 import com.example.grpcinterface.proto.OrderOuterClass.Payment.PaymentMethod
 import com.example.grpcinterface.proto.OrderOuterClass.User.BlackLevel
-import com.example.orderreception.domain.model.order.OrderItem
 import com.example.orderreception.domain.model.order.User
-import com.example.orderreception.presentation.order.OrderParam
 import com.google.protobuf.Timestamp
 import com.google.type.Money
 import java.time.ZoneOffset
@@ -17,9 +15,10 @@ data class RegisterOrderRequest private constructor(
     val orderCreationRequest: OrderCreationRequest
 ) {
     companion object {
-        fun fromModel(orderParam: OrderParam, items: List<OrderItem>, user: User): RegisterOrderRequest {
-            val orderItemsProto = items.map { item ->
-                val attributesProto = item.attributes.map { attribute ->
+        fun fromModel(order: com.example.orderreception.domain.model.order.Order, user: User): RegisterOrderRequest {
+            val orderItems = order.orderItems
+            val orderItemsProto = orderItems.map { orderItem ->
+                val attributesProto = orderItem.attributes.map { attribute ->
                     Attribute.newBuilder()
                         .setId(attribute.id)
                         .setName(attribute.name)
@@ -28,16 +27,16 @@ data class RegisterOrderRequest private constructor(
                 }
 
                 Item.newBuilder()
-                    .setId(item.itemId)
-                    .setName(item.name)
+                    .setId(orderItem.itemId)
+                    .setName(orderItem.name)
                     .setPrice(
                         Money.newBuilder()
-                            .setUnits(item.price.toLong())
+                            .setUnits(orderItem.price.toLong())
                             .setNanos(0)
                             .setCurrencyCode("JPY")
                     )
                     .addAllAttributes(attributesProto)
-                    .setQuantity(item.quantity)
+                    .setQuantity(orderItem.quantity)
                     .build()
             }
 
@@ -48,18 +47,18 @@ data class RegisterOrderRequest private constructor(
                             .addAllItems(orderItemsProto)
                             .setChain(
                                 Chain.newBuilder()
-                                    .setId(orderParam.chainId)
+                                    .setId(order.chainId)
                                     .build()
                             )
                             .setShop(
                                 Shop.newBuilder()
-                                    .setId(orderParam.shopId)
+                                    .setId(order.shopId)
                                     .build()
                             )
                             .setDelivery(
                                 Delivery.newBuilder()
-                                    .setType(Type.valueOf(orderParam.deliveryParam.deliveryType.name))
-                                    .setAddressId(orderParam.deliveryParam.addressId)
+                                    .setType(Type.valueOf(order.delivery.deliveryType.name))
+                                    .setAddressId(order.delivery.addressId)
                                     .build()
                             )
                             .setUser(
@@ -73,17 +72,17 @@ data class RegisterOrderRequest private constructor(
                             .setPayment(
                                 Payment.newBuilder()
                                     .setPaymentMethod(
-                                        PaymentMethod.valueOf(orderParam.paymentParam.paymentMethod.name)
+                                        PaymentMethod.valueOf(order.payment.paymentMethodType.name)
                                     )
-                                    .setDeliveryCharge(orderParam.paymentParam.deliveryCharge.toLong())
-                                    .setNonTaxedTotalPrice(orderParam.paymentParam.nonTaxedTotalPrice.toLong())
-                                    .setTax(orderParam.paymentParam.tax.toLong())
-                                    .setTaxedTotalPrice(orderParam.paymentParam.taxedTotalPrice.toLong())
+                                    .setDeliveryCharge(order.payment.deliveryCharge.toLong())
+                                    .setNonTaxedTotalPrice(order.payment.nonTaxedTotalPrice.toLong())
+                                    .setTax(order.payment.tax.toLong())
+                                    .setTaxedTotalPrice(order.payment.taxedTotalPrice.toLong())
                                     .build()
                             )
                             .setTime(
                                 Timestamp.newBuilder()
-                                    .setSeconds(orderParam.time.toEpochSecond(ZoneOffset.of("+09:00")))
+                                    .setSeconds(order.time.toEpochSecond(ZoneOffset.of("+09:00")))
                                     .setNanos(0)
                                     .build()
                             )

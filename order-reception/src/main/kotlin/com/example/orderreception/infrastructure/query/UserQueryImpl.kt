@@ -12,6 +12,11 @@ class UserQueryImpl(
 ) : UserQuery {
     override fun findById(userId: Long): User? {
         val usersBase = usersBaseMapper.selectByPrimaryKey(userId)
-        return usersBase?.let { User.fromBase(usersBase) }
+        return usersBase?.let {
+            User.reconstruct(
+                id = usersBase.userId!!,
+                blackLevel = usersBase.blackLevel!!
+            )
+        }
     }
 }

@@ -1,7 +1,5 @@
 package com.example.orderreception.domain.model.order
 
-import com.example.orderreception.infrastructure.entity.generated.AddressesBase
-
 data class Address private constructor(
     val userId: Long,
     val postcode: String,
@@ -11,14 +9,21 @@ data class Address private constructor(
     val building: String
 ) {
     companion object {
-        fun fromBase(addressesBase: AddressesBase): Address {
+        fun reconstruct(
+            userId: Long,
+            postcode: String,
+            prefecture: String,
+            city: String,
+            streetAddress: String,
+            building: String
+        ): Address {
             return Address(
-                userId = addressesBase.userId!!,
-                postcode = addressesBase.postcode!!,
-                prefecture = addressesBase.prefecture!!,
-                city = addressesBase.city!!,
-                streetAddress = addressesBase.streetAddress!!,
-                building = addressesBase.building!!
+                userId = userId,
+                postcode = postcode,
+                prefecture = prefecture,
+                city = city,
+                streetAddress = streetAddress,
+                building = building,
             )
         }
     }

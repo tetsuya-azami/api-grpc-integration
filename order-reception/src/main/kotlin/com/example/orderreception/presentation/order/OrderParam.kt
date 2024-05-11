@@ -1,16 +1,12 @@
 package com.example.orderreception.presentation.order
 
 import com.example.orderreception.error.ValidationError
-import com.example.orderreception.openapi.model.Order
-import com.github.michaelbull.result.Err
-import com.github.michaelbull.result.Ok
-import com.github.michaelbull.result.Result
-import com.github.michaelbull.result.getOrElse
+import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-data class OrderParam(
+data class OrderParam private constructor(
     val orderItemParams: List<OrderItemParam>,
     val chainId: Long,
     val shopId: Long,
@@ -21,59 +17,56 @@ data class OrderParam(
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(this::class.java)
-
-        fun fromOpenApi(order: Order): Result<OrderParam, List<ValidationError>> {
+        fun new(
+            orderItemParams: List<OrderItemParam>?,
+            chainId: Long?,
+            shopId: Long?,
+            deliveryParam: DeliveryParam,
+            userId: Long?,
+            paymentParam: PaymentParam,
+            timeString: String?
+        ): OrderParam {
             val validationErrors = mutableListOf<ValidationError>()
 
-            if (order.items.isEmpty()) validationErrors.add(
-                ValidationError(
-                    field = "items",
-                    message = "注文商品情報がありません。"
+            if (orderItemParams.isNullOrEmpty()) {
+                validationErrors.add(
+                    ValidationError(
+                        field = "items",
+                        message = "注文商品情報がありません。"
+                    )
                 )
-            )
-            if (order.chain.id == null) validationErrors.add(
-                ValidationError(
-                    field = "chain",
-                    message = "チェーン情報がありません。"
-                )
-            )
-            if (order.shop.id == null) validationErrors.add(
-                ValidationError(
-                    field = "shop",
-                    message = "店舗情報がありません。"
-                )
-            )
-            val deliveryParam = DeliveryParam.fromOpenApi(order.delivery)
-                .getOrElse { errors ->
-                    validationErrors.addAll(errors)
-                    null
-                }
-            if (order.user.id == null) validationErrors.add(
-                ValidationError(
-                    field = "user",
-                    message = "ユーザ情報がありません。"
-                )
-            )
+            }
 
-            val orderItemParams =
-                order.items
-                    .map { OrderItemParam.fromOpenApi(it) }
-                    .mapNotNull { result ->
-                        result.getOrElse { errors ->
-                            validationErrors.addAll(errors)
-                            null
-                        }
-                    }
+            if (chainId == null) {
+                validationErrors.add(
+                    ValidationError(
+                        field = "chain",
+                        message = "チェーン情報がありません。"
+                    )
+                )
+            }
 
-            val paymentParam = PaymentParam.fromOpenApi(order.payment)
-                .getOrElse {
-                    validationErrors.addAll(it)
-                    null
-                }
+            if (shopId == null) {
+                validationErrors.add(
+                    ValidationError(
+                        field = "shop",
+                        message = "店舗情報がありません。"
+                    )
+                )
+            }
+
+            if (userId == null) {
+                validationErrors.add(
+                    ValidationError(
+                        field = "user",
+                        message = "ユーザ情報がありません。"
+                    )
+                )
+            }
 
             val time = runCatching {
                 LocalDateTime.parse(
-                    order.time,
+                    timeString,
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss+09:00")
                 )
             }.fold(
@@ -83,25 +76,24 @@ data class OrderParam(
                     validationErrors.add(
                         ValidationError(
                             field = "time",
-                            message = "注文日時は「yyyy-mm-ddTHH:mm:ss+09:00」の形式でなければなりません。注文日時: ${order.time}"
+                            message = "注文日時は「yyyy-mm-ddTHH:mm:ss+09:00」の形式でなければなりません。注文日時: $timeString"
                         )
                     )
-                    null
+                    // 戻り値の型をLocalDateTimeにするために記述。TODO: もっといい方法がないか調査
+                    LocalDateTime.now()
                 }
             )
 
-            return if (validationErrors.isNotEmpty())
-                Err(validationErrors)
-            else Ok(
-                OrderParam(
-                    orderItemParams = orderItemParams,
-                    chainId = order.chain.id!!,
-                    shopId = order.shop.id!!,
-                    deliveryParam = deliveryParam!!,
-                    userId = order.user.id!!,
-                    paymentParam = paymentParam!!,
-                    time = time!!
-                )
+            if (validationErrors.isNotEmpty()) throw OrderReceptionIllegalArgumentException(validationErrors = validationErrors)
+
+            return OrderParam(
+                orderItemParams = orderItemParams!!,
+                chainId = chainId!!,
+                shopId = shopId!!,
+                deliveryParam = deliveryParam,
+                userId = userId!!,
+                paymentParam = paymentParam,
+                time = time!!
             )
         }
     }

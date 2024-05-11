@@ -19,6 +19,15 @@ class AddressQueryImpl(
             }
         }
 
-        return addressesBase?.let { Address.fromBase(addressesBase) }
+        return addressesBase?.let {
+            Address.reconstruct(
+                userId = addressesBase.userId!!,
+                postcode = addressesBase.postcode!!,
+                prefecture = addressesBase.prefecture!!,
+                city = addressesBase.city!!,
+                streetAddress = addressesBase.streetAddress!!,
+                building = addressesBase.building!!,
+            )
+        }
     }
 }
