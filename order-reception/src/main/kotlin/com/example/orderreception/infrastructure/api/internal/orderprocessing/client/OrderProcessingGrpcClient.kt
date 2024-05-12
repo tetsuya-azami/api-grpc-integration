@@ -30,14 +30,15 @@ class OrderProcessingGrpcClient(
             val orderCreationResponse = orderServiceStub.createOrder(registerOrderRequest.orderCreationRequest)
             return RegisterOrderResponse(orderId = orderCreationResponse.id)
         } catch (e: StatusRuntimeException) {
-            logger.warn("OrderProcessingとの通信で予期せぬエラーが発生しました。", e)
             if (e.status.code == Status.INVALID_ARGUMENT.code) {
                 val errorDetails = e.trailers?.get(ProtoUtils.keyForProto(BadRequest.getDefaultInstance()))
                 val validationErrors = errorDetails?.fieldViolationsList?.map {
                     ValidationError(field = it.field, message = it.description)
                 }
-                logger.warn("バリデーションエラーリスト: $validationErrors")
+                logger.warn("OrderProcessingからバリデーションエラーが返されました。バリデーションエラーリスト: $validationErrors")
                 throw OrderReceptionIllegalArgumentException(validationErrors = validationErrors!!)
+            } else {
+                logger.warn("OrderProcessingとの通信で予期せぬエラーが発生しました。", e)
             }
             throw e
         } catch (e: Exception) {
