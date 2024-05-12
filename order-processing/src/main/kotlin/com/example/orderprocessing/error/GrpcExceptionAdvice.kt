@@ -15,7 +15,6 @@ class GrpcExceptionAdvice {
     @GrpcExceptionHandler
     fun handleInvalidArgument(illegalArgumentException: OrderProcessingIllegalArgumentException): StatusException {
         val validationErrors = illegalArgumentException.validationErrors
-        val messages = validationErrors.joinToString(separator = "\n") { it.description }
 
         // TODO: Filedの見直し
         val fieldViolations = validationErrors.map { error ->
