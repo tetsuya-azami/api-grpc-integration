@@ -1,22 +1,24 @@
 package com.example.orderreception.infrastructure.api.internal.orderprocessing.client
 
+import com.example.grpcinterface.proto.OrderOuterClass.OrderCreationRequest
+import com.example.grpcinterface.proto.OrderOuterClass.OrderCreationResponse
 import com.example.grpcinterface.proto.OrderServiceGrpc
-import com.example.orderreception.domain.model.order.*
-import com.example.orderreception.helper.OrderParamTestHelper
-import com.example.orderreception.infrastructure.entity.custom.ItemWithAttributesBase
-import com.example.orderreception.infrastructure.entity.generated.AttributesBase
-import com.example.orderreception.infrastructure.entity.generated.UsersBase
-import io.grpc.ManagedChannel
-import io.grpc.Server
 import com.example.orderreception.domain.model.order.BlackLevel
 import com.example.orderreception.domain.model.order.Delivery.DeliveryType
 import com.example.orderreception.domain.model.order.Payment.PaymentMethodType
 import com.example.orderreception.domain.model.order.User
 import com.example.orderreception.helper.OrderTestHelper
+import com.example.orderreception.infrastructure.api.interceptor.LoggingInterceptor
+import io.grpc.ManagedChannel
+import io.grpc.Metadata
+import io.grpc.Server
 import io.grpc.inprocess.InProcessChannelBuilder
 import io.grpc.inprocess.InProcessServerBuilder
 import io.grpc.testing.GrpcCleanupRule
 import io.grpc.util.MutableHandlerRegistry
+import io.mockk.slot
+import io.mockk.spyk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
@@ -38,6 +40,8 @@ class OrderProcessingGrpcClientTest {
     private lateinit var testServerName: String
     private lateinit var inProcessServers: Server
     private lateinit var inProcessChannel: ManagedChannel
+    private val metadataCaptor = slot<io.grpc.Metadata>()
+    private val mockInterceptor = spyk<TestInterceptor>()
 
     @BeforeEach
     fun setUp() {
@@ -48,11 +52,14 @@ class OrderProcessingGrpcClientTest {
                 .forName(testServerName)
                 .directExecutor()
                 .fallbackHandlerRegistry(serviceRegistry)
+                .intercept(mockInterceptor)
                 .build()
                 .start()
         )
         inProcessChannel = grpcCleanup.register(
-            InProcessChannelBuilder.forName(testServerName)
+            InProcessChannelBuilder
+                .forName(testServerName)
+                .intercept(LoggingInterceptor())
                 .directExecutor()
                 .build()
         )
@@ -120,6 +127,20 @@ class OrderProcessingGrpcClientTest {
             assertThat(it.order.payment.taxedTotalPrice).isEqualTo(935)
             assertThat(it.order.time.seconds).isEqualTo(now.toEpochSecond(ZoneOffset.of("+09:00")))
             assertThat(it.order.time.nanos).isEqualTo(0)
+        }
+
+        // リクエストヘッダの検証
+        verify {
+            mockInterceptor.interceptCall<OrderCreationRequest, OrderCreationResponse>(
+                any(),
+                capture(metadataCaptor),
+                any()
+            )
+        }
+        metadataCaptor.captured.let {
+            assertThat(
+                it.get(Metadata.Key.of("REQUEST_COMPONENT_NAME", Metadata.ASCII_STRING_MARSHALLER))
+            ).isEqualTo("order-reception")
         }
     }
 }

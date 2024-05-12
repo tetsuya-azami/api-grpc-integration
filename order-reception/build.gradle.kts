@@ -50,6 +50,7 @@ dependencies {
     testImplementation("io.grpc:grpc-testing:1.62.2")
     testImplementation(project(":grpc-interface"))
     testImplementation("io.grpc:grpc-kotlin-stub:1.4.1")
+    testImplementation("io.mockk:mockk:1.13.10")
 }
 
 tasks.register("mybatisGenerator") {
