@@ -1,6 +1,5 @@
 package com.example.orderreception.infrastructure.query
 
-import com.example.orderreception.domain.model.order.BlackLevel
 import com.example.orderreception.infrastructure.entity.generated.UsersBase
 import com.example.orderreception.infrastructure.mapper.generated.UsersBaseMapper
 import com.example.orderreception.infrastructure.mapper.generated.delete
@@ -34,7 +33,11 @@ class UserQueryImplTest(
     fun 渡されたユーザIDのユーザ情報が取得できること() {
         // given
         val expected = getUserBase(userId = 1)
-        val notSelected = getUserBase(userId = 2, phoneNumber = "111-1111-1111", email = "huga@example.com")
+        val notSelected = getUserBase( // 一意制約を回避するため電話番号およびメールアドレスを変更
+            userId = 2,
+            phoneNumber = "111-1111-1111",
+            email = "huga@example.com"
+        )
         usersBaseMapper.insertMultiple(listOf(expected, notSelected))
 
         // when
@@ -42,7 +45,7 @@ class UserQueryImplTest(
 
         // then
         assertThat(actual?.id).isEqualTo(expected.userId)
-        assertThat(actual?.blackLevel).isEqualTo(BlackLevel.reconstruct(expected))
+        assertThat(actual?.blackLevel).isEqualTo(expected.blackLevel)
     }
 
     @Test

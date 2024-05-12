@@ -39,13 +39,13 @@ class OrderItemFactoryImplTest(
     fun 正常に商品のリストが取得できること() {
         // given
         val orderItemParams = listOf(
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 1,
                 price = BigDecimal.valueOf(100),
                 attributes = listOf(AttributeParam(attributeId = 1)),
                 quantity = 1
             ),
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 2,
                 price = BigDecimal.valueOf(200),
                 attributes = listOf(
@@ -54,7 +54,7 @@ class OrderItemFactoryImplTest(
                 ),
                 quantity = 2
             ),
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 3,
                 price = BigDecimal.valueOf(300),
                 attributes = listOf(
@@ -77,7 +77,7 @@ class OrderItemFactoryImplTest(
     fun 属性情報がない場合() {
         // given
         val orderItemParams = listOf(
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 1,
                 price = BigDecimal.valueOf(100),
                 attributes = emptyList(),
@@ -100,7 +100,7 @@ class OrderItemFactoryImplTest(
     fun 検索条件のチェーン情報と商品情報の整合性がない場合() {
         // given
         val orderItemParams = listOf(
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 1,
                 price = BigDecimal.valueOf(100),
                 attributes = listOf(AttributeParam(attributeId = 1)),
@@ -123,7 +123,7 @@ class OrderItemFactoryImplTest(
     fun 検索条件の店舗情報と商品情報の整合性がない場合() {
         // given
         val orderItemParams = listOf(
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 1,
                 price = BigDecimal.valueOf(100),
                 attributes = listOf(AttributeParam(attributeId = 1)),
@@ -145,7 +145,7 @@ class OrderItemFactoryImplTest(
     fun 検索条件の商品と商品属性の整合性がない場合() {
         // given
         val orderItemParams = listOf(
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 1,
                 price = BigDecimal.valueOf(100),
                 attributes = listOf(AttributeParam(attributeId = 100)), // 検索条件にDBに存在しないattributeIdを渡す
@@ -182,7 +182,7 @@ class OrderItemFactoryImplTest(
     fun パラメータで渡された商品価格とDBのマスタデータの商品価格に整合性がない場合() {
         // given
         val orderItemParams = listOf(
-            OrderItemParam(
+            OrderItemParam.new(
                 itemId = 1,
                 price = BigDecimal.valueOf(0),
                 attributes = listOf(AttributeParam(attributeId = 1)),

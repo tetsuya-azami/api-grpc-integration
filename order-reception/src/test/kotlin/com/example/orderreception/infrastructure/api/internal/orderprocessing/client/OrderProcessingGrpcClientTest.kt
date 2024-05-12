@@ -8,6 +8,11 @@ import com.example.orderreception.infrastructure.entity.generated.AttributesBase
 import com.example.orderreception.infrastructure.entity.generated.UsersBase
 import io.grpc.ManagedChannel
 import io.grpc.Server
+import com.example.orderreception.domain.model.order.BlackLevel
+import com.example.orderreception.domain.model.order.Delivery.DeliveryType
+import com.example.orderreception.domain.model.order.Payment.PaymentMethodType
+import com.example.orderreception.domain.model.order.User
+import com.example.orderreception.helper.OrderTestHelper
 import io.grpc.inprocess.InProcessChannelBuilder
 import io.grpc.inprocess.InProcessServerBuilder
 import io.grpc.testing.GrpcCleanupRule
@@ -64,34 +69,13 @@ class OrderProcessingGrpcClientTest {
         // given
         val targetServer = OrderProcessingServerImplForIntegrationTest()
         serviceRegistry.addService(targetServer)
-
-        val orderParam = OrderParamTestHelper.getTestInstance()
-        val orderItems = orderParam.orderItemParams.mapIndexed { orderItemParamIndex, orderItemParam ->
-            val attributes = orderItemParam.attributes.mapIndexed { attributeParamIndex, attributeParam ->
-                AttributesBase(
-                    attributeId = attributeParam.attributeId,
-                    name = "属性名$attributeParamIndex",
-                    value = "属性値$attributeParamIndex"
-                )
-            }
-            val itemWithAttributesBase = ItemWithAttributesBase(
-                itemId = orderItemParam.itemId,
-                name = "テスト商品$orderItemParamIndex",
-                price = orderItemParam.price,
-                attributes = attributes
-            )
-            OrderItem.fromBaseAndParam(itemWithAttributesBase = itemWithAttributesBase, orderItemParam = orderItemParam)
-        }
-
+        val order = OrderTestHelper.getTestInstance()
         val sut = OrderProcessingGrpcClient(OrderServiceGrpc.newBlockingStub(inProcessChannel))
 
         // when
         val result = sut.registerOrder(
-            orderParam = orderParam,
-            orderItems = orderItems,
-            user = User.reconstruct(
-                UsersBase(userId = 1L, blackLevel = BlackLevel.LOW.code)
-            )
+            order = order,
+            user = User.reconstruct(id = 1L, blackLevel = BlackLevel.LOW.code)
         )
 
         // then
@@ -105,11 +89,11 @@ class OrderProcessingGrpcClientTest {
             assertThat(it.order.itemsList[0].price.currencyCode).isEqualTo("JPY")
             assertThat(it.order.itemsList[0].attributesList).hasSize(2)
             assertThat(it.order.itemsList[0].attributesList[0].id).isEqualTo(1)
-            assertThat(it.order.itemsList[0].attributesList[0].name).isEqualTo("属性名0")
-            assertThat(it.order.itemsList[0].attributesList[0].value).isEqualTo("属性値0")
+            assertThat(it.order.itemsList[0].attributesList[0].name).isEqualTo(order.orderItems[0].attributes[0].name)
+            assertThat(it.order.itemsList[0].attributesList[0].value).isEqualTo(order.orderItems[0].attributes[0].value)
             assertThat(it.order.itemsList[0].attributesList[1].id).isEqualTo(2)
-            assertThat(it.order.itemsList[0].attributesList[1].name).isEqualTo("属性名1")
-            assertThat(it.order.itemsList[0].attributesList[1].value).isEqualTo("属性値1")
+            assertThat(it.order.itemsList[0].attributesList[1].name).isEqualTo(order.orderItems[0].attributes[1].name)
+            assertThat(it.order.itemsList[0].attributesList[1].value).isEqualTo(order.orderItems[0].attributes[1].value)
             assertThat(it.order.itemsList[0].quantity).isEqualTo(1)
             assertThat(it.order.itemsList[1].id).isEqualTo(2)
             assertThat(it.order.itemsList[1].price.units).isEqualTo(200)
@@ -117,11 +101,11 @@ class OrderProcessingGrpcClientTest {
             assertThat(it.order.itemsList[1].price.currencyCode).isEqualTo("JPY")
             assertThat(it.order.itemsList[1].attributesList).hasSize(2)
             assertThat(it.order.itemsList[1].attributesList[0].id).isEqualTo(3)
-            assertThat(it.order.itemsList[1].attributesList[0].name).isEqualTo("属性名0")
-            assertThat(it.order.itemsList[1].attributesList[0].value).isEqualTo("属性値0")
+            assertThat(it.order.itemsList[1].attributesList[0].name).isEqualTo(order.orderItems[1].attributes[0].name)
+            assertThat(it.order.itemsList[1].attributesList[0].value).isEqualTo(order.orderItems[1].attributes[0].value)
             assertThat(it.order.itemsList[1].attributesList[1].id).isEqualTo(4)
-            assertThat(it.order.itemsList[1].attributesList[1].name).isEqualTo("属性名1")
-            assertThat(it.order.itemsList[1].attributesList[1].value).isEqualTo("属性値1")
+            assertThat(it.order.itemsList[1].attributesList[1].name).isEqualTo(order.orderItems[1].attributes[1].name)
+            assertThat(it.order.itemsList[1].attributesList[1].value).isEqualTo(order.orderItems[1].attributes[1].value)
             assertThat(it.order.itemsList[1].quantity).isEqualTo(2)
             assertThat(it.order.chain.id).isEqualTo(1)
             assertThat(it.order.shop.id).isEqualTo(1)
