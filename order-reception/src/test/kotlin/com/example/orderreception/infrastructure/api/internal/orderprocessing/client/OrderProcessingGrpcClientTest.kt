@@ -9,6 +9,7 @@ import com.example.orderreception.domain.model.order.Payment.PaymentMethodType
 import com.example.orderreception.domain.model.order.User
 import com.example.orderreception.helper.OrderTestHelper
 import com.example.orderreception.infrastructure.api.interceptor.LoggingInterceptor
+import com.example.orderreception.infrastructure.api.interceptor.MetadataInterceptor
 import io.grpc.ManagedChannel
 import io.grpc.Metadata
 import io.grpc.Server
@@ -59,6 +60,7 @@ class OrderProcessingGrpcClientTest {
         inProcessChannel = grpcCleanup.register(
             InProcessChannelBuilder
                 .forName(testServerName)
+                .intercept(MetadataInterceptor())
                 .intercept(LoggingInterceptor())
                 .directExecutor()
                 .build()

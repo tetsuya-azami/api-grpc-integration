@@ -21,10 +21,6 @@ class LoggingInterceptor : ClientInterceptor {
         return object : SimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOptions)) {
             override fun start(responseListener: Listener<RespT>, requestHeaders: Metadata) {
                 // 送信先のコンポーネントが送信元のコンポーネントを特定するために使用する。
-                requestHeaders.put(
-                    Metadata.Key.of("REQUEST_COMPONENT_NAME", Metadata.ASCII_STRING_MARSHALLER),
-                    MY_COMPONENT_NAME
-                )
                 logger.info("grpc request headers: {}", requestHeaders)
 
                 val overrideResponseListener = object : SimpleForwardingClientCallListener<RespT>(responseListener) {
