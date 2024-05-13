@@ -196,5 +196,24 @@ class OrderProcessingGrpcClientTest {
             assertThat((result.exceptionOrNull() as OrderReceptionIllegalArgumentException).validationErrors[1].message)
                 .isEqualTo("エラー2")
         }
+
+        @Test
+        fun リトライ対象のStatusが返ってきた時() {
+            // given
+            val targetServer = OrderProcessingServerImplForRetryIntegrationTest()
+            serviceRegistry.addService(targetServer)
+            val order = OrderTestHelper.getTestInstance()
+            val user = User.reconstruct(id = 1L, blackLevel = BlackLevel.LOW.code)
+            val sut = OrderProcessingGrpcClient(OrderServiceGrpc.newBlockingStub(inProcessChannel))
+
+            // when
+            kotlin.runCatching {
+                sut.registerOrder(
+                    order = order,
+                    user = user
+                )
+            }
+            assertThat(targetServer.count).isEqualTo(5)
+        }
     }
 }
