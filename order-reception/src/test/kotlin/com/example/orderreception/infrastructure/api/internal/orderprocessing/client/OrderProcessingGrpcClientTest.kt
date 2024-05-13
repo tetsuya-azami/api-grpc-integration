@@ -8,18 +8,18 @@ import com.example.orderreception.domain.model.order.Delivery.DeliveryType
 import com.example.orderreception.domain.model.order.Payment.PaymentMethodType
 import com.example.orderreception.domain.model.order.User
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
-import com.example.orderreception.helper.GrpcTestHelper
 import com.example.orderreception.helper.OrderTestHelper
 import com.example.orderreception.infrastructure.api.interceptor.LoggingInterceptor
 import com.example.orderreception.infrastructure.api.interceptor.MetadataInterceptor
-import io.grpc.*
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import io.grpc.ManagedChannel
+import io.grpc.Metadata
+import io.grpc.Server
 import io.grpc.inprocess.InProcessChannelBuilder
 import io.grpc.inprocess.InProcessServerBuilder
 import io.grpc.testing.GrpcCleanupRule
 import io.grpc.util.MutableHandlerRegistry
-import io.mockk.every
-import io.mockk.impl.annotations.InjectMockKs
-import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.slot
 import io.mockk.spyk
@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
+import java.nio.file.Files
+import java.nio.file.Path
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
@@ -42,46 +44,51 @@ class OrderProcessingGrpcClientTest {
         private val now = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
     }
 
+    @get:Rule
+    val grpcCleanup = GrpcCleanupRule()
+    private lateinit var serviceRegistry: MutableHandlerRegistry
+    private lateinit var testServerName: String
+    private lateinit var inProcessServers: Server
+    private lateinit var inProcessChannel: ManagedChannel
+    private val metadataCaptor = slot<io.grpc.Metadata>()
+    private val mockInterceptor = spyk<TestInterceptor>()
+
+    @BeforeEach
+    fun setUp() {
+        serviceRegistry = MutableHandlerRegistry()
+        testServerName = InProcessServerBuilder.generateName()
+        inProcessServers = grpcCleanup.register(
+            InProcessServerBuilder
+                .forName(testServerName)
+                .directExecutor()
+                .fallbackHandlerRegistry(serviceRegistry)
+                .intercept(mockInterceptor)
+                .build()
+                .start()
+        )
+        val objectMapper = ObjectMapper()
+        val retryConfig: HashMap<String, Any> =
+            objectMapper.readValue(Files.readString(Path.of("src/main/resources/grpc-retry-config.json")))
+        inProcessChannel = grpcCleanup.register(
+            InProcessChannelBuilder
+                .forName(testServerName)
+                .intercept(MetadataInterceptor())
+                .intercept(LoggingInterceptor())
+                .defaultServiceConfig(retryConfig)
+                .enableRetry()
+                .directExecutor()
+                .build()
+        )
+    }
+
+    @AfterEach
+    fun tearDown() {
+        inProcessServers.shutdownNow()
+        inProcessChannel.shutdownNow()
+    }
+
     @Nested
     inner class NormalCase {
-        @get:Rule
-        val grpcCleanup = GrpcCleanupRule()
-        private lateinit var serviceRegistry: MutableHandlerRegistry
-        private lateinit var testServerName: String
-        private lateinit var inProcessServers: Server
-        private lateinit var inProcessChannel: ManagedChannel
-        private val metadataCaptor = slot<io.grpc.Metadata>()
-        private val mockInterceptor = spyk<TestInterceptor>()
-
-        @BeforeEach
-        fun setUp() {
-            serviceRegistry = MutableHandlerRegistry()
-            testServerName = InProcessServerBuilder.generateName()
-            inProcessServers = grpcCleanup.register(
-                InProcessServerBuilder
-                    .forName(testServerName)
-                    .directExecutor()
-                    .fallbackHandlerRegistry(serviceRegistry)
-                    .intercept(mockInterceptor)
-                    .build()
-                    .start()
-            )
-            inProcessChannel = grpcCleanup.register(
-                InProcessChannelBuilder
-                    .forName(testServerName)
-                    .intercept(MetadataInterceptor())
-                    .intercept(LoggingInterceptor())
-                    .directExecutor()
-                    .build()
-            )
-        }
-
-        @AfterEach
-        fun tearDown() {
-            inProcessServers.shutdownNow()
-            inProcessChannel.shutdownNow()
-        }
-
         @Test
         fun 正常系() {
             // given
@@ -158,35 +165,22 @@ class OrderProcessingGrpcClientTest {
 
     @Nested
     inner class AbnormalCase {
-        @InjectMockKs
-        private lateinit var sut: OrderProcessingGrpcClient
-
-        @MockK
-        private lateinit var mockedOrderServiceBlockingStub: OrderServiceGrpc.OrderServiceBlockingStub
-
         @Test
         fun サーバー側でバリデーションエラーが返された時() {
             // given
-            val order = OrderTestHelper.getTestInstance()
-            val user = User.reconstruct(id = 1L, blackLevel = BlackLevel.LOW.code)
-            every {
-                sut.registerOrder(order, user)
-            } throws StatusRuntimeException(
-                Status.INVALID_ARGUMENT
-                    .withDescription("リクエストが不正です。")
-                    .withCause(IllegalArgumentException("元例外エラーメッセージ")),
-                GrpcTestHelper.getErrorTrailers()
-            )
+            serviceRegistry.addService(OrderProcessingServerImplForInvalidArgumentIntegrationTest())
+            val sut = OrderProcessingGrpcClient(OrderServiceGrpc.newBlockingStub(inProcessChannel))
 
             // when
             val result = kotlin.runCatching {
                 sut.registerOrder(
-                    order = order,
-                    user = user
+                    order = OrderTestHelper.getTestInstance(),
+                    user = User.reconstruct(id = 1L, blackLevel = BlackLevel.LOW.code)
                 )
             }
 
             // then
+            // エラー情報が正しくthrowされること
             assertThat(result.isFailure).isTrue()
             assertThat(result.exceptionOrNull()).isInstanceOf(OrderReceptionIllegalArgumentException::class.java)
             assertThat((result.exceptionOrNull() as OrderReceptionIllegalArgumentException).validationErrors).hasSize(2)
