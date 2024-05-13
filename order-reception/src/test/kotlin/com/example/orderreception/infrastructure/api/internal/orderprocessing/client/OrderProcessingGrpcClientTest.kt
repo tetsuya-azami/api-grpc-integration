@@ -74,6 +74,8 @@ class OrderProcessingGrpcClientTest {
                 .forName(testServerName)
                 .intercept(MetadataInterceptor())
                 .intercept(LoggingInterceptor())
+                // リトライの設定が入っている場合の挙動をテストすることはできているが、リトライの設定が正しく反映されているかのテストができていない。
+                // TODO: 上記の欠点を克服する方法を考える。実際に使用するChannelを使ってテストできないか？
                 .defaultServiceConfig(retryConfig)
                 .enableRetry()
                 .directExecutor()
