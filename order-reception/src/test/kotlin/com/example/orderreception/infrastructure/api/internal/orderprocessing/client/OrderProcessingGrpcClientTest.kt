@@ -215,7 +215,32 @@ class OrderProcessingGrpcClientTest {
                     user = user
                 )
             }
+            // then
+            // リトライが行われた回数が正しいこと
             assertThat(targetServer.count).isEqualTo(5)
+        }
+
+        @Test
+        fun タイムアウト() {
+            // given
+            val targetServer = OrderProccesingServerImplForTimeoutIntegrationTest()
+            serviceRegistry.addService(targetServer)
+            val order = OrderTestHelper.getTestInstance()
+            val user = User.reconstruct(id = 1L, blackLevel = BlackLevel.LOW.code)
+            val sut = OrderProcessingGrpcClient(OrderServiceGrpc.newBlockingStub(inProcessChannel))
+
+            // when
+            val result = kotlin.runCatching {
+                sut.registerOrder(
+                    order = order,
+                    user = user
+                )
+            }
+
+            // then
+            assertThat(result.isFailure).isTrue()
+            assertThat(result.exceptionOrNull()).isInstanceOf(io.grpc.StatusRuntimeException::class.java)
+            assertThat((result.exceptionOrNull() as io.grpc.StatusRuntimeException).status.code).isEqualTo(io.grpc.Status.Code.DEADLINE_EXCEEDED)
         }
     }
 }

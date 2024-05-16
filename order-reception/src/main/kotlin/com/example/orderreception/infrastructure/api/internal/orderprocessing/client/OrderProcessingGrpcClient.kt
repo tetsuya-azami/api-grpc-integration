@@ -8,12 +8,14 @@ import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentE
 import com.example.orderreception.infrastructure.api.internal.orderprocessing.request.RegisterOrderRequest
 import com.example.orderreception.infrastructure.api.internal.orderprocessing.response.RegisterOrderResponse
 import com.google.rpc.BadRequest
+import io.grpc.Deadline
 import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import io.grpc.protobuf.ProtoUtils
 import net.devh.boot.grpc.client.inject.GrpcClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 @Service
 class OrderProcessingGrpcClient(
@@ -27,7 +29,8 @@ class OrderProcessingGrpcClient(
 
         // TODO: 非同期での連携を検討
         return try {
-            val orderCreationResponse = orderServiceStub.createOrder(registerOrderRequest.orderCreationRequest)
+            val orderCreationResponse = orderServiceStub.withDeadline(Deadline.after(10, TimeUnit.SECONDS))
+                .createOrder(registerOrderRequest.orderCreationRequest)
             return RegisterOrderResponse(orderId = orderCreationResponse.id)
         } catch (e: StatusRuntimeException) {
             if (e.status.code == Status.INVALID_ARGUMENT.code) {
