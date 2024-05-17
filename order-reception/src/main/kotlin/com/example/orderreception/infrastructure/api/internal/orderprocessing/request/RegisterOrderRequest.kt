@@ -74,10 +74,30 @@ data class RegisterOrderRequest private constructor(
                                     .setPaymentMethod(
                                         PaymentMethod.valueOf(order.payment.paymentMethodType.name)
                                     )
-                                    .setDeliveryCharge(order.payment.deliveryCharge.toLong())
-                                    .setNonTaxedTotalPrice(order.payment.nonTaxedTotalPrice.toLong())
-                                    .setTax(order.payment.tax.toLong())
-                                    .setTaxedTotalPrice(order.payment.taxedTotalPrice.toLong())
+                                    .setDeliveryCharge(
+                                        Money.newBuilder()
+                                            .setUnits(order.payment.deliveryCharge.toLong())
+                                            .setNanos(0)
+                                            .setCurrencyCode("JPY")
+                                    )
+                                    .setNonTaxedTotalPrice(
+                                        Money.newBuilder()
+                                            .setUnits(order.payment.nonTaxedTotalPrice.toLong())
+                                            .setNanos(0)
+                                            .setCurrencyCode("JPY")
+                                    )
+                                    .setTax(
+                                        Money.newBuilder()
+                                            .setUnits(order.payment.tax.toLong())
+                                            .setNanos(0)
+                                            .setCurrencyCode("JPY")
+                                    )
+                                    .setTaxedTotalPrice(
+                                        Money.newBuilder()
+                                            .setUnits(order.payment.taxedTotalPrice.toLong())
+                                            .setNanos(0)
+                                            .setCurrencyCode("JPY")
+                                    )
                                     .build()
                             )
                             .setTime(

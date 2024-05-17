@@ -14,10 +14,10 @@ data class PaymentParam(
         fun fromProto(paymentProto: OrderOuterClass.Payment): PaymentParam {
             return PaymentParam(
                 paymentMethod = paymentProto.paymentMethod.name,
-                deliveryCharge = BigDecimal.valueOf(paymentProto.deliveryCharge),
-                nonTaxedTotalPrice = BigDecimal.valueOf(paymentProto.nonTaxedTotalPrice),
-                tax = BigDecimal.valueOf(paymentProto.tax),
-                taxedTotalPrice = BigDecimal.valueOf(paymentProto.taxedTotalPrice)
+                deliveryCharge = BigDecimal.valueOf(paymentProto.deliveryCharge.units),
+                nonTaxedTotalPrice = BigDecimal.valueOf(paymentProto.nonTaxedTotalPrice.units),
+                tax = BigDecimal.valueOf(paymentProto.tax.units),
+                taxedTotalPrice = BigDecimal.valueOf(paymentProto.taxedTotalPrice.units)
             )
         }
     }
