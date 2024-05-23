@@ -12,3 +12,9 @@ logging:
           repository:
             mapper:
               generated: DEBUG
+grpc:
+  server:
+    security:
+      enabled: true
+      certificateChain: './tls/server1.pem'
+      privateKey: './tls/server1.key'
