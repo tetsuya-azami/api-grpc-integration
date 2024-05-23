@@ -16,7 +16,7 @@ logging:
 grpc:
   client:
     orderProcessingGrpcClient:
-      address: 'static://127.0.0.1:9090'
+      address: 'static://local.test.google.fr:9090'
       enableKeepAlive: true
       keepAliveWithoutCalls: true
       negotiationType: TLS
