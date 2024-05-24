@@ -22,3 +22,6 @@ grpc:
       negotiationType: TLS
       security:
         trustCertCollection: './tls/ca.pem'
+        clientAuthEnabled: true
+        certificateChain: './tls/client.crt'
+        privateKey: './tls/client.key'

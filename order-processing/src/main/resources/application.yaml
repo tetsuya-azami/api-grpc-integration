@@ -18,3 +18,5 @@ grpc:
       enabled: true
       certificateChain: './tls/server1.pem'
       privateKey: './tls/server1.key'
+      trustCertCollection: 'tls/client.crt'
+      clientAuth: REQUIRE
