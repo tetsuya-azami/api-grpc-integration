@@ -16,7 +16,7 @@ grpc:
   server:
     security:
       enabled: true
-      certificateChain: './tls/server1.pem'
-      privateKey: './tls/server1.key'
-      trustCertCollection: 'tls/client.crt'
+      certificateChain: './tls/order-processing.crt'
+      privateKey: './tls/order-processing.key'
+      trustCertCollection: 'tls/order-reception.crt'
       clientAuth: REQUIRE

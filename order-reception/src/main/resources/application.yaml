@@ -23,5 +23,5 @@ grpc:
       security:
         trustCertCollection: './tls/ca.pem'
         clientAuthEnabled: true
-        certificateChain: './tls/client.crt'
-        privateKey: './tls/client.key'
+        certificateChain: './tls/order-reception.crt'
+        privateKey: './tls/order-reception.key'
