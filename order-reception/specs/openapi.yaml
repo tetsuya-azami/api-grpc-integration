@@ -10,3 +10,5 @@ servers:
 paths:
   /orders/:
     $ref: './paths/order/create.yaml'
+  /order-history/:
+    $ref: './paths/order/order-history.yaml'

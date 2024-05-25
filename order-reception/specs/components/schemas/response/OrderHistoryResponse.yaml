@@ -1,0 +1,66 @@
+title: OrderHistoryResponse
+type: object
+properties:
+  orders:
+    type: array
+    description: "注文履歴"
+    items:
+      type: object
+      properties:
+        orderId:
+          description: "注文ID"
+          type: string
+          minLength: 36
+          maxLength: 36
+          example: "27b9b32f-1fea-440e-893b-6715f86bce55"
+        orderItems:
+          type: array
+          description: "注文商品情報"
+          items:
+            type: object
+            properties:
+              id:
+                description: "商品ID"
+                type: integer
+                format: int64
+                minimum: 1
+                maximum: 9999999999
+                example: 123456
+              name:
+                description: "商品名"
+                type: string
+                minLength: 1
+                maxLength: 250
+                example: "商品名"
+              quantity:
+                description: "商品数量"
+                type: integer
+                format: int32
+                example: 1
+                minimum: 1
+                maximum: 9999999999
+        totalPrice:
+          description: "注文合計金額"
+          type: integer
+          format: int64
+          example: 1000
+          minimum: 0
+          maximum: 9999999999
+        userName:
+          description: "ユーザ名"
+          type: string
+          minLength: 1
+          maxLength: 250
+          example: "ユーザ名"
+        orderDateTime:
+          description: "注文日時"
+          type: string
+          format: date-time
+          example: "2022-01-01T00:00:00Z"
+    required:
+      - orderId
+      - orderItems
+      - totalPrice
+      - userName
+      - orderDateTime
+      - orderItems
