@@ -3,7 +3,6 @@ package com.example.orderreception.infrastructure.api.internal.orderprocessing.r
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderOuterClass.*
 import com.example.grpcinterface.proto.OrderOuterClass.Delivery.Type
-import com.example.grpcinterface.proto.OrderOuterClass.Item.Attribute
 import com.example.grpcinterface.proto.OrderOuterClass.Payment.PaymentMethod
 import com.example.grpcinterface.proto.OrderOuterClass.User.BlackLevel
 import com.example.orderreception.domain.model.order.User
@@ -19,14 +18,14 @@ data class RegisterOrderRequest private constructor(
             val orderItems = order.orderItems
             val orderItemsProto = orderItems.map { orderItem ->
                 val attributesProto = orderItem.attributes.map { attribute ->
-                    Attribute.newBuilder()
+                    OrderItem.Attribute.newBuilder()
                         .setId(attribute.id)
                         .setName(attribute.name)
                         .setValue(attribute.value)
                         .build()
                 }
 
-                Item.newBuilder()
+                OrderItem.newBuilder()
                     .setId(orderItem.itemId)
                     .setName(orderItem.name)
                     .setPrice(
@@ -44,7 +43,7 @@ data class RegisterOrderRequest private constructor(
                 OrderCreationRequest.newBuilder()
                     .setOrder(
                         Order.newBuilder()
-                            .addAllItems(orderItemsProto)
+                            .addAllOrderItems(orderItemsProto)
                             .setChain(
                                 Chain.newBuilder()
                                     .setId(order.chainId)

@@ -16,7 +16,7 @@ data class OrderParam(
 ) {
     companion object {
         fun fromProto(orderProto: OrderOuterClass.Order): OrderParam {
-            val orderItemParams = OrderItemParam.fromProto(orderProto.itemsList)
+            val orderItemParams = OrderItemParam.fromProto(orderProto.orderItemsList)
             val deliveryParam = DeliveryParam.fromProto(orderProto.delivery)
             val userParam = UserParam.fromProto(orderProto.user)
             val paymentParam = PaymentParam.fromProto(orderProto.payment)

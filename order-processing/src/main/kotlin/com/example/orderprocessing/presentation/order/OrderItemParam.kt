@@ -11,15 +11,15 @@ data class OrderItemParam(
     val quantity: Int
 ) {
     companion object {
-        fun fromProto(itemsProto: List<OrderOuterClass.Item>): List<OrderItemParam> {
-            return itemsProto.map { itemProto ->
-                val attributeParams = AttributeParam.fromProto(itemProto.attributesList)
+        fun fromProto(itemsProto: List<OrderOuterClass.OrderItem>): List<OrderItemParam> {
+            return itemsProto.map { orderItemProto ->
+                val attributeParams = AttributeParam.fromProto(orderItemProto.attributesList)
                 OrderItemParam(
-                    id = itemProto.id,
-                    name = itemProto.name,
-                    price = BigDecimal.valueOf(itemProto.price.units),
+                    id = orderItemProto.id,
+                    name = orderItemProto.name,
+                    price = BigDecimal.valueOf(orderItemProto.price.units),
                     attributeParams = attributeParams,
-                    quantity = itemProto.quantity
+                    quantity = orderItemProto.quantity
                 )
             }
         }

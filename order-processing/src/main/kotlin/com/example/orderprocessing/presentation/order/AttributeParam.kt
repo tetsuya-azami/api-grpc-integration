@@ -4,7 +4,7 @@ import com.example.grpcinterface.proto.OrderOuterClass
 
 data class AttributeParam(val id: Long, val name: String, val value: String) {
     companion object {
-        fun fromProto(attributesProto: List<OrderOuterClass.Item.Attribute>): List<AttributeParam> {
+        fun fromProto(attributesProto: List<OrderOuterClass.OrderItem.Attribute>): List<AttributeParam> {
             return attributesProto.map {
                 AttributeParam(
                     id = it.id,
