@@ -26,14 +26,6 @@ CREATE TABLE order_items(
         FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
-CREATE TABLE item_attributes(
-        item_id bigint NOT NULL,
-        attribute_id bigint NOT NULL,
-        created_at datetime NOT NULL,
-        updated_at datetime NOT NULL,
-        PRIMARY KEY (item_id, attribute_id)
-);
-
 CREATE TABLE order_item_attributes(
         order_id varchar(250) NOT NULL,
         item_id bigint NOT NULL,

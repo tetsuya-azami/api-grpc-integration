@@ -22,16 +22,7 @@
         <table tableName="orders" schema="test">
             <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
         </table>
-        <table tableName="items" schema="test">
-            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
-        </table>
         <table tableName="order_items" schema="test">
-            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
-        </table>
-        <table tableName="attributes" schema="test">
-            <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
-        </table>
-        <table tableName="item_attributes" schema="test">
             <domainObjectRenamingRule searchString="^(.*)$" replaceString="$0Base"/>
         </table>
         <table tableName="order_item_attributes" schema="test">
