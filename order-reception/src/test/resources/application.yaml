@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf8&serverTimezone=SERVER&allowMultiQueries=true
+    username: root
+    password: root
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+logging:
+  level:
+    #    root: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: OFF
