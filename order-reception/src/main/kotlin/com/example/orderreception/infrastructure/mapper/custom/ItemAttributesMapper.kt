@@ -8,7 +8,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 
 @Mapper
-interface ItemAttributesMappler {
+interface ItemAttributesMapper {
 
     @SelectProvider(type = SqlProviderAdapter::class, method = "select")
     @Results(
