@@ -4,7 +4,7 @@ import com.example.orderreception.domain.model.order.Attribute
 import com.example.orderreception.domain.model.order.OrderItem
 import com.example.orderreception.error.ValidationError
 import com.example.orderreception.error.exception.OrderReceptionIllegalArgumentException
-import com.example.orderreception.infrastructure.mapper.custom.ItemAttributesMappler
+import com.example.orderreception.infrastructure.mapper.custom.ItemAttributesMapper
 import com.example.orderreception.presentation.order.AttributeParam
 import com.example.orderreception.presentation.order.OrderItemParam
 import com.example.orderreception.usecase.query.OrderItemFactory
@@ -23,7 +23,7 @@ import com.example.orderreception.infrastructure.mapper.generated.ItemsBaseDynam
 
 @Repository
 class OrderItemFactoryImpl(
-    private val itemAttributesMappler: ItemAttributesMappler
+    private val itemAttributesMapper: ItemAttributesMapper
 ) : OrderItemFactory {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -41,7 +41,7 @@ class OrderItemFactoryImpl(
         return orderItemParams.map { itemParam ->
             val selectStatementProvider =
                 getSelectStatementProvider(itemParam.itemId, chainId, shopId, itemParam.attributes)
-            val itemWithAttributesBase = itemAttributesMappler.select(selectStatementProvider)
+            val itemWithAttributesBase = itemAttributesMapper.select(selectStatementProvider)
                 ?: run {
                     logger.warn("該当の商品または属性がありません。itemId: ${itemParam.itemId}, attributes: ${itemParam.attributes}, chainId: $chainId, shopId: $shopId")
                     throw OrderReceptionIllegalArgumentException(
