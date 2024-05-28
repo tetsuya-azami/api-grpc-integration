@@ -7,14 +7,15 @@ assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**課題**
+- 〇〇ができない
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**目的**
+- 〇〇できるようにすることで△△を改善する。
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**考えうる解決方法**
+- ◻︎◻︎機能を◇◇するように改修する。
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**補足**
+- 関連wiki
+- 関連スレッド等
