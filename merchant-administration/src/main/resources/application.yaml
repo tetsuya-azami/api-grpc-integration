@@ -1,0 +1,10 @@
+spring:
+  application:
+    name:
+      merchant-administration
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3308/test?useAffectedRows=true&useUnicode=true&characterEncoding=utf8&serverTimezone=SERVER&allowMultiQueries=true
+    username: root
+    password: root
+
