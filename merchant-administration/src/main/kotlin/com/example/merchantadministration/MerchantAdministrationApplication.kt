@@ -1,4 +1,4 @@
-package com.example.merchant_administration
+package com.example.merchantadministration
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class MerchantAdministrationApplication
 
 fun main(args: Array<String>) {
-	runApplication<MerchantAdministrationApplication>(*args)
+    runApplication<MerchantAdministrationApplication>(*args)
 }
