@@ -18,7 +18,6 @@ repositories {
     mavenCentral()
 }
 
-
 configurations {
     create("mybatisGenerator")
 }
@@ -29,7 +28,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("com.mysql:mysql-connector-j:8.3.0")
+    implementation("com.mysql:mysql-connector-j")
     implementation("net.devh:grpc-server-spring-boot-starter:3.0.0.RELEASE")
     implementation("io.grpc:grpc-kotlin-stub:1.4.1")
     implementation(project(":grpc-interface"))
@@ -42,7 +41,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("io.grpc:grpc-testing:1.62.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
+    testImplementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
 }
 
 tasks.register("mybatisGenerator") {
