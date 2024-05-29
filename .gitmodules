@@ -6,3 +6,7 @@
 	path = order-processing/grpc-interface
 	url = git@github.com:tetsuya-azami/grpc-interface.git
         ignore = dirty
+[submodule "merchant-administration/grpc-interface"]
+	path = merchant-administration/grpc-interface
+	url = git@github.com:tetsuya-azami/grpc-interface.git
+        ignore = dirty
