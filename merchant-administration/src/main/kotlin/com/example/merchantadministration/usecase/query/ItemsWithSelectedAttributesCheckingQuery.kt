@@ -1,0 +1,7 @@
+package com.example.merchantadministration.usecase.query
+
+import com.example.merchantadministration.presentation.ItemWithSelectedAttributeIdsParam
+
+interface ItemsWithSelectedAttributesCheckingQuery {
+    fun checkItemsWithSelectedAttributes(itemWithSelectedAttributeIdsParam: ItemWithSelectedAttributeIdsParam): Boolean
+}
