@@ -1,9 +1,7 @@
 package com.example.merchantadministration.infrastructure.query
 
 import com.example.merchantadministration.error.MerchantAdministrationIllegalArgumentException
-import com.example.merchantadministration.infrastructure.entity.generated.ChainsBase
-import com.example.merchantadministration.infrastructure.entity.generated.ItemsBase
-import com.example.merchantadministration.infrastructure.entity.generated.ShopsBase
+import com.example.merchantadministration.infrastructure.entity.generated.*
 import com.example.merchantadministration.infrastructure.mapper.generated.*
 import com.example.merchantadministration.presentation.ItemWithSelectedAttributeIdsParam
 import com.example.merchantadministration.presentation.SelectedAttributeIdParam
@@ -24,7 +22,9 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
     @Autowired private val sut: ItemsWithSelectedAttributesCheckingQueryImpl,
     @Autowired private val chainsBaseMapper: ChainsBaseMapper,
     @Autowired private val shopsBaseMapper: ShopsBaseMapper,
-    @Autowired private val itemsBaseMapper: ItemsBaseMapper
+    @Autowired private val itemsBaseMapper: ItemsBaseMapper,
+    @Autowired private val attributesBaseMapper: AttributesBaseMapper,
+    @Autowired private val itemAttributesBaseMapper: ItemAttributesBaseMapper
 ) {
     companion object {
         val now = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
@@ -65,17 +65,21 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                 "マスタデータと価格が一致しません。itemId: 1, chainId: 2, shopId: 3, マスタデータのprice: 100, パラメータのprice: 1000"
             ),
             // selectedAttributeIdsが不整合
-//            Arguments.of(
-//                1L, 2L, 3L, BigDecimal(100), listOf(
-//                    SelectedAttributeIdParam.new(4000), SelectedAttributeIdParam.new(5000)
-//                )
-//            ),
+            Arguments.of(
+                1L, 2L, 3L, BigDecimal(100), listOf(
+                    SelectedAttributeIdParam.new(4000), SelectedAttributeIdParam.new(5)
+                ),
+                "itemAttributes",
+                "存在しない属性が含まれています。itemId: 1, attributeIds: [4,5]"
+            ),
         )
     }
 
 
     @BeforeEach
     fun setUp() {
+        itemAttributesBaseMapper.delete { allRows() }
+        attributesBaseMapper.delete { allRows() }
         itemsBaseMapper.delete { allRows() }
         shopsBaseMapper.delete { allRows() }
         chainsBaseMapper.delete { allRows() }
@@ -104,6 +108,36 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                 name = "テスト商品1",
                 price = 100L,
                 description = "テスト商品1の説明",
+                createdAt = now,
+                updatedAt = now,
+            )
+        )
+        attributesBaseMapper.insertMultiple(
+            AttributesBase(
+                attributeId = 4L,
+                name = "テスト属性1",
+                value = "テスト属性1の値",
+                createdAt = now,
+                updatedAt = now,
+            ),
+            AttributesBase(
+                attributeId = 5L,
+                name = "テスト属性2",
+                value = "テスト属性2の値",
+                createdAt = now,
+                updatedAt = now,
+            )
+        )
+        itemAttributesBaseMapper.insertMultiple(
+            ItemAttributesBase(
+                itemId = 1L,
+                attributeId = 4L,
+                createdAt = now,
+                updatedAt = now,
+            ),
+            ItemAttributesBase(
+                itemId = 1L,
+                attributeId = 5L,
                 createdAt = now,
                 updatedAt = now,
             )

@@ -2,17 +2,21 @@ package com.example.merchantadministration.infrastructure.query
 
 import com.example.merchantadministration.error.MerchantAdministrationIllegalArgumentException
 import com.example.merchantadministration.error.ValidationError
+import com.example.merchantadministration.infrastructure.mapper.generated.ItemAttributesBaseMapper
 import com.example.merchantadministration.infrastructure.mapper.generated.ItemsBaseMapper
+import com.example.merchantadministration.infrastructure.mapper.generated.count
 import com.example.merchantadministration.infrastructure.mapper.generated.selectOne
 import com.example.merchantadministration.presentation.ItemWithSelectedAttributeIdsParam
 import com.example.merchantadministration.usecase.query.ItemsWithSelectedAttributesCheckingQuery
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
+import com.example.merchantadministration.infrastructure.mapper.generated.ItemAttributesBaseDynamicSqlSupport as itemAttributes
 import com.example.merchantadministration.infrastructure.mapper.generated.ItemsBaseDynamicSqlSupport as items
 
 @Repository
 class ItemsWithSelectedAttributesCheckingQueryImpl(
-    private val itemsBaseMapper: ItemsBaseMapper
+    private val itemsBaseMapper: ItemsBaseMapper,
+    private val itemAttributesBaseMapper: ItemAttributesBaseMapper
 ) : ItemsWithSelectedAttributesCheckingQuery {
     companion object {
         private val logger = LoggerFactory.getLogger(this::class.java)
@@ -51,8 +55,26 @@ class ItemsWithSelectedAttributesCheckingQueryImpl(
                         )
                     )
                 }
+                val itemAttributesCount = itemAttributesBaseMapper.count {
+                    where {
+                        itemAttributes.itemId isEqualTo param.itemId
+                        and {
+                            itemAttributes.attributeId isIn param.selectedAttributeIds.map { it.attributeId }
+                        }
+                    }
+                }
+
+                if (itemAttributesCount.toInt() != param.selectedAttributeIds.size) {
+                    validationErrors.add(
+                        ValidationError(
+                            field = "itemAttributes",
+                            message = "存在しない属性が含まれています。itemId: ${param.itemId}, attributeIds: ${param.selectedAttributeIds.map { it.attributeId }}"
+                        )
+                    )
+                }
             }
         }
+
         if (validationErrors.isNotEmpty()) {
             logger.warn("商品情報の整合性がありません。validationErrors: $validationErrors")
             throw MerchantAdministrationIllegalArgumentException(validationErrors)
