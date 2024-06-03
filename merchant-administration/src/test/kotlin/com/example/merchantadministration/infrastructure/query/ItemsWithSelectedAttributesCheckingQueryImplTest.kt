@@ -1,6 +1,7 @@
 package com.example.merchantadministration.infrastructure.query
 
 import com.example.merchantadministration.error.MerchantAdministrationIllegalArgumentException
+import com.example.merchantadministration.error.ValidationError
 import com.example.merchantadministration.infrastructure.entity.generated.*
 import com.example.merchantadministration.infrastructure.mapper.generated.*
 import com.example.merchantadministration.presentation.ItemWithSelectedAttributeIdsParam
@@ -33,48 +34,107 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
         private fun illegalParams() = Stream.of(
             // itemIdが不整合
             Arguments.of(
-                1000L, 2L, 3L, BigDecimal(100),
                 listOf(
-                    SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                    ItemWithSelectedAttributeIdsParam.new(
+                        itemId = 1000L,
+                        chainId = 2L,
+                        shopId = 3L,
+                        price = BigDecimal(100),
+                        selectedAttributeIds = listOf(
+                            SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                        )
+                    ),
+                    ItemWithSelectedAttributeIdsParam.new(
+                        itemId = 2000L,
+                        chainId = 2L,
+                        shopId = 3L,
+                        price = BigDecimal(100),
+                        selectedAttributeIds = listOf(
+                            SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                        )
+                    )
                 ),
-                "items",
-                "存在しない商品です。itemId: 1000, chainId: 2, shopId: 3"
+                listOf( // 例外が複数あるケースをここでテスト
+                    ValidationError("items", "存在しない商品です。itemId: 1000, chainId: 2, shopId: 3"),
+                    ValidationError("items", "存在しない商品です。itemId: 2000, chainId: 2, shopId: 3")
+                )
             ),
             // chainIdが不整合
             Arguments.of(
-                1L, 2000L, 3L, BigDecimal(100), listOf(
-                    SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                listOf(
+                    ItemWithSelectedAttributeIdsParam.new(
+                        itemId = 1L,
+                        chainId = 2000L,
+                        shopId = 3L,
+                        price = BigDecimal(100),
+                        selectedAttributeIds = listOf(
+                            SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                        )
+                    )
                 ),
-                "items",
-                "存在しない商品です。itemId: 1, chainId: 2000, shopId: 3"
+                listOf(
+                    ValidationError("items", "存在しない商品です。itemId: 1, chainId: 2000, shopId: 3")
+                )
             ),
             // shopIdが不整合
             Arguments.of(
-                1L, 2L, 3000L, BigDecimal(100), listOf(
-                    SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                listOf(
+                    ItemWithSelectedAttributeIdsParam.new(
+                        itemId = 1L,
+                        chainId = 2L,
+                        shopId = 3000L,
+                        price = BigDecimal(100),
+                        selectedAttributeIds = listOf(
+                            SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                        )
+                    )
                 ),
-                "items",
-                "存在しない商品です。itemId: 1, chainId: 2, shopId: 3000"
+                listOf(
+                    ValidationError("items", "存在しない商品です。itemId: 1, chainId: 2, shopId: 3000")
+                )
             ),
             // priceが不整合
             Arguments.of(
-                1L, 2L, 3L, BigDecimal(1000), listOf(
-                    SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                listOf(
+                    ItemWithSelectedAttributeIdsParam.new(
+                        itemId = 1L,
+                        chainId = 2L,
+                        shopId = 3L,
+                        price = BigDecimal(200),
+                        selectedAttributeIds = listOf(
+                            SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
+                        )
+                    )
                 ),
-                "price",
-                "マスタデータと価格が一致しません。itemId: 1, chainId: 2, shopId: 3, マスタデータのprice: 100, パラメータのprice: 1000"
+                listOf(
+                    ValidationError(
+                        "price",
+                        "マスタデータと価格が一致しません。itemId: 1, chainId: 2, shopId: 3, マスタデータのprice: 100, パラメータのprice: 200"
+                    )
+                )
             ),
             // selectedAttributeIdsが不整合
             Arguments.of(
-                1L, 2L, 3L, BigDecimal(100), listOf(
-                    SelectedAttributeIdParam.new(4000), SelectedAttributeIdParam.new(5)
+                listOf(
+                    ItemWithSelectedAttributeIdsParam.new(
+                        itemId = 1L,
+                        chainId = 2L,
+                        shopId = 3L,
+                        price = BigDecimal(100),
+                        selectedAttributeIds = listOf(
+                            SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5000)
+                        )
+                    )
                 ),
-                "itemAttributes",
-                "存在しない属性が含まれています。itemId: 1, attributeIds: [4,5]"
-            ),
+                listOf(
+                    ValidationError(
+                        "itemAttributes",
+                        "存在しない属性が含まれています。itemId: 1, attributeIds: [4, 5000]"
+                    )
+                )
+            )
         )
     }
-
 
     @BeforeEach
     fun setUp() {
@@ -148,39 +208,27 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
     fun 正常系() {
         // Given
         val params = getParams()
-        // When
+        // When & Then
         assertThat(sut.checkItemsWithSelectedAttributes(params)).isTrue()
-        // Then
     }
 
     @ParameterizedTest
     @MethodSource("illegalParams")
     fun 異常系(
-        itemId: Long,
-        chainId: Long,
-        shopId: Long,
-        price: BigDecimal,
-        selectedAttributeIds: List<SelectedAttributeIdParam>,
-        expectedErrorFiledName: String,
-        expectedErrorMessage: String
+        params: List<ItemWithSelectedAttributeIdsParam>,
+        expectedValidationErrors: List<ValidationError>
     ) {
-        // Given
-        val params = listOf(
-            ItemWithSelectedAttributeIdsParam.new(
-                itemId = itemId,
-                chainId = chainId,
-                shopId = shopId,
-                price = price,
-                selectedAttributeIds = selectedAttributeIds
-            )
-        )
         // When
         val result = runCatching { sut.checkItemsWithSelectedAttributes(params) }
         // Then
         assertThat(result.isFailure).isTrue()
         val exception = result.exceptionOrNull() as MerchantAdministrationIllegalArgumentException
-        assertThat(exception.validationErrors.size).isEqualTo(1)
-        assertThat(exception.validationErrors[0].field).isEqualTo(expectedErrorFiledName)
+        assertThat(exception.validationErrors.size).isEqualTo(expectedValidationErrors.size)
+        exception.validationErrors.forEachIndexed { i, actual ->
+            val expected = expectedValidationErrors[i]
+            assertThat(actual.field).isEqualTo(expected.field)
+            assertThat(actual.message).isEqualTo(expected.message)
+        }
     }
 
     private fun getParams() = listOf(
