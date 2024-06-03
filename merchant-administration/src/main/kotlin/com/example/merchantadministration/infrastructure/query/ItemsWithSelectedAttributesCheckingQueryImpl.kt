@@ -23,56 +23,8 @@ class ItemsWithSelectedAttributesCheckingQueryImpl(
     }
 
     override fun checkItemsWithSelectedAttributes(itemWithSelectedAttributeIdsParams: List<ItemWithSelectedAttributeIdsParam>): Boolean {
-        val validationErrors = mutableListOf<ValidationError>()
-        itemWithSelectedAttributeIdsParams.forEach { param ->
-            val item = itemsBaseMapper.selectOne {
-                where {
-                    items.itemId isEqualTo param.itemId
-                    and { items.chainId isEqualTo param.chainId }
-                    and { items.shopId isEqualTo param.shopId }
-                }
-            }
-            if (item == null) {
-                validationErrors.add(
-                    ValidationError(
-                        field = "items",
-                        message = "存在しない商品です。itemId: ${param.itemId}, chainId: ${param.chainId}, shopId: ${param.shopId}"
-                    )
-                )
-            } else {
-                if (item.price == null) {
-                    validationErrors.add(
-                        ValidationError(
-                            field = "items",
-                            message = "マスタデータに価格が設定されていません。itemId: ${param.itemId}, chainId: ${param.chainId}, shopId: ${param.shopId}"
-                        )
-                    )
-                } else if (item.price != param.price.toLong()) {
-                    validationErrors.add(
-                        ValidationError(
-                            field = "price",
-                            message = "マスタデータと価格が一致しません。itemId: ${param.itemId}, chainId: ${param.chainId}, shopId: ${param.shopId}, マスタデータのprice: ${item.price}, パラメータのprice: ${param.price}"
-                        )
-                    )
-                }
-                val itemAttributesCount = itemAttributesBaseMapper.count {
-                    where {
-                        itemAttributes.itemId isEqualTo param.itemId
-                        and {
-                            itemAttributes.attributeId isIn param.selectedAttributeIds.map { it.attributeId }
-                        }
-                    }
-                }
-
-                if (itemAttributesCount.toInt() != param.selectedAttributeIds.size) {
-                    validationErrors.add(
-                        ValidationError(
-                            field = "itemAttributes",
-                            message = "存在しない属性が含まれています。itemId: ${param.itemId}, attributeIds: ${param.selectedAttributeIds.map { it.attributeId }}"
-                        )
-                    )
-                }
-            }
+        val validationErrors = itemWithSelectedAttributeIdsParams.mapNotNull { param ->
+            validateItem(param = param) ?: validateItemAttributes(param)
         }
 
         if (validationErrors.isNotEmpty()) {
@@ -81,5 +33,58 @@ class ItemsWithSelectedAttributesCheckingQueryImpl(
         }
 
         return true
+    }
+
+    private fun validateItem(param: ItemWithSelectedAttributeIdsParam): ValidationError? {
+        val item = itemsBaseMapper.selectOne {
+            where {
+                items.itemId isEqualTo param.itemId
+                and { items.chainId isEqualTo param.chainId }
+                and { items.shopId isEqualTo param.shopId }
+            }
+        }
+
+        if (item == null) {
+            return ValidationError(
+                field = "items",
+                message = "存在しない商品です。itemId: ${param.itemId}, chainId: ${param.chainId}, shopId: ${param.shopId}"
+            )
+        }
+        if (item.price == null) {
+            return ValidationError(
+                field = "items",
+                message = "マスタデータに価格が設定されていません。itemId: ${param.itemId}, chainId: ${param.chainId}, shopId: ${param.shopId}"
+            )
+        }
+        if (item.price != param.price.toLong()) {
+            return ValidationError(
+                field = "price",
+                message = "マスタデータと価格が一致しません。itemId: ${param.itemId}, chainId: ${param.chainId}, shopId: ${param.shopId}, マスタデータのprice: ${item.price}, パラメータのprice: ${param.price}"
+            )
+        }
+
+        return null
+    }
+
+    private fun validateItemAttributes(
+        param: ItemWithSelectedAttributeIdsParam
+    ): ValidationError? {
+        val itemAttributesCount = itemAttributesBaseMapper.count {
+            where {
+                itemAttributes.itemId isEqualTo param.itemId
+                and {
+                    itemAttributes.attributeId isIn param.selectedAttributeIds.map { it.attributeId }
+                }
+            }
+        }
+
+        if (itemAttributesCount.toInt() != param.selectedAttributeIds.size) {
+            return ValidationError(
+                field = "itemAttributes",
+                message = "存在しない属性が含まれています。itemId: ${param.itemId}, attributeIds: ${param.selectedAttributeIds.map { it.attributeId }}"
+            )
+        }
+
+        return null
     }
 }
