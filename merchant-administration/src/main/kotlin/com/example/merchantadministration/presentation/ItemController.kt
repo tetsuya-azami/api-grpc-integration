@@ -17,7 +17,7 @@ class ItemController(
     }
 
     override suspend fun checkItemsWithSelectedAttributes(request: ItemAttribute.CheckItemsWithSelectedAttributesRequest): ItemAttribute.CheckItemsWithSelectedAttributesResponse {
-        val itemWithSelectedAttributeIdsParams = request.itemIdsWithAttributeIdsList.map { item ->
+        val itemWithSelectedAttributeIdsParams = request.itemWithAttributeIdsList.map { item ->
             val selectedAttributeIdParams = item.selectedAttributeIdsList.map { attributeId ->
                 SelectedAttributeIdParam.new(attributeId = attributeId)
             }
