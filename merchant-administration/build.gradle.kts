@@ -22,11 +22,14 @@ configurations {
     create("mybatisGenerator")
 }
 
+val protobufVersion = "3.25.3"
+
 dependencies {
     add("mybatisGenerator", "org.mybatis.generator:mybatis-generator-core:1.4.2")
     add("mybatisGenerator", "com.mysql:mysql-connector-j:8.3.0")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("com.google.protobuf:protobuf-kotlin:${protobufVersion}")
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("net.devh:grpc-server-spring-boot-starter:3.0.0.RELEASE")
     implementation("io.grpc:grpc-kotlin-stub:1.4.1")
