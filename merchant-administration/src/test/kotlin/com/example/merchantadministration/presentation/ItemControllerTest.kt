@@ -25,7 +25,7 @@ class ItemControllerTest {
     fun 正常系() {
         // given
         val request = checkItemsWithSelectedAttributesRequest {
-            itemWithAttributeIds {
+            itemWithAttributeIds += itemWithAttributeIds {
                 itemId = 1
                 chainId = 1
                 shopId = 1
@@ -36,7 +36,7 @@ class ItemControllerTest {
                 selectedAttributeIds += 1
                 selectedAttributeIds += 2
             }
-            itemWithAttributeIds {
+            itemWithAttributeIds += itemWithAttributeIds {
                 itemId = 1
                 chainId = 1
                 shopId = 1
