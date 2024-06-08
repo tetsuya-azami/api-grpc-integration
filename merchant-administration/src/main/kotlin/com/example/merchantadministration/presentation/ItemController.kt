@@ -21,11 +21,12 @@ class ItemController(
             val selectedAttributeIdParams = item.selectedAttributeIdsList.map { attributeId ->
                 SelectedAttributeIdParam.new(attributeId = attributeId)
             }
+            // TODO: protocでgenerateした時点でnull許容型にしたい。
             ItemWithSelectedAttributeIdsParam.new(
-                itemId = item.itemId,
-                chainId = item.chainId,
-                shopId = item.shopId,
-                price = BigDecimal.valueOf(item.price.units),
+                itemId = if (item.hasItemId()) item.itemId else null,
+                chainId = if (item.hasChainId()) item.chainId else null,
+                shopId = if (item.hasShopId()) item.shopId else null,
+                price = if (item.hasPrice()) BigDecimal.valueOf(item.price.units) else null,
                 selectedAttributeIds = selectedAttributeIdParams
             )
         }
