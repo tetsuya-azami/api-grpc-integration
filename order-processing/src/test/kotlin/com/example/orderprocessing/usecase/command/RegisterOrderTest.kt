@@ -1,6 +1,7 @@
 package com.example.orderprocessing.usecase.command
 
 import com.example.orderprocessing.domain.model.OrderId
+import com.example.orderprocessing.error.exception.OrderProcessingIllegalArgumentException
 import com.example.orderprocessing.helper.OrderTestHelper
 import com.example.orderprocessing.infrastructure.repository.order.OrderRepository
 import io.mockk.every
@@ -46,5 +47,26 @@ class RegisterOrderTest {
         // Then
         assertThat(actualOrderId).isEqualTo(testOrderId)
         verify(exactly = 1) { orderRepository.registerOrder(any(), now) }
+    }
+
+    @Test
+    fun 異常系_バリデーションエラー() {
+        // Given
+        val orderParam = OrderTestHelper.createOrderParam(
+            itemParams = emptyList(),
+            blackLevel = "illegalBlackLevel"
+        )
+
+        // When
+        val actual = kotlin.runCatching { sut.execute(orderParam) }
+
+        // Then
+        val exception =
+            actual.exceptionOrNull() as OrderProcessingIllegalArgumentException
+        assertThat(exception.validationErrors[0].fieldName).isEqualTo("OrderItem")
+        assertThat(exception.validationErrors[0].description).isEqualTo("商品は1個から100個の間で注文できます。")
+        assertThat(exception.validationErrors[1].fieldName).isEqualTo("BlackLevel")
+        assertThat(exception.validationErrors[1].description).isEqualTo("ブラックレベルは[LOW, MIDDLE, HIGH]の中から選んでください。ブラックレベル: illegalBlackLevel")
+        verify(exactly = 0) { orderRepository.registerOrder(any(), now) }
     }
 }

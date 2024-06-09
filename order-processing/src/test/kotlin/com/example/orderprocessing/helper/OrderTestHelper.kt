@@ -3,11 +3,12 @@ package com.example.orderprocessing.helper
 import com.example.grpcinterface.proto.OrderOuterClass
 import com.example.grpcinterface.proto.OrderOuterClass.*
 import com.example.grpcinterface.proto.OrderOuterClass.Delivery
-import com.example.grpcinterface.proto.OrderOuterClass.Item.Attribute
+import com.example.grpcinterface.proto.OrderOuterClass.OrderItem.Attribute
 import com.example.grpcinterface.proto.OrderOuterClass.Payment
 import com.example.grpcinterface.proto.OrderOuterClass.User
 import com.example.orderprocessing.domain.model.*
 import com.example.orderprocessing.domain.model.Order
+import com.example.orderprocessing.domain.model.OrderItem
 import com.example.orderprocessing.infrastructure.entity.generated.OrderItemAttributesBase
 import com.example.orderprocessing.infrastructure.entity.generated.OrderItemsBase
 import com.example.orderprocessing.infrastructure.entity.generated.OrdersBase
@@ -25,7 +26,7 @@ class OrderTestHelper {
         private val now: LocalDateTime = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
 
         fun createOrderProto(
-            itemProtos: List<Item> = createDefaultOrderItemProtos(),
+            orderItemProtos: List<OrderOuterClass.OrderItem> = createDefaultOrderItemProtos(),
             chainId: Long = 1,
             shopId: Long = 1,
             deliveryType: Delivery.Type = Delivery.Type.IMMEDIATE,
@@ -39,8 +40,8 @@ class OrderTestHelper {
             taxedTotalPrice: Long = 2269
         ): OrderOuterClass.Order {
             return OrderOuterClass.Order.newBuilder()
-                .addAllItems(
-                    itemProtos
+                .addAllOrderItems(
+                    orderItemProtos
                 )
                 .setChain(
                     Chain.newBuilder()
@@ -67,10 +68,12 @@ class OrderTestHelper {
                 .setPayment(
                     Payment.newBuilder()
                         .setPaymentMethod(paymentMethod)
-                        .setDeliveryCharge(deliveryCharge)
-                        .setNonTaxedTotalPrice(nonTaxedTotalPrice)
-                        .setTax(tax)
-                        .setTaxedTotalPrice(taxedTotalPrice)
+                        .setDeliveryCharge(Money.newBuilder().setUnits(deliveryCharge).setCurrencyCode("JPY").build())
+                        .setNonTaxedTotalPrice(
+                            Money.newBuilder().setUnits(nonTaxedTotalPrice).setCurrencyCode("JPY").build()
+                        )
+                        .setTax(Money.newBuilder().setUnits(tax).setCurrencyCode("JPY").build())
+                        .setTaxedTotalPrice(Money.newBuilder().setUnits(taxedTotalPrice).setCurrencyCode("JPY").build())
                         .build()
                 )
                 .setTime(
@@ -90,7 +93,7 @@ class OrderTestHelper {
             deliveryType: DeliveryType = DeliveryType.IMMEDIATE,
             addressId: Long = 1,
             userId: Long = 1,
-            blackLevel: BlackLevel = BlackLevel.LOW,
+            blackLevel: String = BlackLevel.LOW.name,
             paymentMethod: PaymentMethodType = PaymentMethodType.CASH,
             deliveryCharge: BigDecimal = BigDecimal.valueOf(350),
             nonTaxedTotalPrice: BigDecimal = BigDecimal.valueOf(1713),
@@ -106,7 +109,7 @@ class OrderTestHelper {
                     addressId = addressId
                 ),
                 userParam = UserParam(id = userId),
-                blackLevel = blackLevel.name,
+                blackLevel = blackLevel,
                 paymentParam = PaymentParam(
                     paymentMethod = paymentMethod.name,
                     deliveryCharge = deliveryCharge,
@@ -125,7 +128,7 @@ class OrderTestHelper {
             deliveryType: DeliveryType = DeliveryType.IMMEDIATE,
             addressId: Long = 1,
             userId: Long = 1,
-            blackLevel: BlackLevel = BlackLevel.LOW,
+            blackLevel: String = BlackLevel.LOW.name,
             paymentMethod: PaymentMethodType = PaymentMethodType.CASH,
             deliveryCharge: BigDecimal = BigDecimal.valueOf(350),
             nonTaxedTotalPrice: BigDecimal = BigDecimal.valueOf(1713),
@@ -155,8 +158,8 @@ class OrderTestHelper {
             price: Long,
             quantity: Int,
             attributeProtos: List<Attribute> = createDefaultOrderItemAttributeProtos()
-        ): Item {
-            return Item.newBuilder()
+        ): OrderOuterClass.OrderItem {
+            return OrderOuterClass.OrderItem.newBuilder()
                 .setId(id)
                 .setName("テスト商品$id")
                 .setPrice(
@@ -193,7 +196,7 @@ class OrderTestHelper {
             return OrderItem.fromParam(orderItemParam = orderItemParam).get()!!
         }
 
-        fun createDefaultOrderItemProtos(): List<Item> {
+        fun createDefaultOrderItemProtos(): List<OrderOuterClass.OrderItem> {
             return listOf(
                 createOrderItemProto(
                     id = 1,
