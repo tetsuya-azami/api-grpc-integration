@@ -1,7 +1,9 @@
 package com.example.merchantadministration.presentation
 
-import com.example.merchantadministration.error.MerchantAdministrationIllegalArgumentException
 import com.example.merchantadministration.error.ValidationError
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
 import java.math.BigDecimal
 
 data class ItemWithSelectedAttributeIdsParam private constructor(
@@ -18,7 +20,7 @@ data class ItemWithSelectedAttributeIdsParam private constructor(
             shopId: Long?,
             price: BigDecimal?,
             selectedAttributeIds: List<SelectedAttributeIdParam>?
-        ): ItemWithSelectedAttributeIdsParam {
+        ): Result<ItemWithSelectedAttributeIdsParam, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
             if (itemId == null) {
@@ -63,15 +65,17 @@ data class ItemWithSelectedAttributeIdsParam private constructor(
             }
 
             if (validationErrors.isNotEmpty()) {
-                throw MerchantAdministrationIllegalArgumentException(validationErrors = validationErrors)
+                return Err(validationErrors)
             }
 
-            return ItemWithSelectedAttributeIdsParam(
-                itemId = itemId!!,
-                chainId = chainId!!,
-                shopId = shopId!!,
-                price = price!!,
-                selectedAttributeIds = selectedAttributeIds!!
+            return Ok(
+                ItemWithSelectedAttributeIdsParam(
+                    itemId = itemId!!,
+                    chainId = chainId!!,
+                    shopId = shopId!!,
+                    price = price!!,
+                    selectedAttributeIds = selectedAttributeIds!!
+                )
             )
         }
     }

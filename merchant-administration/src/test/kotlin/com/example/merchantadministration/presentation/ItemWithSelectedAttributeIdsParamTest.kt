@@ -17,7 +17,7 @@ class ItemWithSelectedAttributeIdsParamTest {
         val selectedAttributeIds = listOf(
             SelectedAttributeIdParam.new(4L), SelectedAttributeIdParam.new(5L)
         )
-        val actual = ItemWithSelectedAttributeIdsParam.new(itemId, chainId, shopId, price, selectedAttributeIds)
+        val actual = ItemWithSelectedAttributeIdsParam.new(itemId, chainId, shopId, price, selectedAttributeIds).value
 
         assertThat(actual.itemId).isEqualTo(itemId)
         assertThat(actual.chainId).isEqualTo(chainId)

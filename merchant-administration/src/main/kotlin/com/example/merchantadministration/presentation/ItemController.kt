@@ -2,6 +2,7 @@ package com.example.merchantadministration.presentation
 
 import com.example.grpcinterface.proto.ItemAttribute
 import com.example.grpcinterface.proto.ItemAttributeServiceGrpcKt
+import com.example.merchantadministration.error.MerchantAdministrationIllegalArgumentException
 import com.example.merchantadministration.usecase.query.ItemsWithSelectedAttributesCheckingQuery
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
@@ -17,7 +18,7 @@ class ItemController(
     }
 
     override suspend fun checkItemsWithSelectedAttributes(request: ItemAttribute.CheckItemsWithSelectedAttributesRequest): ItemAttribute.CheckItemsWithSelectedAttributesResponse {
-        val itemWithSelectedAttributeIdsParams = request.itemWithAttributeIdsList.map { item ->
+        val (itemWithSelectedAttributeIdsParams, validationErrors) = request.itemWithAttributeIdsList.map { item ->
             val selectedAttributeIdParams = item.selectedAttributeIdsList.map { attributeId ->
                 SelectedAttributeIdParam.new(attributeId = attributeId)
             }
@@ -29,6 +30,14 @@ class ItemController(
                 price = if (item.hasPrice()) BigDecimal.valueOf(item.price.units) else null,
                 selectedAttributeIds = selectedAttributeIdParams
             )
+        }.partition { it.isOk }
+            .let { (oks, errors) ->
+                oks.map { it.value } to errors.flatMap { it.error }
+            }
+
+        if (validationErrors.isNotEmpty()) {
+            logger.error("validation error: $validationErrors")
+            throw MerchantAdministrationIllegalArgumentException(validationErrors)
         }
 
         itemsWithSelectedAttributesCheckingQuery.checkItemsWithSelectedAttributes(itemWithSelectedAttributeIdsParams)

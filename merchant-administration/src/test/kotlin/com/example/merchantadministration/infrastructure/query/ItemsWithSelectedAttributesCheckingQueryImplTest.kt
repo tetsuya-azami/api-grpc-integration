@@ -240,7 +240,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
             selectedAttributeIds = listOf(
                 SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
             )
-        ),
+        ).value,
         ItemWithSelectedAttributeIdsParam.new(
             itemId = 1,
             chainId = 2,
@@ -249,6 +249,6 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
             selectedAttributeIds = listOf(
                 SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
             )
-        )
+        ).value
     )
 }
