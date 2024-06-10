@@ -1,6 +1,6 @@
 package com.example.orderprocessing.presentation.order
 
-data class UserParam(
+data class UserParam private constructor(
     val id: Long,
 ) {
     companion object {

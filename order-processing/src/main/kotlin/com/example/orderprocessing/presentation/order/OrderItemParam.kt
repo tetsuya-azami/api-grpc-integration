@@ -2,7 +2,7 @@ package com.example.orderprocessing.presentation.order
 
 import java.math.BigDecimal
 
-data class OrderItemParam(
+data class OrderItemParam private constructor(
     val id: Long,
     val name: String,
     val price: BigDecimal,

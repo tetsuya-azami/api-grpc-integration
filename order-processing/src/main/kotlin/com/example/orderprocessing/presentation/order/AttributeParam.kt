@@ -1,6 +1,6 @@
 package com.example.orderprocessing.presentation.order
 
-data class AttributeParam(
+data class AttributeParam private constructor(
     val id: Long,
     val name: String,
     val value: String

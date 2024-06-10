@@ -1,6 +1,6 @@
 package com.example.orderprocessing.presentation.order
 
-data class DeliveryParam(
+data class DeliveryParam private constructor(
     val deliveryType: String,
     val addressId: Long
 ) {

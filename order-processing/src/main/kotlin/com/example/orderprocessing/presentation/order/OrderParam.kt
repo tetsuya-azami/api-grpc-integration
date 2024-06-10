@@ -2,7 +2,7 @@ package com.example.orderprocessing.presentation.order
 
 import java.time.LocalDateTime
 
-data class OrderParam(
+data class OrderParam private constructor(
     val orderItemParams: List<OrderItemParam>,
     val chainId: Long,
     val shopId: Long,
