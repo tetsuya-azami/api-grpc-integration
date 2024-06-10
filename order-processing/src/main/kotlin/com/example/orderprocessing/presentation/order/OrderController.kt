@@ -44,7 +44,7 @@ class OrderController(
             ),
             userParam = UserParam.new(id = order.user.id),
             paymentParam = PaymentParam.new(
-                paymentMethod = order.payment.paymentMethod.name,
+                paymentMethod = order.payment.method.name,
                 deliveryCharge = BigDecimal.valueOf(order.payment.deliveryCharge.units),
                 nonTaxedTotalPrice = BigDecimal.valueOf(order.payment.nonTaxedTotalPrice.units),
                 tax = BigDecimal.valueOf(order.payment.tax.units),
