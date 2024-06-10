@@ -14,16 +14,14 @@ enum class BlackLevel(val code: Int) {
         fun fromString(value: String): Result<BlackLevel, List<ValidationError>> {
             return entries.firstOrNull { it.name == value.uppercase() }
                 ?.let { Ok(it) }
-                ?: Err(listOf(BlackLevelValidationErrors.IllegalBlackLevel(value)))
-        }
-    }
-
-    sealed interface BlackLevelValidationErrors : ValidationError {
-        data class IllegalBlackLevel(val value: String) : BlackLevelValidationErrors {
-            override val fieldName: String
-                get() = BlackLevel::class.simpleName!!
-            override val description: String
-                get() = "ブラックレベルは${BlackLevel.entries}の中から選んでください。ブラックレベル: $value"
+                ?: Err(
+                    listOf(
+                        ValidationError(
+                            fieldName = "blackLevel",
+                            description = "ブラックレベルは${entries}の中から選んでください。ブラックレベル: $value"
+                        )
+                    )
+                )
         }
     }
 }

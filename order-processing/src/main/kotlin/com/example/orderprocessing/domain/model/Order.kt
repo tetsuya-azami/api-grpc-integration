@@ -6,7 +6,6 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.fold
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -41,7 +40,12 @@ class Order private constructor(
             val (blackLevel, blackLevelValidationErrors) = BlackLevel.fromString(orderParam.blackLevel).fold(
                 success = {
                     if (!isBlackLevelCanBeOrdered(it)) {
-                        null to listOf(OrderValidationErrors.IllegalOrderByBlackUser(it))
+                        null to listOf(
+                            ValidationError(
+                                fieldName = BlackLevel::class.simpleName!!,
+                                description = "不正な注文です。BlackLevel: ${it.name}"
+                            )
+                        )
                     } else {
                         it to emptyList()
                     }
@@ -58,9 +62,9 @@ class Order private constructor(
             val nonTaxedTotalPriceErrors =
                 if (orderItems?.nonTaxedTotalPrice() != orderParam.paymentParam.nonTaxedTotalPrice) {
                     listOf(
-                        OrderValidationErrors.IllegalNonTaxedTotalPrice(
-                            orderItems = orderItems,
-                            nonTaxedTotalPrice = orderParam.paymentParam.nonTaxedTotalPrice
+                        ValidationError(
+                            fieldName = "nonTaxedTotalPrice",
+                            description = "商品の税抜き合計金額が不整合です。購入商品一覧: ${orderItems?.value}, 税抜き合計金額: ${orderParam.paymentParam.nonTaxedTotalPrice}"
                         )
                     )
                 } else {
@@ -93,24 +97,6 @@ class Order private constructor(
                 BlackLevel.LOW, BlackLevel.MIDDLE -> true
                 BlackLevel.HIGH -> false
             }
-        }
-    }
-
-    sealed interface OrderValidationErrors : ValidationError {
-        data class IllegalOrderByBlackUser(val blackLevel: BlackLevel) : OrderValidationErrors {
-            override val fieldName: String
-                get() = BlackLevel::class.simpleName!!
-            override val description: String
-                get() = "不正な注文です。BlackLevel: ${blackLevel.name}"
-        }
-
-        // TODO: 引数のNull許容型をやめる
-        data class IllegalNonTaxedTotalPrice(val orderItems: OrderItems?, val nonTaxedTotalPrice: BigDecimal?) :
-            OrderValidationErrors {
-            override val fieldName: String
-                get() = Payment::nonTaxedTotalPrice.name
-            override val description: String
-                get() = "商品の税抜き合計金額が不整合です。購入商品一覧: ${orderItems?.value}, 税抜き合計金額: $nonTaxedTotalPrice"
         }
     }
 }

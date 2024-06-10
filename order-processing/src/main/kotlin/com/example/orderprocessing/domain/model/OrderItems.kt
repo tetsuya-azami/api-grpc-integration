@@ -18,7 +18,12 @@ data class OrderItems private constructor(val value: List<OrderItem>) {
             val validationErrors = mutableListOf<ValidationError>()
 
             if (itemParams.size !in MINIMUM_ITEM_SIZE..MAXIMUM_ITEM_SIZE) {
-                validationErrors.add(OrderItemsValidationError.IllegalItemSize)
+                validationErrors.add(
+                    ValidationError(
+                        fieldName = "orderItems",
+                        description = "商品は${MINIMUM_ITEM_SIZE}個から${MAXIMUM_ITEM_SIZE}個の間で注文できます。"
+                    )
+                )
             }
 
             val orderItems = itemParams.mapNotNull {
@@ -33,20 +38,7 @@ data class OrderItems private constructor(val value: List<OrderItem>) {
         }
     }
 
-    fun size(): Int {
-        return value.size
-    }
-
     fun nonTaxedTotalPrice(): BigDecimal {
         return this.value.sumOf(OrderItem::nonTaxedTotalPrice)
-    }
-
-    sealed interface OrderItemsValidationError {
-        data object IllegalItemSize : ValidationError {
-            override val fieldName: String
-                get() = OrderItem::class.simpleName!!
-            override val description: String
-                get() = "商品は${MINIMUM_ITEM_SIZE}個から${MAXIMUM_ITEM_SIZE}個の間で注文できます。"
-        }
     }
 }

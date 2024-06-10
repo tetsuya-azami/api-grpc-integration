@@ -22,7 +22,12 @@ data class OrderItem private constructor(
             val validationErrors = mutableListOf<ValidationError>()
 
             if (orderItemParam.quantity !in MINIMUM_QUANTITY..MAXIMUM_QUANTITY) {
-                validationErrors.add(OrderItemValidationErrors.IllegalItemQuantity(orderItemParam))
+                validationErrors.add(
+                    ValidationError(
+                        fieldName = OrderItemParam::quantity.name,
+                        description = "商品の数量は${MINIMUM_QUANTITY}個から${MAXIMUM_QUANTITY}個の間で注文できます。商品ID: ${orderItemParam.id}, 数量: ${orderItemParam.quantity}"
+                    )
+                )
             }
 
             val orderItemAttributes = OrderItemAttributes.fromParam(orderItemParam)
@@ -48,15 +53,6 @@ data class OrderItem private constructor(
 
     fun nonTaxedTotalPrice(): BigDecimal {
         return this.price.multiply(this.quantity.toBigDecimal())
-    }
-
-    sealed interface OrderItemValidationErrors : ValidationError {
-        data class IllegalItemQuantity(val orderItemParam: OrderItemParam) : OrderItemValidationErrors {
-            override val fieldName: String
-                get() = OrderItemParam::quantity.name
-            override val description: String
-                get() = "商品の数量は${MINIMUM_QUANTITY}個から${MAXIMUM_QUANTITY}個の間で注文できます。商品ID: ${orderItemParam.id}, 数量: ${orderItemParam.quantity}"
-        }
     }
 
     fun attributesSize(): Int {

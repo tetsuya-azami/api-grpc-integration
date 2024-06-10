@@ -26,7 +26,12 @@ data class Payment private constructor(
 
             // 税込金額上限チェック
             if (paymentParam.taxedTotalPrice < MINIMUM_TAXED_TOTAL_PRICE || MAXIMUM_TAXED_TOTAL_PRICE < paymentParam.taxedTotalPrice) {
-                validationErrors.add(PaymentValidationError.IllegalTaxedTotalPrice)
+                validationErrors.add(
+                    ValidationError(
+                        fieldName = Payment::taxedTotalPrice.name,
+                        description = "税抜き合計金額は${MINIMUM_TAXED_TOTAL_PRICE}から${MAXIMUM_TAXED_TOTAL_PRICE}の間でなければなりません。"
+                    )
+                )
             }
             // 消費税額整合性チェック
             if (((paymentParam.nonTaxedTotalPrice + paymentParam.deliveryCharge) * TAX_RATE).setScale(
@@ -34,11 +39,21 @@ data class Payment private constructor(
                     RoundingMode.DOWN
                 ) != paymentParam.tax
             ) {
-                validationErrors.add(PaymentValidationError.IllegalTax(paymentParam))
+                validationErrors.add(
+                    ValidationError(
+                        fieldName = Payment::tax.name,
+                        description = "消費税額が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}"
+                    )
+                )
             }
             // 税込合計金額整合性チェック
             if (paymentParam.nonTaxedTotalPrice + paymentParam.deliveryCharge + paymentParam.tax != paymentParam.taxedTotalPrice) {
-                validationErrors.add(PaymentValidationError.MissMatchTaxedTotalPrice(paymentParam))
+                validationErrors.add(
+                    ValidationError(
+                        fieldName = "taxedTotalPrice",
+                        description = "税込合計金額が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}, 税込合計金額: ${paymentParam.taxedTotalPrice}"
+                    )
+                )
             }
 
             val paymentMethodType = PaymentMethodType.fromString(paymentParam.paymentMethod).getOrElse {
@@ -58,29 +73,6 @@ data class Payment private constructor(
                         taxedTotalPrice = paymentParam.taxedTotalPrice
                     )
                 )
-        }
-    }
-
-    sealed interface PaymentValidationError : ValidationError {
-        data object IllegalTaxedTotalPrice : PaymentValidationError {
-            override val fieldName: String
-                get() = Payment::taxedTotalPrice.name
-            override val description: String
-                get() = "税抜き合計金額は${MINIMUM_TAXED_TOTAL_PRICE}から${MAXIMUM_TAXED_TOTAL_PRICE}の間でなければなりません。"
-        }
-
-        data class IllegalTax(val paymentParam: PaymentParam) : PaymentValidationError {
-            override val fieldName: String
-                get() = Payment::tax.name
-            override val description: String
-                get() = "消費税額が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}"
-        }
-
-        data class MissMatchTaxedTotalPrice(val paymentParam: PaymentParam) : PaymentValidationError {
-            override val fieldName: String
-                get() = Payment::class.simpleName!!
-            override val description: String
-                get() = "税込合計価格が不整合です。税抜き合計金額: ${paymentParam.nonTaxedTotalPrice}, 消費税: ${paymentParam.tax}, 税込合計金額: ${paymentParam.taxedTotalPrice}"
         }
     }
 }
