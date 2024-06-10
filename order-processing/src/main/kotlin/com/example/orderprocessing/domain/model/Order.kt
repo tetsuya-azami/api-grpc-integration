@@ -26,7 +26,7 @@ class Order private constructor(
 
     companion object {
         fun fromParam(orderParam: OrderParam): Result<Order, List<ValidationError>> {
-            val (orderItems, orderItemsValidationErrors) = OrderItems.fromParam(orderParam.itemParams).fold(
+            val (orderItems, orderItemsValidationErrors) = OrderItems.fromParam(orderParam.orderItemParams).fold(
                 success = { it to emptyList() },
                 failure = { null to it }
             )

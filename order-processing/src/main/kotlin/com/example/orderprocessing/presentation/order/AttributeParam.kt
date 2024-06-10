@@ -1,17 +1,21 @@
 package com.example.orderprocessing.presentation.order
 
-import com.example.grpcinterface.proto.OrderOuterClass
-
-data class AttributeParam(val id: Long, val name: String, val value: String) {
+data class AttributeParam(
+    val id: Long,
+    val name: String,
+    val value: String
+) {
     companion object {
-        fun fromProto(attributesProto: List<OrderOuterClass.OrderItem.Attribute>): List<AttributeParam> {
-            return attributesProto.map {
-                AttributeParam(
-                    id = it.id,
-                    name = it.name,
-                    value = it.value
-                )
-            }
+        fun new(
+            id: Long,
+            name: String,
+            value: String
+        ): AttributeParam {
+            return AttributeParam(
+                id = id,
+                name = name,
+                value = value
+            )
         }
     }
 }

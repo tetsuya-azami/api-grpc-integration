@@ -101,7 +101,7 @@ class OrderTestHelper {
             taxedTotalPrice: BigDecimal = BigDecimal.valueOf(2269)
         ): OrderParam {
             return OrderParam(
-                itemParams = itemParams,
+                orderItemParams = itemParams,
                 chainId = chainId,
                 shopId = shopId,
                 deliveryParam = DeliveryParam(

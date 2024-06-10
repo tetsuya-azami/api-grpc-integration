@@ -98,7 +98,7 @@ class OrderTest {
         )
         assertThat(validationErrors[2]).isEqualTo(
             Order.OrderValidationErrors.IllegalNonTaxedTotalPrice(
-                OrderItems.fromParam(orderParam.itemParams).get()!!,
+                OrderItems.fromParam(orderParam.orderItemParams).get()!!,
                 orderParam.paymentParam.nonTaxedTotalPrice
             )
         )

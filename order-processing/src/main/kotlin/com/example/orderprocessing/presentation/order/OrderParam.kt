@@ -1,11 +1,9 @@
 package com.example.orderprocessing.presentation.order
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 data class OrderParam(
-    val itemParams: List<OrderItemParam>,
+    val orderItemParams: List<OrderItemParam>,
     val chainId: Long,
     val shopId: Long,
     val deliveryParam: DeliveryParam,
@@ -15,22 +13,25 @@ data class OrderParam(
     val time: LocalDateTime
 ) {
     companion object {
-        fun fromProto(orderProto: OrderOuterClass.Order): OrderParam {
-            val orderItemParams = OrderItemParam.fromProto(orderProto.orderItemsList)
-            val deliveryParam = DeliveryParam.fromProto(orderProto.delivery)
-            val userParam = UserParam.fromProto(orderProto.user)
-            val paymentParam = PaymentParam.fromProto(orderProto.payment)
-            val timeProto = orderProto.time
-
+        fun new(
+            orderItemParams: List<OrderItemParam>,
+            chainId: Long,
+            shopId: Long,
+            deliveryParam: DeliveryParam,
+            userParam: UserParam,
+            paymentParam: PaymentParam,
+            blackLevel: String,
+            time: LocalDateTime,
+        ): OrderParam {
             return OrderParam(
-                itemParams = orderItemParams,
-                chainId = orderProto.chain.id,
-                shopId = orderProto.shop.id,
+                orderItemParams = orderItemParams,
+                chainId = chainId,
+                shopId = shopId,
                 deliveryParam = deliveryParam,
                 userParam = userParam,
                 paymentParam = paymentParam,
-                blackLevel = orderProto.user.blackLevel.name,
-                time = LocalDateTime.ofEpochSecond(timeProto.seconds, timeProto.nanos, ZoneOffset.of("+09:00"))
+                blackLevel = blackLevel,
+                time = time
             )
         }
     }

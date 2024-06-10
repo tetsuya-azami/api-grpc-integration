@@ -1,6 +1,5 @@
 package com.example.orderprocessing.presentation.order
 
-import com.example.grpcinterface.proto.OrderOuterClass
 import java.math.BigDecimal
 
 data class OrderItemParam(
@@ -11,17 +10,20 @@ data class OrderItemParam(
     val quantity: Int
 ) {
     companion object {
-        fun fromProto(itemsProto: List<OrderOuterClass.OrderItem>): List<OrderItemParam> {
-            return itemsProto.map { orderItemProto ->
-                val attributeParams = AttributeParam.fromProto(orderItemProto.attributesList)
-                OrderItemParam(
-                    id = orderItemProto.id,
-                    name = orderItemProto.name,
-                    price = BigDecimal.valueOf(orderItemProto.price.units),
-                    attributeParams = attributeParams,
-                    quantity = orderItemProto.quantity
-                )
-            }
+        fun new(
+            id: Long,
+            name: String,
+            price: BigDecimal,
+            attributeParams: List<AttributeParam>,
+            quantity: Int
+        ): OrderItemParam {
+            return OrderItemParam(
+                id = id,
+                name = name,
+                price = price,
+                attributeParams = attributeParams,
+                quantity = quantity
+            )
         }
     }
 }
