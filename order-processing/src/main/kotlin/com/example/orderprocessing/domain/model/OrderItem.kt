@@ -5,7 +5,6 @@ import com.example.orderprocessing.presentation.order.OrderItemParam
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import com.github.michaelbull.result.getOrElse
 import java.math.BigDecimal
 
 
@@ -13,39 +12,38 @@ data class OrderItem private constructor(
     val itemId: Long,
     val price: BigDecimal,
     val quantity: Int,
-    val attributes: OrderItemAttributes
+    val orderItemAttributes: OrderItemAttributes
 ) {
     companion object {
-        const val MINIMUM_QUANTITY = 1
-        const val MAXIMUM_QUANTITY = 100
-        fun fromParam(orderItemParam: OrderItemParam): Result<OrderItem, List<ValidationError>> {
+        private const val MINIMUM_QUANTITY = 1
+        private const val MAXIMUM_QUANTITY = 100
+        fun new(
+            itemId: Long,
+            price: BigDecimal,
+            quantity: Int,
+            orderItemAttributes: OrderItemAttributes
+        ): Result<OrderItem, List<ValidationError>> {
             val validationErrors = mutableListOf<ValidationError>()
 
-            if (orderItemParam.quantity !in MINIMUM_QUANTITY..MAXIMUM_QUANTITY) {
+            if (quantity !in MINIMUM_QUANTITY..MAXIMUM_QUANTITY) {
                 validationErrors.add(
                     ValidationError(
                         fieldName = OrderItemParam::quantity.name,
-                        description = "商品の数量は${MINIMUM_QUANTITY}個から${MAXIMUM_QUANTITY}個の間で注文できます。商品ID: ${orderItemParam.id}, 数量: ${orderItemParam.quantity}"
+                        description = "商品の数量は${MINIMUM_QUANTITY}個から${MAXIMUM_QUANTITY}個の間で注文できます。商品ID: $itemId, 数量: $quantity"
                     )
                 )
             }
 
-            val orderItemAttributes = OrderItemAttributes.fromParam(orderItemParam)
-                .getOrElse {
-                    validationErrors.addAll(it)
-                    null
-                }
-
-            if (validationErrors.isNotEmpty() || orderItemAttributes == null) {
+            if (validationErrors.isNotEmpty()) {
                 return Err(validationErrors)
             }
 
             return Ok(
                 OrderItem(
-                    itemId = orderItemParam.id,
-                    price = orderItemParam.price,
-                    quantity = orderItemParam.quantity,
-                    attributes = orderItemAttributes
+                    itemId = itemId,
+                    price = price,
+                    quantity = quantity,
+                    orderItemAttributes = orderItemAttributes
                 )
             )
         }
@@ -56,6 +54,6 @@ data class OrderItem private constructor(
     }
 
     fun attributesSize(): Int {
-        return attributes.size()
+        return orderItemAttributes.size()
     }
 }

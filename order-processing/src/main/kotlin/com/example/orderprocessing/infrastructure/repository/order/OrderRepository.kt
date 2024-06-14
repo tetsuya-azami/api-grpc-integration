@@ -62,7 +62,7 @@ class OrderRepository(
 
     private fun registerOrderItemAttributes(order: Order, now: LocalDateTime) {
         val orderItemAttributeBases = order.orderItems.value.flatMap { item ->
-            val attributes = item.attributes
+            val attributes = item.orderItemAttributes
             attributes.value.map { attribute ->
                 OrderItemAttributesBase(
                     orderId = order.orderId.value,
