@@ -6,6 +6,7 @@ import com.example.merchantadministration.infrastructure.entity.generated.*
 import com.example.merchantadministration.infrastructure.mapper.generated.*
 import com.example.merchantadministration.presentation.ItemWithSelectedAttributeIdsParam
 import com.example.merchantadministration.presentation.SelectedAttributeIdParam
+import com.github.michaelbull.result.get
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -43,7 +44,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                         selectedAttributeIds = listOf(
                             SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
                         )
-                    ),
+                    ).get()!!,
                     ItemWithSelectedAttributeIdsParam.new(
                         itemId = 2000L,
                         chainId = 2L,
@@ -52,7 +53,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                         selectedAttributeIds = listOf(
                             SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
                         )
-                    )
+                    ).get()!!
                 ),
                 listOf( // 例外が複数あるケースをここでテスト
                     ValidationError("items", "存在しない商品です。itemId: 1000, chainId: 2, shopId: 3"),
@@ -70,7 +71,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                         selectedAttributeIds = listOf(
                             SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
                         )
-                    )
+                    ).get()!!
                 ),
                 listOf(
                     ValidationError("items", "存在しない商品です。itemId: 1, chainId: 2000, shopId: 3")
@@ -87,7 +88,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                         selectedAttributeIds = listOf(
                             SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
                         )
-                    )
+                    ).get()!!
                 ),
                 listOf(
                     ValidationError("items", "存在しない商品です。itemId: 1, chainId: 2, shopId: 3000")
@@ -104,7 +105,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                         selectedAttributeIds = listOf(
                             SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
                         )
-                    )
+                    ).get()!!
                 ),
                 listOf(
                     ValidationError(
@@ -124,7 +125,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
                         selectedAttributeIds = listOf(
                             SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5000)
                         )
-                    )
+                    ).get()!!
                 ),
                 listOf(
                     ValidationError(
@@ -240,7 +241,7 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
             selectedAttributeIds = listOf(
                 SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
             )
-        ).value,
+        ).get()!!,
         ItemWithSelectedAttributeIdsParam.new(
             itemId = 1,
             chainId = 2,
@@ -249,6 +250,6 @@ class ItemsWithSelectedAttributesCheckingQueryImplTest(
             selectedAttributeIds = listOf(
                 SelectedAttributeIdParam.new(4), SelectedAttributeIdParam.new(5)
             )
-        ).value
+        ).get()!!
     )
 }
