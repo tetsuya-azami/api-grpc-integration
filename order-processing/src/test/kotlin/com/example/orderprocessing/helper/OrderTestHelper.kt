@@ -17,7 +17,7 @@ import java.time.ZoneOffset
 
 class OrderTestHelper {
     companion object {
-        private val now: LocalDateTime = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
+        val now: LocalDateTime = LocalDateTime.of(2000, 1, 2, 3, 4, 5)
 
         fun createOrderProto(
             orderItemProtos: List<OrderOuterClass.OrderItem> = createDefaultOrderItemProtos(),
@@ -109,38 +109,6 @@ class OrderTestHelper {
                 ),
                 time = now
             )
-        }
-
-        fun createOrder(
-            itemParams: List<OrderItemParam> = createDefaultOrderItemParams(),
-            chainId: Long = 1,
-            shopId: Long = 1,
-            deliveryType: DeliveryType = DeliveryType.IMMEDIATE,
-            addressId: Long = 1,
-            userId: Long = 1,
-            blackLevel: String = BlackLevel.LOW.name,
-            paymentMethod: String = PaymentMethodType.CASH.name,
-            deliveryCharge: BigDecimal = BigDecimal.valueOf(350),
-            nonTaxedTotalPrice: BigDecimal = BigDecimal.valueOf(1713),
-            tax: BigDecimal = BigDecimal.valueOf(206),
-            taxedTotalPrice: BigDecimal = BigDecimal.valueOf(2269)
-        ): Order {
-            return Order.fromParam(
-                createOrderParam(
-                    itemParams = itemParams,
-                    chainId = chainId,
-                    shopId = shopId,
-                    deliveryType = deliveryType.name,
-                    addressId = addressId,
-                    userId = userId,
-                    blackLevel = blackLevel,
-                    paymentMethod = paymentMethod,
-                    deliveryCharge = deliveryCharge,
-                    nonTaxedTotalPrice = nonTaxedTotalPrice,
-                    tax = tax,
-                    taxedTotalPrice = taxedTotalPrice
-                )
-            ).get()!!
         }
 
         private fun createOrderItemProto(
@@ -292,5 +260,83 @@ class OrderTestHelper {
             assertThat(actual.createdAt).isEqualTo(now)
             assertThat(actual.updatedAt).isEqualTo(now)
         }
+
+        fun getOrder(
+            orderItems: OrderItems = getDefaultOrderItems(),
+            chainId: Long = 1,
+            shopId: Long = 1,
+            delivery: Delivery = Delivery.new(type = DeliveryType.fromString("IMMEDIATE").get()!!, addressId = 1),
+            user: User = User.new(userId = 1),
+            payment: Payment = getDefaultPayment(),
+            blackLevel: BlackLevel = BlackLevel.fromString("LOW").get()!!,
+            time: LocalDateTime = now
+        ) = Order.new(
+            orderItems = orderItems,
+            chainId = chainId,
+            shopId = shopId,
+            delivery = delivery,
+            user = user,
+            payment = payment,
+            blackLevel = blackLevel,
+            time = time
+        )
+
+        private fun getDefaultPayment() = Payment.new(
+            paymentMethodType = PaymentMethodType.fromString("CREDIT").get()!!,
+            deliveryCharge = BigDecimal.valueOf(100),
+            nonTaxedTotalPrice = BigDecimal.valueOf(200),
+            tax = BigDecimal.valueOf(30),
+            taxedTotalPrice = BigDecimal.valueOf(330)
+        ).get()!!
+
+        private fun getDefaultOrderItems() =
+            OrderItems.new(
+                listOf(
+                    OrderItem.new(
+                        itemId = 1,
+                        price = BigDecimal.valueOf(100),
+                        quantity = 1,
+                        orderItemAttributes = OrderItemAttributes.new(
+                            itemId = 1,
+                            value = listOf(
+                                OrderItemAttribute.new(
+                                    itemId = 1,
+                                    attributeId = 1,
+                                    name = "テスト属性名1",
+                                    value = "テスト属性値1",
+                                ),
+                                OrderItemAttribute.new(
+                                    itemId = 1,
+                                    attributeId = 2,
+                                    name = "テスト属性名2",
+                                    value = "テスト属性値2",
+                                )
+                            )
+                        ).get()!!,
+                    ).get()!!,
+                    OrderItem.new(
+                        itemId = 1,
+                        price = BigDecimal.valueOf(100),
+                        quantity = 1,
+                        orderItemAttributes = OrderItemAttributes.new(
+                            itemId = 1,
+                            value = listOf(
+                                OrderItemAttribute.new(
+                                    itemId = 1,
+                                    attributeId = 1,
+                                    name = "テスト属性名1",
+                                    value = "テスト属性値1",
+                                ),
+                                OrderItemAttribute.new(
+                                    itemId = 1,
+                                    attributeId = 2,
+                                    name = "テスト属性名2",
+                                    value = "テスト属性値2",
+                                )
+                            )
+                        ).get()!!
+                    ).get()!!
+                )
+            ).get()!!
     }
 }

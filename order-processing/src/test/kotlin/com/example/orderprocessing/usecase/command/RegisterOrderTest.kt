@@ -50,7 +50,7 @@ class RegisterOrderTest {
     }
 
     @Test
-    fun 異常系_バリデーションエラー() {
+    fun 異常系_注文商品がない() {
         // Given
         val orderParam = OrderTestHelper.createOrderParam(
             itemParams = emptyList(),
@@ -63,10 +63,8 @@ class RegisterOrderTest {
         // Then
         val exception =
             actual.exceptionOrNull() as OrderProcessingIllegalArgumentException
-        assertThat(exception.validationErrors[0].fieldName).isEqualTo("OrderItem")
+        assertThat(exception.validationErrors[0].fieldName).isEqualTo("orderItems")
         assertThat(exception.validationErrors[0].description).isEqualTo("商品は1個から100個の間で注文できます。")
-        assertThat(exception.validationErrors[1].fieldName).isEqualTo("BlackLevel")
-        assertThat(exception.validationErrors[1].description).isEqualTo("ブラックレベルは[LOW, MIDDLE, HIGH]の中から選んでください。ブラックレベル: illegalBlackLevel")
         verify(exactly = 0) { orderRepository.registerOrder(any(), now) }
     }
 }

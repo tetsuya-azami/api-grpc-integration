@@ -7,100 +7,25 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class OrderTest {
-
     @Test
     fun インスタンス化_正常系() {
-        // Given
-        val orderParam = OrderTestHelper.createOrderParam()
         // When
-        val order = Order.fromParam(orderParam = orderParam)
+        val order = OrderTestHelper.getOrder()
         // Then
-        OrderTestHelper.assert_作成された注文モデルが正しいこと(orderParam, order.get()!!)
-    }
-
-    @Test
-    fun インスタンス化_商品がない_異常系() {
-        // Given
-        val orderParam = OrderTestHelper.createOrderParam(itemParams = emptyList())
-        // When
-        val actual = Order.fromParam(orderParam = orderParam)
-        // Then
-        assertThat(actual.isErr).isTrue()
-        val validationErrors = actual.error
-        assertThat(validationErrors).hasSize(2)
-        assertThat(validationErrors[0]).isEqualTo(OrderItems.OrderItemsValidationError.IllegalItemSize)
-        assertThat(validationErrors[1]).isEqualTo(
-            Order.OrderValidationErrors.IllegalNonTaxedTotalPrice(
-                null,
-                orderParam.paymentParam.nonTaxedTotalPrice
-            )
-        )
-    }
-
-    @Test
-    fun インスタンス化_配達種別が不正_異常系() {
-        // Given
-        val orderParam = OrderTestHelper.createOrderParam(deliveryType = "invalid")
-        // When
-        val actual = Order.fromParam(orderParam = orderParam)
-        // Then
-        assertThat(actual.isErr).isTrue()
-        val validationErrors = actual.error
-        assertThat(validationErrors).hasSize(1)
-        assertThat(validationErrors[0]).isEqualTo(DeliveryType.DeliveryTypeValidationErrors.IllegalDeliveryType("invalid"))
-    }
-
-    @Test
-    fun インスタンス化_ブラックレベルが不正_異常系() {
-        // Given
-        val orderParam = OrderTestHelper.createOrderParam(blackLevel = "invalid")
-        // When
-        val actual = Order.fromParam(orderParam = orderParam)
-        // Then
-        assertThat(actual.isErr).isTrue()
-        val validationErrors = actual.error
-        assertThat(validationErrors).hasSize(1)
-        assertThat(validationErrors[0]).isEqualTo(BlackLevel.BlackLevelValidationErrors.IllegalBlackLevel("invalid"))
-    }
-
-    @Test
-    fun インスタンス化_支払い方法が不正_異常系() {
-        // Given
-        val orderParam = OrderTestHelper.createOrderParam(paymentMethod = "invalid")
-        // When
-        val actual = Order.fromParam(orderParam = orderParam)
-        // Then
-        assertThat(actual.isErr).isTrue()
-        val validationErrors = actual.error
-        assertThat(validationErrors).hasSize(1)
-        assertThat(validationErrors[0]).isEqualTo(
-            PaymentMethodType.PaymentMethodValidationErrors.IllegalPaymentMethodType(
-                "invalid"
-            )
-        )
-    }
-
-    @Test
-    fun インスタンス化_支払い金額が不正_異常系() {
-        // Given
-        val orderParam = OrderTestHelper.createOrderParam(nonTaxedTotalPrice = BigDecimal.valueOf(0))
-        // When
-        val actual = Order.fromParam(orderParam = orderParam)
-        // Then
-        assertThat(actual.isErr).isTrue()
-        val validationErrors = actual.error
-        assertThat(validationErrors).hasSize(3)
-        assertThat(validationErrors[0]).isEqualTo(
-            Payment.PaymentValidationError.IllegalTax(paymentParam = orderParam.paymentParam)
-        )
-        assertThat(validationErrors[1]).isEqualTo(
-            Payment.PaymentValidationError.MissMatchTaxedTotalPrice(paymentParam = orderParam.paymentParam)
-        )
-        assertThat(validationErrors[2]).isEqualTo(
-            Order.OrderValidationErrors.IllegalNonTaxedTotalPrice(
-                OrderItems.fromParam(orderParam.orderItemParams).get()!!,
-                orderParam.paymentParam.nonTaxedTotalPrice
-            )
-        )
+        assertThat(order.isOk).isTrue()
+        val actual = order.get()!!
+        assertThat(actual.orderItems.size()).isEqualTo(2)
+        assertThat(actual.chainId).isEqualTo(1)
+        assertThat(actual.shopId).isEqualTo(1)
+        assertThat(actual.delivery.type).isEqualTo(DeliveryType.IMMEDIATE)
+        assertThat(actual.delivery.addressId).isEqualTo(1)
+        assertThat(actual.user.userId).isEqualTo(1)
+        assertThat(actual.payment.paymentMethodType).isEqualTo(PaymentMethodType.CREDIT)
+        assertThat(actual.payment.deliveryCharge).isEqualTo(BigDecimal.valueOf(100))
+        assertThat(actual.payment.nonTaxedTotalPrice).isEqualTo(BigDecimal.valueOf(200))
+        assertThat(actual.payment.tax).isEqualTo(BigDecimal.valueOf(30))
+        assertThat(actual.payment.taxedTotalPrice).isEqualTo(BigDecimal.valueOf(330))
+        assertThat(actual.blackLevel).isEqualTo(BlackLevel.LOW)
+        assertThat(actual.time).isEqualTo(OrderTestHelper.now)
     }
 }

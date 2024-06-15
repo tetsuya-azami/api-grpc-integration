@@ -9,6 +9,7 @@ import com.example.orderprocessing.infrastructure.mapper.generated.OrderItemsBas
 import com.example.orderprocessing.infrastructure.mapper.generated.OrdersBaseMapper
 import com.example.orderprocessing.infrastructure.mapper.generated.select
 import com.example.orderprocessing.infrastructure.repository.order.OrderRepository
+import com.github.michaelbull.result.get
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
@@ -53,7 +54,7 @@ class OrderRepositoryTest @Autowired constructor(
     )
     fun insertTest() {
         // Given
-        val order = OrderTestHelper.createOrder()
+        val order = OrderTestHelper.getOrder().get()!!
 
         // When
         val insertedOrderId = orderRepository.registerOrder(order, now)
@@ -83,7 +84,7 @@ class OrderRepositoryTest @Autowired constructor(
         assertThat(insertedOrderItemAttributes.size).isEqualTo(6)
 
         val expectedItemIdAndAttributeIdPairs = order.orderItems.value.flatMap { orderItem ->
-            orderItem.attributes.value.map { attribute -> Pair(orderItem, attribute) }
+            orderItem.orderItemAttributes.value.map { attribute -> Pair(orderItem, attribute) }
         }
 
         expectedItemIdAndAttributeIdPairs.forEachIndexed { index, (expectedOrderItem, expectedAttribute) ->
